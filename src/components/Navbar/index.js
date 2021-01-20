@@ -7,21 +7,32 @@ import {
   NavBtn,
   NavBtnLink
 } from './NavbarElements';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  navbar:{
+    // position: 'fixed',
+    // top: '0px',
+    // width: '100%',
+    marginBottom:theme.spacing(2)
+  }
+}));
 
 const Navbar = () => {
+  const classes = useStyles();
   return (
     <>
-      <Nav>
+      <Nav  className={classes.navbar}>
         <Bars />
         <NavMenu>
-          <NavLink to='/about' activeStyle>
-            About
+          <NavLink to='/dashboard' activeStyle>
+            Dashboard
           </NavLink>
-          <NavLink to='/services' activeStyle>
-            Services
+          <NavLink to='/employees' activeStyle>
+            Employees
           </NavLink>
-          <NavLink to='/contact-us' activeStyle>
-            Contact Us
+          <NavLink to='/profile' activeStyle>
+            Profile
           </NavLink>
         </NavMenu>
         <NavBtn>

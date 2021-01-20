@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 
 
-const About = () => {
+const Profile = () => {
 
   return (
     <>
@@ -15,10 +15,10 @@ const About = () => {
         height: '90vh'
       }}
     >
-      <h1>About</h1>
+      <h1>Profile</h1>
     </div>
     </>
   );
 };
 
-export default About;
+export default Profile;

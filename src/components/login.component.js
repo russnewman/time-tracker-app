@@ -33,7 +33,7 @@ export default function SignIn(props) {
         const classes = useStyles();
 
         return (
-        <>
+        <div className="auth-wrapper">
             <div className="auth-inner-singin">
                 <Grid container justify="center">
                     <Grid item>
@@ -57,7 +57,7 @@ export default function SignIn(props) {
                     </Grid>
 
                     <Grid container  justify="center" md={12}>
-                        <Link to={"/about"} variant="body2">
+                        <Link to={"/dashboard"} variant="body2">
                             <Button className={classes.buuttonSignIn} variant="contained" color="primary">Sign In</Button>    
                         </Link>
                             
@@ -82,6 +82,6 @@ export default function SignIn(props) {
                     </Grid>
                 </form>
             </div>
-        </>
+        </div>
         );
     }

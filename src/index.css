@@ -34,6 +34,10 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .auth-inner-singup {
+  /* display: flex; */
+  flex-direction: column;
+  text-align: left;
+  justify-content: center;
   width: 650px;
   margin: auto;
   background: #ffffff;
@@ -44,6 +48,10 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .auth-inner-singin {
+  /* display: flex; */
+  flex-direction: column;
+  text-align: left;
+  justify-content: center;
   width: 450px;
   margin: auto;
   background: #ffffff;

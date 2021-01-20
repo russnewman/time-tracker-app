@@ -37,76 +37,76 @@ export default function SignUp(props) {
     };
 
         return (
-        <>
-        <div className="auth-inner-singup">
+        <div className="auth-wrapper">
+            <div className="auth-inner-singup">
 
-        <Grid container justify="center">
-            <Grid item>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Sign up
-                </Typography>
-            </Grid>
-        </Grid>
-
-            <form>
-                <Grid container spacing={0}>
-                    
-                    <Grid item md={6}>
-                        <TextField required className={classes.inputField} label="Firstname"  margin="normal"/>
-                            {/* <input type="email" className="form-control" placeholder="Enter email" /> */}
-                    </Grid>
-                    <Grid item md={6}>
-                        <TextField required className={classes.inputField} label="Lastname" margin="normal"/>
-                    </Grid>
-
-                    <Grid item md={6}>
-                        <TextField required className={classes.inputField} label="Email" margin="normal"/>
-                    </Grid>
-                    <Grid item md={6}>
-                            
-                            <TextField 
-                                required 
-                                margin="normal"
-                                className={classes.inputField}
-                                label="Password"
-                                type="password"
-                            />
-                    </Grid>
-                    <Grid item md={6}>
-                        <TextField className={classes.inputField} label="Department" margin="normal"/>
-                    </Grid>
-                    <Grid item md={6}>
-                        <FormControl margin="normal" className={classes.formControl}>
-                            <InputLabel required>Position</InputLabel>
-                                <Select
-                                value={age}
-                                onChange={handleChange}
-                                >
-                                    <MenuItem value={10}>Leader</MenuItem>
-                                    <MenuItem value={20}>Employee</MenuItem>
-                                </Select>
-                        </FormControl>
-                    </Grid>
-                </Grid>
-
-                <Grid container md={12} >
-                        <Button variant="contained" color="primary" style={{width: '100%'}}>Sign Up</Button>    
-                </Grid>
-
-                <Grid container justify="flex-end">
+                <Grid container justify="center">
                     <Grid item>
-                    <Link to={"/sign-in"} variant="body2">
-                        <Typography variant="caption">
-                            Already have an account? Sign in
+                        <Avatar className={classes.avatar}>
+                            <LockOutlinedIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5">
+                            Sign up
                         </Typography>
-                    </Link>
                     </Grid>
                 </Grid>
-            </form>
+
+                    <form>
+                        <Grid container spacing={0}>
+                            
+                            <Grid item md={6}>
+                                <TextField required className={classes.inputField} label="Firstname"  margin="normal"/>
+                                    {/* <input type="email" className="form-control" placeholder="Enter email" /> */}
+                            </Grid>
+                            <Grid item md={6}>
+                                <TextField required className={classes.inputField} label="Lastname" margin="normal"/>
+                            </Grid>
+
+                            <Grid item md={6}>
+                                <TextField required className={classes.inputField} label="Email" margin="normal"/>
+                            </Grid>
+                            <Grid item md={6}>
+                                    
+                                    <TextField 
+                                        required 
+                                        margin="normal"
+                                        className={classes.inputField}
+                                        label="Password"
+                                        type="password"
+                                    />
+                            </Grid>
+                            <Grid item md={6}>
+                                <TextField className={classes.inputField} label="Department" margin="normal"/>
+                            </Grid>
+                            <Grid item md={6}>
+                                <FormControl margin="normal" className={classes.formControl}>
+                                    <InputLabel required>Position</InputLabel>
+                                        <Select
+                                        value={age}
+                                        onChange={handleChange}
+                                        >
+                                            <MenuItem value={10}>Leader</MenuItem>
+                                            <MenuItem value={20}>Employee</MenuItem>
+                                        </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+
+                        <Grid container md={12} >
+                                <Button variant="contained" color="primary" style={{width: '100%'}}>Sign Up</Button>    
+                        </Grid>
+
+                        <Grid container justify="flex-end">
+                            <Grid item>
+                            <Link to={"/sign-in"} variant="body2">
+                                <Typography variant="caption">
+                                    Already have an account? Sign in
+                                </Typography>
+                            </Link>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </div>
             </div>
-            </>
         );
     }

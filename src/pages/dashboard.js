@@ -2,12 +2,12 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 
 
-const Services = () => {
+const Dashboard = () => {
+
   return (
     <>
     <Navbar/>
     <div
-    
       style={{
         display: 'flex',
         justifyContent: 'center',
@@ -15,10 +15,10 @@ const Services = () => {
         height: '90vh'
       }}
     >
-      <h1>Services</h1>
+      <h1>Dashboard</h1>
     </div>
     </>
   );
 };
 
-export default Services;
+export default Dashboard;
