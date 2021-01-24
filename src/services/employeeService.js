@@ -3,6 +3,20 @@ const KEYS = {
     employeeId: 'employeeId'
 }
 
+let data = {
+    city: "dfgdsfhtrjrjf",
+    email: "sdfsdgdfherhe@dsfgdfg",
+    fullName: "dfgdfgdf",
+    gender: "male",
+    hireDate: "2021-01-20T19:08:16.404Z",
+    id: 12,
+    isPermanent: false,
+    mobile: "3453453542",
+  };
+  
+  let json = JSON.stringify(data);
+  let arr = [];
+
 export const getDepartmentCollection = () => ([
     { id: '1', title: 'Development' },
     { id: '2', title: 'Marketing' },
@@ -42,10 +56,16 @@ export function getAllEmployees() {
     if (localStorage.getItem(KEYS.employees) == null)
         localStorage.setItem(KEYS.employees, JSON.stringify([]))
     let employees = JSON.parse(localStorage.getItem(KEYS.employees));
+    // let employees = JSON.parse(json)
     //map departmentID to department title
     let departments = getDepartmentCollection();
-    return employees.map(x => ({
-        ...x,
-        department: departments[x.departmentId - 1].title
-    }))
+    arr.push(data)
+    // console.log(employees)
+    // console.log(arr)
+
+
+    // return employees.map(x => ({
+    //     ...x,
+    //     department: departments[x.departmentId - 1].title
+    // }))
 }

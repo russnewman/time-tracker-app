@@ -8,7 +8,6 @@ import * as employeeService from "../../services/employeeService";
 const genderItems = [
     { id: 'male', title: 'Male' },
     { id: 'female', title: 'Female' },
-    { id: 'other', title: 'Other' },
 ]
 
 const initialFValues = {
@@ -18,7 +17,7 @@ const initialFValues = {
     mobile: '',
     city: '',
     gender: 'male',
-    departmentId: '',
+    // departmentId: '',
     hireDate: new Date(),
     isPermanent: false,
 }
@@ -34,8 +33,8 @@ export default function EmployeeForm(props) {
             temp.email = (/$^|.+@.+..+/).test(fieldValues.email) ? "" : "Email is not valid."
         if ('mobile' in fieldValues)
             temp.mobile = fieldValues.mobile.length > 9 ? "" : "Minimum 10 numbers required."
-        if ('departmentId' in fieldValues)
-            temp.departmentId = fieldValues.departmentId.length != 0 ? "" : "This field is required."
+        // if ('departmentId' in fieldValues)
+        //     temp.departmentId = fieldValues.departmentId.length != 0 ? "" : "This field is required."
         setErrors({
             ...temp
         })
@@ -52,6 +51,9 @@ export default function EmployeeForm(props) {
         handleInputChange,
         resetForm
     } = useForm(initialFValues, true, validate);
+    // console.log(initialFValues)
+
+    // console.log(values)
 
     const handleSubmit = e => {
         e.preventDefault()
@@ -86,9 +88,9 @@ export default function EmployeeForm(props) {
                         error={errors.email}
                     />
                     <Controls.Input
-                        label="Mobile"
-                        name="mobile"
-                        value={values.mobile}
+                        label="Department"
+                        name="department"
+                        value={values.department}
                         onChange={handleInputChange}
                         error={errors.mobile}
                     />
@@ -108,13 +110,13 @@ export default function EmployeeForm(props) {
                         onChange={handleInputChange}
                         items={genderItems}
                     />
-                    <Controls.Select
-                        name="departmentId"
-                        label="Department"
-                        value={values.departmentId}
+                    <Controls.Input
+                        name="mobile"
+                        label="Mobile"
+                        value={values.mobile}
                         onChange={handleInputChange}
-                        options={employeeService.getDepartmentCollection()}
-                        error={errors.departmentId}
+                        // options={employeeService.getDepartmentCollection()}
+                        error={errors.mobile}
                     />
                     <Controls.DatePicker
                         name="hireDate"
@@ -122,14 +124,14 @@ export default function EmployeeForm(props) {
                         value={values.hireDate}
                         onChange={handleInputChange}
                     />
-                    <Controls.Checkbox
+                    {/* <Controls.Checkbox
                         name="isPermanent"
                         label="Permanent Employee"
                         value={values.isPermanent}
                         onChange={handleInputChange}
-                    />
+                    /> */}
 
-                    <div>
+                    {/* <div>
                         <Controls.Button
                             type="submit"
                             text="Submit" />
@@ -137,7 +139,7 @@ export default function EmployeeForm(props) {
                             text="Reset"
                             color="default"
                             onClick={resetForm} />
-                    </div>
+                    </div> */}
                 </Grid>
             </Grid>
         </Form>

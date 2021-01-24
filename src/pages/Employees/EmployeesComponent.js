@@ -6,6 +6,7 @@ import { Search } from "@material-ui/icons";
 import AddIcon from '@material-ui/icons/Add';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import CloseIcon from '@material-ui/icons/Close';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 import Notification from "../../components/employees/Notification";
 import ConfirmDialog from "../../components/employees/ConfirmDialog";
@@ -44,17 +45,52 @@ const useStyles = makeStyles(theme => ({
 
 const headCells = [
     { id: 'fullName', label: 'Employee Name' },
-    { id: 'email', label: 'Email Address (Personal)' },
-    { id: 'mobile', label: 'Mobile Number' },
+    { id: 'email', label: 'Email Address' },
     { id: 'department', label: 'Department' },
-    { id: 'actions', label: 'Actions', disableSorting: true }
+    { id: 'city', label: 'City' },
+    { id: 'actions', disableSorting: true }
+
+    // { id: 'Email', label: 'Email Address' },
+    // { id: 'First', label: 'First Name' },
+    // { id: 'Last', label: 'Last Name' },
+    // { id: 'Department', label: 'Department' },
+    // { id: 'City', label: 'City' },
+    // { id: 'actions', label: 'Actions', disableSorting: true }
 ]
 
 export default function EmployeesComponent() {
 
+    let data1 = {
+        id: 1, 
+        fullName: "Максим Алексеенко", 
+        email: "alekseenko.md@phystech.edu", 
+        department: "Development",
+        city: "Королёв",
+        mobile: "1234567890", 
+        gender: "male",
+        hireDate: "2021-01-21T05:45:16.309Z",
+    }
+    let data2 = {
+        id: 1, 
+        fullName: "Алексей Иванов", 
+        email: "kdflksjdl", 
+        mobile: "1234567890", 
+        city: "Moscow",
+        gender: "male",
+        department: "HR",
+        hireDate: "2021-01-21T05:45:16.309Z",
+    }
+
+    let employeeArr = []
+    employeeArr.push(data1)
+    employeeArr.push(data2)
+
     const classes = useStyles();
     const [recordForEdit, setRecordForEdit] = useState(null)
     const [records, setRecords] = useState(employeeService.getAllEmployees())
+
+    // console.log(arr)
+    // console.log(records)
     const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
     const [openPopup, setOpenPopup] = useState(false)
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
@@ -65,7 +101,7 @@ export default function EmployeesComponent() {
         TblHead,
         TblPagination,
         recordsAfterPagingAndSorting
-    } = useTable(records, headCells, filterFn);
+    } = useTable(employeeArr, headCells, filterFn);
 
     const handleSearch = e => {
         let target = e.target;
@@ -124,20 +160,20 @@ export default function EmployeesComponent() {
                     <Controls.Input
                         label="Search Employees"
                         className={classes.searchInput}
-                        InputProps={{
-                            startAdornment: (<InputAdornment position="start">
-                                <Search />
-                            </InputAdornment>)
-                        }}
+                        // InputProps={{
+                        //     startAdornment: (<InputAdornment position="start">
+                        //         <Search />
+                        //     </InputAdornment>)
+                        // }}
                         onChange={handleSearch}
                     />
-                    <Controls.Button
+                    {/* <Controls.Button
                         text="Add New"
                         variant="outlined"
                         startIcon={<AddIcon />}
                         className={classes.newButton}
                         onClick={() => { setOpenPopup(true); setRecordForEdit(null); }}
-                    />
+                    /> */}
                 </Toolbar>
 
                 <TblContainer>
@@ -148,15 +184,15 @@ export default function EmployeesComponent() {
                                 (<TableRow key={item.id}>
                                     <TableCell>{item.fullName}</TableCell>
                                     <TableCell>{item.email}</TableCell>
-                                    <TableCell>{item.mobile}</TableCell>
                                     <TableCell>{item.department}</TableCell>
+                                    <TableCell>{item.city}</TableCell>
                                     <TableCell>
 
                                         {/* //Кнопка редактирования */}
                                         <Controls.ActionButton
                                             color="primary"
                                             onClick={() => { openInPopup(item) }}>
-                                            <EditOutlinedIcon fontSize="small" />
+                                            <InfoOutlinedIcon fontSize="small" />
                                         </Controls.ActionButton>
 
                                         {/* кнопка удаления */}
@@ -166,7 +202,6 @@ export default function EmployeesComponent() {
                                                 setConfirmDialog({
                                                     isOpen: true,
                                                     title: 'Are you sure to delete this record?',
-                                                    subTitle: "You can't undo this operation",
                                                     onConfirm: () => { onDelete(item.id) }
                                                 })
                                             }}>
@@ -183,7 +218,7 @@ export default function EmployeesComponent() {
             </Paper>
 
             <Popup
-                title="Employee Form"
+                title="Employee full inforamtion"
                 openPopup={openPopup}
                 setOpenPopup={setOpenPopup}
             >

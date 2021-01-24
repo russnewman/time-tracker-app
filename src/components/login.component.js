@@ -1,12 +1,19 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Avatar from '@material-ui/core/Avatar';
 import { Button, TextField, Typography } from "@material-ui/core";
+import AuthService from "../services/auth.service"
+import Controls from "./employees/controls/Controls";
+import Notification from "./employees/Notification";
 
-const useStyles = makeStyles((theme) => ({
+
+
+import { withStyles } from "@material-ui/core/styles";
+
+const styles = makeStyles((theme) => ({
     formControl: {
       marginBottom: theme.spacing(3),
       minWidth: '30ch',
@@ -29,9 +36,57 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 
-export default function SignIn(props) {
-        const classes = useStyles();
+export default function SignIn(props){
 
+        const  classes  = styles();
+
+        const [email, setEmail] = React.useState("")
+        const [password, setPassword] = React.useState("")
+        const [emailErrMessage, setEmailErrMessage] = React.useState("")
+        const [passwordErrMessage, setPasswordErrMessage] = React.useState("")
+        const [redirect, setRedirect] = React.useState(null)
+        const [valid, setValid] = React.useState(false)
+        const [notify, setNotify] = 
+        React.useState(props.location.state && props.location.state.notify ? 
+            {isOpen: true, message: 'You are successfully registered', type: "success"}
+            :{ isOpen: false, message: '', type: '' })
+
+        const handleSubmit = (e)=>{
+            e.preventDefault()
+            AuthService.login(email, password)
+                .then(()=>{
+                    setRedirect("/dashboard")
+                },
+                error => {
+                    let resMessage = ""
+                    if(error.response){
+                        if (error.response.status == 401) resMessage = "Bad credentials"
+                        if (error.response.status == 500) resMessage = "Server error"
+                    }
+                    else{
+                        resMessage = "Server is not available"
+                    }
+                    setNotify({
+                        isOpen:true,
+                        message:resMessage,
+                        type: 'error'})
+                  }
+                );
+        }
+
+        const handleChangeEmail = (e)=>{
+            setEmail(e.target.value)
+        }
+        
+        const handleChangePassword = (e) =>{
+            setPassword(e.target.value)
+        }
+
+        console.log(props.location.state)
+
+        if (redirect){
+            return <Redirect to={redirect}/>
+        }
         return (
         <div className="auth-wrapper">
             <div className="auth-inner-singin">
@@ -46,21 +101,24 @@ export default function SignIn(props) {
                     </Grid>
                 </Grid>
 
-                <form>
+                <form onSubmit={handleSubmit}>
                     <Grid  container justify="center">
-                        
                         <Grid item >
-                            <TextField required  label="Email" style={{width: '100%'}} margin="normal"/>
+                            <TextField required  
+                            label="Email" 
+                            style={{width: '100%'}}
+                                margin="normal" 
+                                onChange={handleChangeEmail}
+                                helperText={emailErrMessage}/>
                             <TextField required  label="Password" style={{width: '100%'}} type="password"
-                                margin="normal"/>
+                                margin="normal" onChange={handleChangePassword}/>
                         </Grid>
                     </Grid>
 
                     <Grid container  justify="center" md={12}>
-                        <Link to={"/dashboard"} variant="body2">
-                            <Button className={classes.buuttonSignIn} variant="contained" color="primary">Sign In</Button>    
-                        </Link>
-                            
+                        {/* <Link to={"/dashboard"} variant="body2"> */}
+                            <Button className={classes.buuttonSignIn} variant="contained" color="primary" type="submit">Sign In</Button>    
+                        {/* </Link> */}
                     </Grid>
 
                     <Grid container justify="flex-end">
@@ -81,7 +139,11 @@ export default function SignIn(props) {
                         </Grid>
                     </Grid>
                 </form>
+                <Notification
+                    notify={notify}
+                    setNotify={setNotify}
+                />
             </div>
         </div>
-        );
-    }
+        )
+}
