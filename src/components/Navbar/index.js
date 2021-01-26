@@ -10,6 +10,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import AuthService from "../../services/auth.service"
 
 
 
@@ -22,7 +23,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const handleLogOut = e =>{
+  AuthService.logout()
+}
+
 const Navbar = () => {
+  const user = AuthService.getCurrentUser();
   const classes = useStyles();
   return (
     <>
@@ -32,9 +38,14 @@ const Navbar = () => {
           <NavLink to='/dashboard' activeStyle>
             Dashboard
           </NavLink>
-          <NavLink to='/employees' activeStyle>
-            Employees
-          </NavLink>
+
+          {user.userRole === "LEADER" ?
+              (<NavLink to='/employees' activeStyle>
+                Employees
+              </NavLink>)
+              :
+              (<div/>)
+          }
           <NavLink to='/profile' activeStyle>
             Profile
           </NavLink>
@@ -45,7 +56,7 @@ const Navbar = () => {
                         </Link> */}
 
           <Link to={'/sign-in'} variant="body2">
-              <Button  variant="contained" color="primary">Sign Out</Button>   
+              <Button variant="contained" color="primary" onClick={handleLogOut}>Sign Out</Button>   
           </Link>
 
       </Nav>

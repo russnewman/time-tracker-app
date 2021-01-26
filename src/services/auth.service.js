@@ -8,6 +8,7 @@ import Profile from '../pages/profile';
 const API_URL = "http://localhost:8080/auth/";
 
 class AuthService {
+
   login(email, password) {
     return axios
       .post(API_URL + "signin", {
@@ -15,10 +16,12 @@ class AuthService {
         password
       })
       .then(response => {
-        if (response.data.accessToken) {
+        if (response.data.token) {
           localStorage.setItem("user", JSON.stringify(response.data));
+          // console.log("AUT",localStorage)
         }
-        console.log(response.data)
+        console.log("Response", response)
+        // console.log("AUT2",localStorage)
         return response.data
       });
   }
@@ -28,14 +31,13 @@ class AuthService {
   }
 
 
-  register(firstName, lastName, email, password, department, role){
-    console.log(role)
+  register(email, password, fullName, department, position, role){
     return axios.post(API_URL + "signup", {
-        firstName,
-        lastName,
         email,
         password,
+        fullName,
         department,
+        position,
         role
     })
     .then(response => {
@@ -53,22 +55,6 @@ class AuthService {
 
   getCurrentUser() {
     return JSON.parse(localStorage.getItem('user'));;
-  }
-
-
-  render(){
-    return(
-      <Router>
-      <Switch>
-        {/* <Route exact path='/' component={Login} />
-        <Route path="/sign-in" component={Login} />
-        <Route path="/sign-up" component={SignUp} /> */}
-        <Route path='/dashboard' component={Dashboard} />
-        <Route path='/employees' component={Employees} />
-        <Route path='/profile' component={Profile} />
-      </Switch>
-</Router>
-    )
   }
 }
 

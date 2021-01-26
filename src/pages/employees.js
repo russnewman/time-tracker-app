@@ -2,17 +2,8 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import EmployeesComponent from './Employees/EmployeesComponent';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-
-
-// const useStyles = makeStyles((theme) => ({
-//   employeeComponent:{
-//     position: 'relative',
-//     top: '40px',
-//     marginTop: theme.spacing(3),
-//     // width: '100%',
-//   }
-// }));
+import AuthService from '../services/auth.service'
+import { Redirect } from "react-router-dom";
 
 const theme = createMuiTheme({
   palette: {
@@ -42,16 +33,24 @@ const theme = createMuiTheme({
   }
 })
 
+
+
 const Employees = () => {
-  // const classes = useStyles();
-  return (
-    <>
-    <Navbar position="fixed"/>
-    <ThemeProvider theme={theme}>        
-      <EmployeesComponent/>
-    </ThemeProvider>
-    </>
-  );
+
+  const user = AuthService.getCurrentUser();
+
+  if(user && user.userRole === "LEADER"){
+    return (
+      <>
+      <Navbar position="fixed"/>
+      <ThemeProvider theme={theme}>        
+        <EmployeesComponent/>
+      </ThemeProvider>
+      </>
+    );
+  }
+  else if (user.userRole === "EMPLOYEE") return(<div/>)
+  return (<Redirect to ="sign-in"/>)
 };
 
 export default Employees;

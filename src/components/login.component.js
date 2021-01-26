@@ -6,12 +6,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Avatar from '@material-ui/core/Avatar';
 import { Button, TextField, Typography } from "@material-ui/core";
 import AuthService from "../services/auth.service"
-import Controls from "./employees/controls/Controls";
 import Notification from "./employees/Notification";
 
 
-
-import { withStyles } from "@material-ui/core/styles";
 
 const styles = makeStyles((theme) => ({
     formControl: {
@@ -47,7 +44,7 @@ export default function SignIn(props){
         const [redirect, setRedirect] = React.useState(null)
         const [valid, setValid] = React.useState(false)
         const [notify, setNotify] = 
-        React.useState(props.location.state && props.location.state.notify ? 
+        React.useState(props && props.location && props.location.state && props.location.state.notify ? 
             {isOpen: true, message: 'You are successfully registered', type: "success"}
             :{ isOpen: false, message: '', type: '' })
 
@@ -82,12 +79,23 @@ export default function SignIn(props){
             setPassword(e.target.value)
         }
 
-        console.log(props.location.state)
-
         if (redirect){
-            return <Redirect to={redirect}/>
+            return(
+            <div>
+                {/* <Switch>
+                <Route exact path='/dashboard'>
+                    <Dashboard/>
+                  </Route>
+                  <Route path='/profile'>
+                    <Profile/>
+                  </Route>
+                  </Switch> */}
+                 <Redirect to={redirect}/>
+            </div>
+            )
         }
         return (
+            <>
         <div className="auth-wrapper">
             <div className="auth-inner-singin">
                 <Grid container justify="center">
@@ -145,5 +153,6 @@ export default function SignIn(props){
                 />
             </div>
         </div>
+        </>
         )
 }

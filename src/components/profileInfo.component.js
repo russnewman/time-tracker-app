@@ -10,10 +10,11 @@ import Dialog from '@material-ui/core/Dialog';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import * as employeeService from "../services/employeeService";
+import AuthService from "../services/auth.service"
+import RestService from "../services/rest.service"
 
 
 import Grid from '@material-ui/core/Grid';
-
 
 
 const useStyles = makeStyles(theme => ({
@@ -59,17 +60,17 @@ const useStyles = makeStyles(theme => ({
           backgroundColor: theme.palette.secondary.main,
       },
       inputField:{
-          width: '32ch',
+          width: '40ch',
       },
 
       settings: {
         flexDirection: "column",
         textAlign: "left",
         justifyContent: "center",
-        width: "850px",
+        width: "950px",
         margin: "auto",
 
-        paddingLeft: theme.spacing(14),
+        paddingLeft: theme.spacing(10),
         background: "#ffffff",
         // boxShadow: "0px 14px 80px rgba(34, 35, 58, 0.2)",
         padding: "40px 55px 45px 55px",
@@ -86,63 +87,74 @@ SimpleDialog.propTypes = {
   };
 
 
-  let data = {
-    fullName: "Alekseenko Maksim",
-    email: "alekseenko.md@phystech.edu",
-    department: "development",
-    city: "Moscow",
-    // mobile: "23903434534345",
-    gender: "male",
-    hireDate: "2021-01-21T05:45:16.309Z",
 
-}
+//   let data = {
+//     fullName: "Alekseenko Maksim",
+//     email: "alekseenko.md@phystech.edu",
+//     department: "development",
+//     city: "Moscow",
+//     // mobile: "23903434534345",
+//     gender: "male",
+//     hireDate: "2021-01-21T05:45:16.309Z",
+
+// }
 
 
 export default function ProfileInfo(props) {
 
     const classes = useStyles();
 
-    const [values, setValues] = useState(data);
+    const [userInfo, setUserInfo] = useState(AuthService.getCurrentUser());//values => user
     const [errors, setErrors] = useState({});
-    const [recordForEdit, setRecordForEdit] = useState(null)
+    // const [recordForEdit, setRecordForEdit] = useState(null)
     const [open, setOpen] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState(null);
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
+    const genderItems = [
+        { id: 'MALE', title: 'male' },
+        { id: 'FEMALE', title: 'female' },
+    ]
 
-    const updateSettings = (employee) => {
-        console.log(employee)
-        data = employee
-    }
+    const validateOnChange = true
 
-    const validate = (fieldValues = values) => {
+    const validate = (fieldValues = userInfo) => {
         let temp = { ...errors }
         if ('fullName' in fieldValues)
             temp.fullName = fieldValues.fullName ? "" : "This field is required."
         if ('email' in fieldValues)
             temp.email = (/$^|.+@.+..+/).test(fieldValues.email) ? "" : "Email is not valid."
-        if ('mobile' in fieldValues)
-            temp.mobile = fieldValues.mobile.length > 9 ? "" : "Minimum 10 numbers required."
+        // if ('mobile' in fieldValues)
+        //     temp.mobile = fieldValues.mobile.length > 9 ? "" : "Minimum 10 numbers required."
 
         setErrors({
             ...temp
         })
 
-        if (fieldValues == values)
+        if (fieldValues == userInfo)
             return Object.values(temp).every(x => x == "")
     }
     
-    const genderItems = [
-        { id: 'male', title: 'Male' },
-        { id: 'female', title: 'Female' },
-    ]
 
-    const validateOnChange = true
+        // switch(event.target.name){
+        //     case "fullname":
+        //         setFullName(event.target.value)
+        //     case "email":
+        //         setEmail(event.target.value)
+        //     case "password":
+        //         setPassword(event.target.value)
+        //     case "department":
+        //         setDepartment(event.target.value)
+        //     case "position":
+        //         setPosition(event.target.value)
+        //     case "role":
+        //         setRole(event.target.value)
+        // }
+
     const handleInputChange = e => {
         const { name, value } = e.target
-        // console.log(value)
-        setValues({
-            ...values,
+        setUserInfo({
+            ...userInfo,
             [name]: value
         })
         if (validateOnChange)
@@ -162,11 +174,13 @@ export default function ProfileInfo(props) {
     const handleSubmit = e => {
         e.preventDefault()
         if (validate()) {
-            updateSettings(values);
+            // console.log("AAAA", userInfo)
+            RestService.updateUserInfo(userInfo);
         }
     }
     return (
         <form onSubmit={handleSubmit}>
+            <Container maxWidth="md">
             <Grid container justify="center">
                     <IconButton disableRipple className={classes.titleIcon}>
                             {/* <NotListedLocationIcon /> */}
@@ -174,13 +188,13 @@ export default function ProfileInfo(props) {
                     </IconButton>
             </Grid>
             <div className={classes.settings}>
-                    <Grid container spacing={0} >
+                    <Grid container spacing={0}>
                         <Grid item md={6}>
                             <Controls.Input
                                 className={classes.inputField}
                                 name="fullName"
                                 label="Full Name"
-                                value={values.fullName}
+                                value={userInfo.fullName}
                                 onChange={handleInputChange}
                                 error={errors.fullName}
                                 variant="outlined"
@@ -190,9 +204,9 @@ export default function ProfileInfo(props) {
                         <Grid item md={6}>
                             <Controls.Input
                                 className={classes.inputField}
-                                name="mobile"
-                                label="Mobile"
-                                value={values.mobile}
+                                name=""
+                                label="Leader email"
+                                value={userInfo.leaderEmail}
                                 onChange={handleInputChange}
                                 error={errors.mobile}
                                 variant="outlined"
@@ -204,7 +218,7 @@ export default function ProfileInfo(props) {
                                 className={classes.inputField}
                                 label="Email"
                                 name="email"
-                                value={values.email}
+                                value={userInfo.email}
                                 onChange={handleInputChange}
                                 error={errors.email}
                                 variant="outlined"
@@ -217,7 +231,7 @@ export default function ProfileInfo(props) {
                                 className={classes.inputField}
                                 name="gender"
                                 label="Gender"
-                                value={values.gender}
+                                value={userInfo.gender}
                                 onChange={handleInputChange}
                                 items={genderItems}
                                 margin="normal"
@@ -232,7 +246,7 @@ export default function ProfileInfo(props) {
                                 name="department" 
                                 label="Department" 
                                 // defaultValue={values.department}
-                                value={values.department}
+                                value={userInfo.department}
                                 onChange={handleInputChange}
                                 // variant="outlined"
                                 margin="normal"
@@ -243,7 +257,7 @@ export default function ProfileInfo(props) {
                             <Controls.DatePicker
                                 name="hireDate"
                                 label="Hire Date"
-                                value={values.hireDate}
+                                value={userInfo.hireDate}
                                 variant="outlined"
                                 onChange={handleInputChange}
                             />
@@ -251,9 +265,9 @@ export default function ProfileInfo(props) {
                         <Grid item md={6}>
                             <TextField
                                     className={classes.inputField}
-                                    label="City"
-                                    name="city"
-                                    value={values.city}
+                                    label="Position"
+                                    name="position"
+                                    value={userInfo.position}
                                     onChange={handleInputChange}
                                     variant="outlined"
                                     margin="normal"
@@ -264,13 +278,14 @@ export default function ProfileInfo(props) {
             </div>  
             <Grid container spacing={3} justify="center">
                     <Grid item>
-                        <Button type="submit" variant="contained" color="secondary" style={{width:"192px"}} onClick={()=>{}}>Update</Button>
+                        <Button type="submit" variant="contained" color="secondary" style={{width:"192px"}}>Update</Button>
                     </Grid>
                     <Grid item>
                         <Button variant="contained" onClick={handleClickOpen} style={{width:"192px"}}>Change Password</Button>
                         <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
                     </Grid>
             </Grid>
+            </Container>
         </form>
     )}
 
@@ -345,4 +360,3 @@ export default function ProfileInfo(props) {
           </Dialog>
         );
       }
-

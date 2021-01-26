@@ -40,11 +40,11 @@ export default function SignUp(props) {
     const [message, setMessage] = React.useState('');
     const [redirect, setRedirect] = React.useState('');
 
-    const [firstName, setFirstName] = React.useState(null);
-    const [lastName, setLastName] = React.useState(null);
+    const [fullName, setFullName] = React.useState(null);
     const [email, setEmail] = React.useState(null);
     const [password, setPassword] = React.useState(null);
     const [department, setDepartment] = React.useState(null);
+    const [position, setPosition] = React.useState(null);
     const [role, setRole] = React.useState(null);
 
     const [emailErrMessage, setEmailErrMessage] = React.useState("")
@@ -78,12 +78,30 @@ export default function SignUp(props) {
         setPasswordErrMessage(err)
     }
 
-    const handleFirstNameChange = (event) => {
-        setFirstName(event.target.value)
+    // const handleChange = event => {
+    //     console.log("sfsdf",event)
+    //     switch(event.target.name){
+    //         case "fullname":
+    //             setFullName(event.target.value)
+    //         case "email":
+    //             setEmail(event.target.value)
+    //         case "password":
+    //             setPassword(event.target.value)
+    //         case "department":
+    //             setDepartment(event.target.value)
+    //         case "position":
+    //             setPosition(event.target.value)
+    //         case "role":
+    //             setRole(event.target.value)
+    //     }
+    // }
+
+    const handleFullNameChange = (event) => {
+        setFullName(event.target.value)
     }
 
-    const handleLastNameChange = (event) => {
-        setLastName(event.target.value)
+    const handlePositionChange = (event) => {
+        setPosition(event.target.value)
     }
 
     const handleEmailChange = (event) =>{
@@ -97,8 +115,6 @@ export default function SignUp(props) {
     }
     const handleDepartmentChange = (event)=>{
         setDepartment(event.target.value)
-        console.log(role)
-
     }
 
     const handleRoleChange = (event) => {
@@ -109,21 +125,22 @@ export default function SignUp(props) {
         event.preventDefault()
         if(valid){
             AuthService.register(
-                firstName,
-                lastName,
                 email,
                 password,
+                fullName,
                 department,
+                position,
                 role
             )
-            .then(()=>{
+            .then((response)=>{
                     setRedirect("/sign-in")
                 },
+                // console.log(response)
                 error => {
                     let resMessage = ""
-                    console.log(error.response)
                     if(error.response){
                         if (error.response.status == 500) resMessage = "Server error"
+                        else resMessage = error.response.data.message
                     }
                     else resMessage="Server is not available"
                     setNotify({
@@ -165,25 +182,6 @@ export default function SignUp(props) {
 
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={1}>
-                        
-                        <Grid item md={6}>
-                            <Controls.Input 
-                            required 
-                            className={classes.inputField} 
-                            label="Firstname"  
-                            margin="normal"
-                            onChange={handleFirstNameChange}/>
-                                {/* <input type="email" className="form-control" placeholder="Enter email" /> */}
-                        </Grid>
-                        <Grid item md={6}>
-                            <Controls.Input 
-                            required 
-                            className={classes.inputField} 
-                            label="Lastname" 
-                            margin="normal"
-                            onChange={handleLastNameChange}/>
-                        </Grid>
-
                         <Grid item md={6}>
                             <Controls.Input
                             required 
@@ -207,19 +205,38 @@ export default function SignUp(props) {
                                     error={passwordErrMessage}
                                 />
                         </Grid>
+                        
                         <Grid item md={6}>
                             <Controls.Input 
+                            required 
+                            className={classes.inputField} 
+                            label="Full name"  
+                            margin="normal"
+                            onChange={handleFullNameChange}/>
+                                {/* <input type="email" className="form-control" placeholder="Enter email" /> */}
+                        </Grid>
+                        <Grid item md={6}>
+                            <Controls.Input 
+                            required 
                             className={classes.inputField} 
                             label="Department" 
                             margin="normal"
                             onChange={handleDepartmentChange}/>
+                        </Grid>
+
+                        <Grid item md={6}>
+                            <Controls.Input 
+                            className={classes.inputField} 
+                            label="Position" 
+                            margin="normal"
+                            onChange={handlePositionChange}/>
                         </Grid>
                         <Grid item md={6}>
 
                         <FormControl 
                             margin="normal" 
                             className={classes.formControl}>
-                                <InputLabel required>Position</InputLabel>
+                                <InputLabel required>Position type</InputLabel>
                                 <Select
                                 value={role}
                                 onChange={handleRoleChange}
