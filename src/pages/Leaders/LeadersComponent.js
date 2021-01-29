@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import EmployeeForm from "./EmployeeForm";
+import LeaderForm from "./LeaderForm";
 import { Paper, makeStyles, TableBody, TableRow, TableCell, Toolbar, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined';
 
 import Notification from "../../components/employees/Notification";
 import ConfirmDialog from "../../components/employees/ConfirmDialog";
@@ -41,26 +42,28 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const headCells = [
-    { id: 'fullName', label: 'Employee Name' },
+    { id: 'fullName', label: 'Leader Name' },
     { id: 'email', label: 'Email Address' },
     { id: 'department', label: 'Department' },
     { id: 'position', label: 'Position' },
     { id: 'actions', disableSorting: true }
-
 ]
 
-export default function EmployeesComponent() {
+export default function LeadersComponent() {
 
     let employeeArr = AuthService.getCurrentUser().userEmployees
+    // let user = AuthService.getCurrentUser().userInfo
 
     const classes = useStyles();
     const [recordForEdit, setRecordForEdit] = useState(null)
+    const [userInfo, setUserInfo] = useState(AuthService.getCurrentUser().userInfo)
     // const [records, setRecords] = useState(employeeService.getAllEmployees())
 
     const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
     const [openPopup, setOpenPopup] = useState(false)
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
+    
 
     const {
         TblContainer,
@@ -68,6 +71,8 @@ export default function EmployeesComponent() {
         TblPagination,
         recordsAfterPagingAndSorting
     } = useTable(employeeArr, headCells, filterFn);
+
+    const [records, setRecords] = useState(recordsAfterPagingAndSorting())
 
     const handleSearch = e => {
         let target = e.target;
@@ -109,9 +114,21 @@ export default function EmployeesComponent() {
             })
     }
 
-    const openInPopup = item => {
-        setRecordForEdit(item)
-        setOpenPopup(true)
+    const chooseLeader = item => {
+        // console.log("BEFORe", userInfo)
+        setUserInfo({
+            ...userInfo,
+            "leaderEmail": item.email
+        })
+        records
+        // console.log("After", userInfo)
+    }
+
+    const cancelLeader = () => {
+        setUserInfo({
+            ...userInfo,
+            "leaderEmail": null
+        })
     }
 
     const onDelete = email => {
@@ -162,23 +179,37 @@ export default function EmployeesComponent() {
                     <TblHead />
                     <TableBody>
                         {
-                            recordsAfterPagingAndSorting().map(item =>
+                            records.map(item =>
                                 (<TableRow key={item.id}>
                                     <TableCell>{item.fullName}</TableCell>
                                     <TableCell>{item.email}</TableCell>
                                     <TableCell>{item.department}</TableCell>
                                     <TableCell>{item.position}</TableCell>
+                                    
                                     <TableCell>
 
                                         {/* //Кнопка редактирования */}
-                                        <Controls.ActionButton
-                                            color="primary"
-                                            onClick={() => { openInPopup(item) }}>
-                                            <InfoOutlinedIcon fontSize="small" />
-                                        </Controls.ActionButton>
+
+                                        {userInfo.leaderEmail ? 
+                                                    userInfo.leaderEmail === item.email ?
+                                                    (<Controls.ActionButton
+                                                        color="secondary"
+                                                        onClick={()=>{cancelLeader()}}>
+                                                        <CloseIcon fontSize="small" />
+                                                    </Controls.ActionButton>)
+                                                    :(<Controls.ActionButton>
+                                                    </Controls.ActionButton>)
+                                                 :
+                                                (<Controls.ActionButton
+                                                color="primary"
+                                                onClick={() => { chooseLeader(item) }}>
+                                                <CheckCircleOutlineOutlinedIcon fontSize="small" />
+                                                </Controls.ActionButton>) 
+                                        
+                                        }
 
                                         {/* кнопка удаления */}
-                                        <Controls.ActionButton
+                                        {/* <Controls.ActionButton
                                             color="secondary"
                                             onClick={() => {
                                                 setConfirmDialog({
@@ -188,7 +219,7 @@ export default function EmployeesComponent() {
                                                 })
                                             }}>
                                             <CloseIcon fontSize="small" />
-                                        </Controls.ActionButton>
+                                        </Controls.ActionButton> */}
 
                                     </TableCell>
                                 </TableRow>)
@@ -204,7 +235,7 @@ export default function EmployeesComponent() {
                 openPopup={openPopup}
                 setOpenPopup={setOpenPopup}
             >
-                <EmployeeForm
+                <LeaderForm
                     recordForEdit={recordForEdit}
                     updateEmployee={updateEmployee} />
             </Popup>

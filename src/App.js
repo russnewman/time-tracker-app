@@ -9,6 +9,8 @@ import AuthService from "./services/auth.service"
 import Dashboard from './pages/dashboard';
 import Employees from './pages/employees';
 import Profile from './pages/profile';
+import Leaders from './pages/leaders';
+
 
 
 class App extends Component {
@@ -20,15 +22,6 @@ class App extends Component {
     };
   }
 
-  componentDidMount() {
-    const user = AuthService.getCurrentUser();
-
-    if (user) {
-      this.setState({
-        currentUser: user
-      });
-    }
-  }
 
   render(){
 
@@ -44,6 +37,7 @@ class App extends Component {
                     <Dashboard/>
                   </Route>
                   <Route path='/employees' component={Employees}/>
+                  <Route path='/leaders' component={Leaders}/>
                   <Route path='/profile'>
                     <Profile/>
                   </Route>

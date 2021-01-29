@@ -1,9 +1,4 @@
 import axios from "axios";
-import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
-
-import Dashboard from '../pages/dashboard';
-import Employees from '../pages/employees';
-import Profile from '../pages/profile';
 
 const API_URL = "http://localhost:8080/auth/";
 
@@ -16,12 +11,9 @@ class AuthService {
         password
       })
       .then(response => {
-        if (response.data.token) {
+        if (response.data.userInfo.token) {
           localStorage.setItem("user", JSON.stringify(response.data));
-          // console.log("AUT",localStorage)
         }
-        console.log("Response", response)
-        // console.log("AUT2",localStorage)
         return response.data
       });
   }
@@ -29,7 +21,6 @@ class AuthService {
   logout() {
     localStorage.removeItem("user");
   }
-
 
   register(email, password, fullName, department, position, role){
     return axios.post(API_URL + "signup", {
@@ -45,16 +36,8 @@ class AuthService {
     })
   }
 
-//   register(username, email, password) {
-//     return axios.post(API_URL + "signup", {
-//       username,
-//       email,
-//       password
-//     });
-//   }
-
   getCurrentUser() {
-    return JSON.parse(localStorage.getItem('user'));;
+    return JSON.parse(localStorage.getItem('user'));
   }
 }
 

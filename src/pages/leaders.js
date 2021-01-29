@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
-import EmployeesComponent from './Employees/EmployeesComponent';
+import LeadersComponent from './Leaders/LeadersComponent';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import AuthService from '../services/auth.service'
 import { Redirect } from "react-router-dom";
@@ -35,25 +35,23 @@ const theme = createMuiTheme({
 
 
 
-const Employees = () => {
+const Leaders = () => {
 
   const user = AuthService.getCurrentUser().userInfo;
   console.log("EUser", user)
   console.log("ASda", AuthService.getCurrentUser())
 
 
-  if(user && user.userRole === "LEADER"){
     return (
       <>
       <Navbar position="fixed"/>
       <ThemeProvider theme={theme}>        
-        <EmployeesComponent/>
+        <LeadersComponent/>
       </ThemeProvider>
       </>
     );
-  }
-  else if (user && user.userRole === "EMPLOYEE") return(<div/>)
-  return (<Redirect to ="sign-in"/>)
+  
+
 };
 
-export default Employees;
+export default Leaders;

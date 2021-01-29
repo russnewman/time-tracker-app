@@ -78,23 +78,6 @@ export default function SignUp(props) {
         setPasswordErrMessage(err)
     }
 
-    // const handleChange = event => {
-    //     console.log("sfsdf",event)
-    //     switch(event.target.name){
-    //         case "fullname":
-    //             setFullName(event.target.value)
-    //         case "email":
-    //             setEmail(event.target.value)
-    //         case "password":
-    //             setPassword(event.target.value)
-    //         case "department":
-    //             setDepartment(event.target.value)
-    //         case "position":
-    //             setPosition(event.target.value)
-    //         case "role":
-    //             setRole(event.target.value)
-    //     }
-    // }
 
     const handleFullNameChange = (event) => {
         setFullName(event.target.value)
@@ -217,11 +200,26 @@ export default function SignUp(props) {
                         </Grid>
                         <Grid item md={6}>
                             <Controls.Input 
-                            required 
+ 
                             className={classes.inputField} 
                             label="Department" 
                             margin="normal"
                             onChange={handleDepartmentChange}/>
+                        </Grid>
+
+                        <Grid item md={6}>
+                            <FormControl 
+                                margin="normal" 
+                                className={classes.formControl}>
+                                    <InputLabel required>Position type</InputLabel>
+                                    <Select
+                                    value={role}
+                                    onChange={handleRoleChange}
+                                    >
+                                        <MenuItem value={"leader"}>Leader</MenuItem>
+                                        <MenuItem value={"employee"}>Employee</MenuItem>
+                                    </Select>
+                            </FormControl>
                         </Grid>
 
                         <Grid item md={6}>
@@ -233,19 +231,7 @@ export default function SignUp(props) {
                         </Grid>
                         <Grid item md={6}>
 
-                        <FormControl 
-                            margin="normal" 
-                            className={classes.formControl}>
-                                <InputLabel required>Position type</InputLabel>
-                                <Select
-                                value={role}
-                                onChange={handleRoleChange}
-                                
-                                >
-                                    <MenuItem value={"leader"} >Leader</MenuItem>
-                                    <MenuItem value={"employee"}>Employee</MenuItem>
-                                </Select>
-                        </FormControl>
+
                         </Grid>
                     </Grid>
 

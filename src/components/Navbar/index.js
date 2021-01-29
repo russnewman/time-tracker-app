@@ -28,7 +28,7 @@ const handleLogOut = e =>{
 }
 
 const Navbar = () => {
-  const user = AuthService.getCurrentUser();
+  const user = AuthService.getCurrentUser().userInfo;
   const classes = useStyles();
   return (
     <>
@@ -56,7 +56,7 @@ const Navbar = () => {
                         </Link> */}
 
           <Link to={'/sign-in'} variant="body2">
-              <Button variant="contained" color="primary" onClick={handleLogOut}>Sign Out</Button>   
+              <Button variant="contained" color="secondary" onClick={handleLogOut}>Sign Out</Button>   
           </Link>
 
       </Nav>

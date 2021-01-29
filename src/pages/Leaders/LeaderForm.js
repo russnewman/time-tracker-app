@@ -7,7 +7,6 @@ import AuthService from "../../services/auth.service";
 import RestService from "../../services/rest.service";
 
 
-
 const genderItems = [
     { id: 'MALE', title: 'Male' },
     { id: 'FEMALE', title: 'Female' },
@@ -23,7 +22,7 @@ const initialFValues = {
     hireDate: new Date(),
 }
 
-export default function EmployeeForm(props) {
+export default function LeaderForm(props) {
     const { updateEmployee, recordForEdit } = props
     // const [userInfo, setUserInfo] = useState(Auth)
 

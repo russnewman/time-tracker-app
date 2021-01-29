@@ -6,7 +6,7 @@ import { Redirect } from "react-router-dom";
 
 const Dashboard = () => {
 
-  const user = AuthService.getCurrentUser();
+  const user = AuthService.getCurrentUser().userInfo;
   if(user)
   {
       return (
