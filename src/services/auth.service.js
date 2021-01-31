@@ -11,15 +11,17 @@ class AuthService {
         password
       })
       .then(response => {
+        // console.log("FFF",response)
+
         if (response.data.userInfo.token) {
-          localStorage.setItem("user", JSON.stringify(response.data));
+          sessionStorage.setItem("user", JSON.stringify(response.data));
         }
         return response.data
       });
   }
 
   logout() {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
   }
 
   register(email, password, fullName, department, position, role){
@@ -32,12 +34,16 @@ class AuthService {
         role
     })
     .then(response => {
+      if (response.data.userInfo.token) {
+        sessionStorage.setItem("user", JSON.stringify(response.data));
+      }
       return response.data
+      // console.log("FFF",response)
     })
   }
 
   getCurrentUser() {
-    return JSON.parse(localStorage.getItem('user'));
+    return JSON.parse(sessionStorage.getItem('user'));
   }
 }
 

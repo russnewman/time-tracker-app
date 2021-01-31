@@ -116,9 +116,10 @@ export default function SignUp(props) {
                 role
             )
             .then((response)=>{
-                    setRedirect("/sign-in")
+                    setRedirect("/dashboard")
+                    console.log(response)
+
                 },
-                // console.log(response)
                 error => {
                     let resMessage = ""
                     if(error.response){
@@ -139,12 +140,13 @@ export default function SignUp(props) {
     if(redirect){        
         return (
             <div>
-                <Redirect to={{
+                <Redirect to={redirect}/>
+                {/* <Redirect to={{
                         pathname: redirect,
                         state: {
                             notify: true
                         }
-                    }}/>
+                    }}/> */}
             </div>
         )
     }

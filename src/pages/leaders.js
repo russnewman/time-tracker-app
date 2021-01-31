@@ -37,11 +37,11 @@ const theme = createMuiTheme({
 
 const Leaders = () => {
 
-  const user = AuthService.getCurrentUser().userInfo;
+  const user = AuthService.getCurrentUser();
   console.log("EUser", user)
   console.log("ASda", AuthService.getCurrentUser())
 
-
+  if(user && user.userInfo.userRole === "EMPLOYEE"){
     return (
       <>
       <Navbar position="fixed"/>
@@ -50,7 +50,9 @@ const Leaders = () => {
       </ThemeProvider>
       </>
     );
-  
+  }
+  else if (user && user.userInfo.userRole === "LEADER") return(<div/>)
+  return (<Redirect to ="sign-in"/>)  
 
 };
 

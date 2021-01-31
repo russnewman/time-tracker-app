@@ -10,7 +10,7 @@ import Popup from "../../components/employees/Popup";
 import Controls from "../../components/employees/controls/Controls";
 import useTable from "../../components/employees/useTable";
 import AuthService from "../../services/auth.service"
-import RestService from "../../services/rest.service";
+import ManagerService from "../../services/manager.service";
 
 
 const useStyles = makeStyles(theme => ({
@@ -83,7 +83,7 @@ export default function EmployeesComponent() {
 
     const updateEmployee = (values) => {
         setOpenPopup(false)
-        RestService.updateEmployeeInfo(values)
+        ManagerService.updateEmployeeInfo(values)
         .then((response)=>{
                 setNotify({
                     isOpen: true,
@@ -119,7 +119,7 @@ export default function EmployeesComponent() {
             ...confirmDialog,
             isOpen: false
         })
-        RestService.deleteEmployee(email)
+        ManagerService.deleteEmployee(email)
         .then((response)=>{
                 setNotify({
                     isOpen: true,
@@ -148,8 +148,6 @@ export default function EmployeesComponent() {
     return (
         <>
             <Paper className={classes.pageContent}>
-
-                {/* //Search and add new  */}
                 <Toolbar>
                     <Controls.Input
                         label="Search Employees"

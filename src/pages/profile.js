@@ -7,7 +7,7 @@ import { Redirect } from "react-router-dom";
 
 const Profile = () => {
 
-  const user = AuthService.getCurrentUser().userInfo;
+  const user = AuthService.getCurrentUser();
 
   if (user){
     return (

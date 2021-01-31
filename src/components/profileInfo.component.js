@@ -9,11 +9,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
-import * as employeeService from "../services/employeeService";
 import AuthService from "../services/auth.service";
-import RestService from "../services/rest.service";
+import UserService from "../services/user.service";
 import Notification from "./employees/Notification";
 import Grid from '@material-ui/core/Grid';
+import { useForm, Form } from './employees/useForm';
+import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -34,11 +36,14 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'center'
     },
     titleIcon: {
-        backgroundColor: "#f8324526",
-        color: theme.palette.secondary.main,
+        // backgroundColor: "#f8324526",#060b26
+        // backgroundColor: "#4aedc4",
+        backgroundColor: "#060b26",
+
+        color: "#f50057",
         justify:"center",
         '&:hover': {
-            backgroundColor: "#f8324526",
+            backgroundColor: "#00b0ff",
             cursor: 'default'
         },
         '& .MuiSvgIcon-root': {
@@ -63,18 +68,9 @@ const useStyles = makeStyles(theme => ({
       },
 
       settings: {
-        flexDirection: "column",
-        textAlign: "left",
-        justifyContent: "center",
-        width: "950px",
-        margin: "auto",
-
-        paddingLeft: theme.spacing(10),
-        background: "#ffffff",
-        // boxShadow: "0px 14px 80px rgba(34, 35, 58, 0.2)",
-        padding: "40px 55px 45px 55px",
-        borderRadius: "15px",
-        transition: "all .3s",
+        paddingLeft: theme.spacing(9),
+        paddingTop: theme.spacing(5),
+        paddingBottom: theme.spacing(5)
       },
 }))
 
@@ -90,7 +86,7 @@ export default function ProfileInfo(props) {
 
     const classes = useStyles();
 
-    const [userInfo, setUserInfo] = useState(AuthService.getCurrentUser().userInfo);//values => user
+    const [userInfo, setUserInfo] = useState(AuthService.getCurrentUser().userInfo);
     const [errors, setErrors] = useState({});
     const [open, setOpen] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState(null);
@@ -100,8 +96,18 @@ export default function ProfileInfo(props) {
         { id: 'MALE', title: 'male' },
         { id: 'FEMALE', title: 'female' },
     ]
-
     const validateOnChange = true
+
+
+    // useEffect(() => {
+    //     window.addEventListener('beforeunload', handleWindowBeforeUnload);
+    // })
+
+    // const handleWindowBeforeUnload = e => {
+    //     localStorage.removeItem("user")
+    //     // e.preventDefault();
+    //     // return ev.returnValue = 'Are you sure you want to close?';
+    // };
 
     const validate = (fieldValues = userInfo) => {
         let temp = { ...errors }
@@ -131,7 +137,6 @@ export default function ProfileInfo(props) {
 
 
     const handleClickOpen = () => {
-        console.log("Email", userInfo.email)
       setOpen(true);
     };
   
@@ -143,7 +148,7 @@ export default function ProfileInfo(props) {
     const handleSubmit = e => {
         e.preventDefault()
         if (validate()) {
-            RestService.updateUserInfo(userInfo)
+            UserService.updateUserInfo(userInfo)
             .then(
                 (response) =>{
                     setNotify({
@@ -153,7 +158,7 @@ export default function ProfileInfo(props) {
                     })
                 },
                 error =>{
-                    console.log("ERROR", error)
+                    console.log("ERROR", error.response)
                     let errMessage = ""
                     if (error.response){
                         if(error.response.status == 500) errMessage = "Server error"
@@ -170,18 +175,19 @@ export default function ProfileInfo(props) {
             );
         }
     }
-    return (
+    if (userInfo.userRole === 'LEADER'){
+        return(
             <Container maxWidth="md">
             <Grid container justify="center">
                     <IconButton disableRipple className={classes.titleIcon}>
                             {/* <NotListedLocationIcon /> */}
-                            <PermIdentityOutlinedIcon/>
+                            <PersonRoundedIcon/>
                     </IconButton>
             </Grid>
             <form onSubmit={handleSubmit}>
                 <div className={classes.settings}>
-                        <Grid container spacing={0}>
-                            <Grid item md={6}>
+                        <Grid container justify="center">
+                            <Grid item xs={12} sm={6} md={6} >
                                 <Controls.Input
                                     className={classes.inputField}
                                     name="fullName"
@@ -193,20 +199,9 @@ export default function ProfileInfo(props) {
                                     margin="normal"
                                 />
                             </Grid>
-                            <Grid item md={6}>
+                            <Grid item xs={12} sm={6} md={6}>
                                 <Controls.Input
-                                    className={classes.inputField}
-                                    name="leaderEmail"
-                                    label="Leader email"
-                                    value={userInfo.leaderEmail}
-                                    onChange={handleInputChange}
-                                    // error={errors.mobile}
-                                    variant="outlined"
-                                    margin="normal"
-                                />
-                            </Grid>
-                            <Grid item md={6}>
-                                <Controls.Input
+                                    disabled
                                     className={classes.inputField}
                                     label="Email"
                                     name="email"
@@ -217,44 +212,18 @@ export default function ProfileInfo(props) {
                                     margin="normal"
                                 />
                             </Grid>
-
-                            <Grid item md={6}>
-                                <Controls.RadioGroup
-                                    className={classes.inputField}
-                                    name="gender"
-                                    label="Gender"
-                                    value={userInfo.gender}
-                                    onChange={handleInputChange}
-                                    items={genderItems}
-                                    margin="normal"
-                                    variant="outlined"
-                                    style={{marginBottom: "10px"}}
-                                />
-                            </Grid>
-
-                            <Grid item md={6}>
+                            <Grid item xs={12} sm={6} md={6}>
                                 <Controls.Input 
                                     className={classes.inputField}
                                     name="department" 
                                     label="Department" 
-                                    // defaultValue={values.department}
                                     value={userInfo.department}
                                     onChange={handleInputChange}
-                                    // variant="outlined"
+                                    variant="outlined"
                                     margin="normal"
                                 />
                             </Grid>
-
-                            <Grid item md={6}>
-                                <Controls.DatePicker
-                                    name="hireDate"
-                                    label="Hire Date"
-                                    value={userInfo.hireDate}
-                                    variant="outlined"
-                                    onChange={handleInputChange}
-                                />
-                            </Grid>
-                            <Grid item md={6}>
+                            <Grid item xs={12} sm={6} md={6}>
                                 <TextField
                                         className={classes.inputField}
                                         label="Position"
@@ -265,7 +234,6 @@ export default function ProfileInfo(props) {
                                         margin="normal"
                                     />
                             </Grid>
-
                         </Grid>
                 </div>  
             <Grid container spacing={3} justify="center">
@@ -277,6 +245,97 @@ export default function ProfileInfo(props) {
                     </Grid>
             </Grid>
             </form>
+
+            <Notification
+                notify={notify}
+                setNotify={setNotify}
+            />
+
+            <ChangePassword userEmail={userInfo.email} selectedValue={selectedValue} open={open} onClose={handleClose} />
+
+            
+            </Container>
+        )
+    }
+    return (
+            <Container maxWidth="md">
+            <Grid container justify="center">
+                    <IconButton disableRipple className={classes.titleIcon}>
+                            {/* <NotListedLocationIcon /> */}
+                            <PermIdentityOutlinedIcon/>
+                    </IconButton>
+            </Grid>
+            <Form onSubmit={handleSubmit}>
+            <div className={classes.settings} justifyContent="center" justify="center">
+
+                <Grid container justify="center" justifyContent="center">
+                    <Grid item xs={6}>
+
+                        <Controls.Input
+                            label="Email"
+                            name="email"
+                            value={userInfo.email}
+                            onChange={handleInputChange}
+                            error={errors.email}
+                            variant="outlined"
+                        />
+                        
+                        <Controls.Input
+                            label="Department"
+                            name="department"
+                            value={userInfo.department}
+                            onChange={handleInputChange}
+                            // error={errors.department}
+                            variant="outlined"
+                        />
+
+                        <Controls.Input
+                            label="Position"
+                            name="position"
+                            value={userInfo.position}
+                            onChange={handleInputChange}
+                            variant="outlined"
+                        />
+
+                    </Grid>
+                    <Grid item xs={6}>
+
+                    <Controls.Input
+                            name="fullName"
+                            label="Full Name"
+                            value={userInfo.fullName}
+                            onChange={handleInputChange}
+                            error={errors.fullName}
+                            variant="outlined"
+                            />
+
+                        <Controls.DatePicker
+                            name="hireDate"
+                            label="Hire Date"
+                            value={userInfo.hireDate}
+                            onChange={handleInputChange}
+                        />
+                        <Controls.RadioGroup
+                            name="gender"
+                            label="Gender"
+                            value={userInfo.gender}
+                            onChange={handleInputChange}
+                            items={genderItems}
+                        />
+                    </Grid>
+                </Grid>
+                </div>
+                <Grid container spacing={3} justify="center">
+                    <Grid item>
+                        <Button type="submit" variant="contained" color="secondary" style={{width:"192px"}}>Update</Button>
+                    </Grid>
+                    <Grid item>
+                        <Button variant="contained" onClick={handleClickOpen} style={{width:"192px"}}>Change Password</Button>
+                    </Grid>
+                </Grid>
+                </Form>
+            
+
 
             <Notification
                 notify={notify}
@@ -337,7 +396,7 @@ export default function ProfileInfo(props) {
                 && !errMessageConfirm 
                 && password.length > 0 
                 && newPassword.length > 0){
-                RestService.updateUserPassword(body)
+                UserService.updateUserPassword(body)
                 .then((response)=>{
                     setNotify({
                         isOpen: true,

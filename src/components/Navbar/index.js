@@ -44,7 +44,9 @@ const Navbar = () => {
                 Employees
               </NavLink>)
               :
-              (<div/>)
+              (<NavLink to='/leaders' activeStyle>
+                Managers
+              </NavLink>)
           }
           <NavLink to='/profile' activeStyle>
             Profile

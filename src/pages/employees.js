@@ -33,16 +33,12 @@ const theme = createMuiTheme({
   }
 })
 
-
-
 const Employees = () => {
 
-  const user = AuthService.getCurrentUser().userInfo;
-  console.log("EUser", user)
-  console.log("ASda", AuthService.getCurrentUser())
+  const user = AuthService.getCurrentUser();
 
 
-  if(user && user.userRole === "LEADER"){
+  if(user && user.userInfo.userRole === "LEADER"){
     return (
       <>
       <Navbar position="fixed"/>
@@ -52,7 +48,7 @@ const Employees = () => {
       </>
     );
   }
-  else if (user && user.userRole === "EMPLOYEE") return(<div/>)
+  else if (user && user.userInfo.userRole === "EMPLOYEE") return(<div/>)
   return (<Redirect to ="sign-in"/>)
 };
 

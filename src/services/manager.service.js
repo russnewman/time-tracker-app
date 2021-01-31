@@ -6,27 +6,10 @@ import AuthService from "./auth.service"
 const API_URL = "http://localhost:8080/user"
 
 
-class Rest{
-
-    updateUserInfo(newUserInfo) {
-        let user = JSON.parse(localStorage.getItem('user'))
-        user.userInfo = newUserInfo
-        localStorage.setItem("user", JSON.stringify(user))
-
-        return axios.post(API_URL + "/update/info", newUserInfo, this.config())
-        .then(response => {
-            return response.data})
-    }
-
-    updateUserPassword(body){
-        return axios.post(API_URL + "/update/password", body, this.config())
-        .then(response => {
-            return response.data}
-        )
-    }
+class Manager{
 
     updateEmployeeInfo(employeeInfo){
-        let user = JSON.parse(localStorage.getItem('user'))
+        let user = JSON.parse(sessionStorage.getItem('user'))
         // employees = user.userEmployees
         for (let i=0; i< user.userEmployees.length; i++){
             if (user.userEmployees[i].id === employeeInfo.id){
@@ -34,7 +17,7 @@ class Rest{
                 break;
             }
         }
-        localStorage.setItem("user", JSON.stringify(user))
+        sessionStorage.setItem("user", JSON.stringify(user))
         // console.log("$$$",user)
 
         return axios.post(API_URL + "/update/employee", employeeInfo, this.config())
@@ -45,14 +28,14 @@ class Rest{
 
     deleteEmployee(employeeId){
 
-        let user = JSON.parse(localStorage.getItem('user'))
+        let user = JSON.parse(sessionStorage.getItem('user'))
         for (let i=0; i< user.userEmployees.length; i++){
             if (user.userEmployees[i].id === employeeId){
                 user.userEmployees.splice(i,1)
                 break;
             }
         }
-        localStorage.setItem("user", JSON.stringify(user))
+        sessionStorage.setItem("user", JSON.stringify(user))
 
         return axios.post(API_URL + "/delete/employee", {"employeeId": employeeId}, this.config())
         .then(response => {
@@ -70,4 +53,4 @@ class Rest{
     }
 }
 
-export default new Rest()
+export default new Manager()
