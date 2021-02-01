@@ -17,7 +17,6 @@ import { useForm, Form } from './employees/useForm';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 
 
-
 const useStyles = makeStyles(theme => ({
     dialog: {
         padding: theme.spacing(2),
@@ -98,17 +97,6 @@ export default function ProfileInfo(props) {
     ]
     const validateOnChange = true
 
-
-    // useEffect(() => {
-    //     window.addEventListener('beforeunload', handleWindowBeforeUnload);
-    // })
-
-    // const handleWindowBeforeUnload = e => {
-    //     localStorage.removeItem("user")
-    //     // e.preventDefault();
-    //     // return ev.returnValue = 'Are you sure you want to close?';
-    // };
-
     const validate = (fieldValues = userInfo) => {
         let temp = { ...errors }
         if ('fullName' in fieldValues)
@@ -123,6 +111,28 @@ export default function ProfileInfo(props) {
         if (fieldValues == userInfo)
             return Object.values(temp).every(x => x == "")
     }
+
+    useEffect(()=>{
+        UserService.getUserInfo(userInfo.id)
+        .then((response) =>{
+            setUserInfo(response)
+        },
+        error =>{
+            console.log("ERROR", error.response)
+            let errMessage = ""
+            if (error.response){
+                if(error.response.status == 500) errMessage = "Server error"
+                else errMessage = error.response.data
+            }
+            else errMessage = "Server is not available"
+
+            setNotify({
+                isOpen: true,
+                message: errMessage,
+                type: "error"
+            })
+        })
+    },[])
     
 
     const handleInputChange = e => {

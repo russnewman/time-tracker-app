@@ -4,9 +4,24 @@ import AuthService from "./auth.service"
 
 
 const API_URL = "http://localhost:8080/user"
-
-
 class User{
+
+
+    getUserInfo(userId){
+        return axios.get(API_URL + "/getUserInfo",{ 
+                                                    params:{userId:userId},
+                                                    headers: {Authorization: "Bearer "+ this.getToken()}
+                                                  })
+        .then(response =>{
+            if (response.data.id){
+                let user = JSON.parse(sessionStorage.getItem('user'))
+                response.data.token = user.userInfo.token;
+                user.userInfo = response.data
+                sessionStorage.setItem("user", JSON.stringify(user))
+            }
+            return response.data
+        })
+    }
 
     updateUserInfo(newUserInfo) {
         let user = JSON.parse(sessionStorage.getItem('user'))
@@ -28,16 +43,13 @@ class User{
 
     updateEmployeeInfo(employeeInfo){
         let user = JSON.parse(sessionStorage.getItem('user'))
-        // employees = user.userEmployees
-        for (let i=0; i< user.userEmployees.length; i++){
-            if (user.userEmployees[i].id === employeeInfo.id){
-                user.userEmployees[i] = employeeInfo
+        for (let i=0; i< user.employees.length; i++){
+            if (user.employees[i].id === employeeInfo.id){
+                user.employees[i] = employeeInfo
                 break;
             }
         }
         sessionStorage.setItem("user", JSON.stringify(user))
-        // console.log("$$$",user)
-
         return axios.post(API_URL + "/update/employee", employeeInfo, this.config())
         .then(response => {
             return response.data}
@@ -47,9 +59,9 @@ class User{
     deleteEmployee(employeeId){
 
         let user = JSON.parse(sessionStorage.getItem('user'))
-        for (let i=0; i< user.userEmployees.length; i++){
-            if (user.userEmployees[i].id === employeeId){
-                user.userEmployees.splice(i,1)
+        for (let i=0; i< user.employees.length; i++){
+            if (user.employees[i].id === employeeId){
+                user.employees.splice(i,1)
                 break;
             }
         }

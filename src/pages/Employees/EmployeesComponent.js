@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import EmployeeForm from "./EmployeeForm";
 import { Paper, makeStyles, TableBody, TableRow, TableCell, Toolbar, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -51,11 +51,11 @@ const headCells = [
 
 export default function EmployeesComponent() {
 
-    let employeeArr = AuthService.getCurrentUser().userEmployees
+    // let [employeeArr, setEmployeeArr] = useState(AuthService.getCurrentUser().employees)
 
     const classes = useStyles();
     const [recordForEdit, setRecordForEdit] = useState(null)
-    // const [records, setRecords] = useState(employeeService.getAllEmployees())
+    const [records, setRecords] = useState(AuthService.getCurrentUser().employees)
 
     const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
     const [openPopup, setOpenPopup] = useState(false)
@@ -67,7 +67,30 @@ export default function EmployeesComponent() {
         TblHead,
         TblPagination,
         recordsAfterPagingAndSorting
-    } = useTable(employeeArr, headCells, filterFn);
+    } = useTable(records, headCells, filterFn);
+
+
+    useEffect(()=>{
+        ManagerService.getEmployeesRest()
+        .then((response) =>{        
+            console.log("ASd",response.status)
+            setRecords(response)
+        },
+        error =>{
+            let errMessage = ""
+            if (error.response){
+                if(error.response.status == 500) errMessage = "Server error"
+                else errMessage = error.response.data
+            }
+            else errMessage = "Server is not available"
+
+            setNotify({
+                isOpen: true,
+                message: errMessage,
+                type: "error"
+            })
+        })
+    },[])
 
     const handleSearch = e => {
         let target = e.target;
@@ -81,32 +104,12 @@ export default function EmployeesComponent() {
         })
     }
 
-    const updateEmployee = (values) => {
+    const updateEmployee = (employeeInfo) => {
         setOpenPopup(false)
-        ManagerService.updateEmployeeInfo(values)
-        .then((response)=>{
-                setNotify({
-                    isOpen: true,
-                    message: response,
-                    type: "success"
-                })
-                console.log("Response", response.data)
-            },
-            error=>{
-                console.log("RESP", error.response)
-                let errMessage = ""
-                if (error.response){
-                    if(error.response.status == 500) errMessage = "Server error"
-                    else errMessage = error.response.data
-                }
-                else errMessage = "Server is not available"
-
-                setNotify({
-                    isOpen: true,
-                    message: errMessage,
-                    type: "error"
-                })
-            })
+        setRecords(ManagerService.updateEmployeeInfo(employeeInfo))
+        ManagerService.updateEmployeeInfoRest(employeeInfo)
+        .then((response) => {
+            setNotify(response)})
     }
 
     const openInPopup = item => {
@@ -114,35 +117,16 @@ export default function EmployeesComponent() {
         setOpenPopup(true)
     }
 
-    const onDelete = email => {
+    const onDelete = employeeId => {
+
+        setRecords(ManagerService.deleteEmployee(employeeId))
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
         })
-        ManagerService.deleteEmployee(email)
-        .then((response)=>{
-                setNotify({
-                    isOpen: true,
-                    message: response,
-                    type: "success"
-                })
-                console.log("Response", response.data)
-            },
-            error=>{
-                console.log("RESP", error.response)
-                let errMessage = ""
-                if (error.response){
-                    if(error.response.status == 500) errMessage = "Server error"
-                    else errMessage = error.response.data
-                }
-                else errMessage = "Server is not available"
-
-                setNotify({
-                    isOpen: true,
-                    message: errMessage,
-                    type: "error"
-                })
-            })
+        ManagerService.deleteEmployeeRest(employeeId)
+        .then((response) => {
+            setNotify(response)})
     }
 
     return (

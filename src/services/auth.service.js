@@ -11,9 +11,7 @@ class AuthService {
         password
       })
       .then(response => {
-        // console.log("FFF",response)
-
-        if (response.data.userInfo.token) {
+        if (response.data.userInfo && response.data.userInfo.token) {
           sessionStorage.setItem("user", JSON.stringify(response.data));
         }
         return response.data

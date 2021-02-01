@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Paper, makeStyles, TableBody, TableRow, TableCell, Toolbar, InputAdornment } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined';
 
-import Notification from "../../components/employees/Notification";
-import ConfirmDialog from "../../components/employees/ConfirmDialog";
-import Controls from "../../components/employees/controls/Controls";
-import useTable from "../../components/employees/useTable";
-import AuthService from "../../services/auth.service"
-import EmployeeService from "../../services/employee.service";
+import Notification from "../components/employees/Notification";
+import ConfirmDialog from "../components/employees/ConfirmDialog";
+import Controls from "../components/employees/controls/Controls";
+import useTable from "../components/employees/useTable";
+import AuthService from "../services/auth.service"
+import EmployeeService from "../services/employee.service";
 
 
 const useStyles = makeStyles(theme => ({
@@ -49,22 +49,46 @@ const headCells = [
 
 export default function LeadersComponent() {
 
-    let managersArr = AuthService.getCurrentUser().managers
+    const [records, setRecords] = useState(AuthService.getCurrentUser().managers)
 
     const classes = useStyles();
-
     const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
-    const [userManager, setUserManager ]=useState(EmployeeService.getUserManger())
-
+    const [userManager, setUserManager ]=useState(AuthService.getCurrentUser().userManager)
 
     const {
         TblContainer,
         TblHead,
         TblPagination,
         recordsAfterPagingAndSorting
-    } = useTable(managersArr, headCells, filterFn);
+    } = useTable(records, headCells, filterFn);
+
+    useEffect(()=>{
+        EmployeeService.getManagerRest()
+        .then((response) =>{
+            setUserManager(response)
+        },
+        error =>{
+            setNotify({
+                isOpen: true,
+                message: EmployeeService.buildErrorNotification(error),
+                type: "error"
+            })
+        })
+
+        EmployeeService.getAllManagersRest()
+        .then((response) =>{
+            setRecords(response)
+        },
+        error =>{
+            setNotify({
+                isOpen: true,
+                message: EmployeeService.buildErrorNotification(error),
+                type: "error"
+            })
+        })
+    },[])
 
     const handleSearch = e => {
         let target = e.target;
@@ -78,72 +102,23 @@ export default function LeadersComponent() {
         })
     }
 
-
     const chooseManager = (item) => {
-        setUserManager({
-            "email": item.email,
-            "fullName": item.fullName,
-            "department": item.department,
-            "position": item.position
-        })
-
-        EmployeeService.chooseManager(item)
-        .then((response)=>{
-            setNotify({
-                isOpen: true,
-                message: response,
-                type: "success"
-            })
-        }
-        ,
-        error=>{
-            // console.log("RESP", error.response)
-            let errMessage = ""
-            if (error.response){
-                if(error.response.status == 500) errMessage = "Server error! Data will not be saved"
-                else errMessage = error.response.data
-            }
-            else errMessage = "Server is not available! Data will not be saved"
-
-            setNotify({
-                isOpen: true,
-                message: errMessage,
-                type: "error"
-            })
-
-        })
+        setUserManager(item)
+        EmployeeService.chooseManagerRest(item)
+        .then((response) => {
+            setNotify(response)})
     }
 
     const deleteManager = () => {
-        EmployeeService.deleteManager()
-        .then((response)=>{
-            setNotify({
-                isOpen: true,
-                message: response,
-                type: "success"
-            })
-        },
-        error=>{
-            let errMessage = ""
-            if (error.response){
-                if(error.response.status == 500) errMessage = "Server error! Data will not be saved"
-                else errMessage = error.response.data
-            }
-            else errMessage = "Server is not available! Data will not be saved"
-
-            setNotify({
-                isOpen: true,
-                message: errMessage,
-                type: "error"
-            })
-        })
         setUserManager(null)
+        EmployeeService.deleteManagerRest()
+        .then((response) => {
+            setNotify(response)})
 
         setConfirmDialog({
             ...confirmDialog,
             isOpen: false
         })
-
     }
 
     if(userManager){

@@ -22,11 +22,7 @@ class App extends Component {
     };
   }
 
-
   render(){
-
-
-    const currentUser = this.state.currentUser
     return (
 
                 <Switch>

@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
-import LeadersComponent from './Leaders/LeadersComponent';
+import LeadersComponent from './LeadersComponent';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import AuthService from '../services/auth.service'
 import { Redirect } from "react-router-dom";
