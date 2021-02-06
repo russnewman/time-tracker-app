@@ -28,7 +28,7 @@ const handleLogOut = e =>{
 }
 
 const Navbar = () => {
-  const user = AuthService.getCurrentUser().userInfo;
+  // const user = AuthService.getCurrentUser().userInfo;
   const classes = useStyles();
   return (
     <>
@@ -39,7 +39,7 @@ const Navbar = () => {
             Dashboard
           </NavLink>
 
-          {user.userRole === "LEADER" ?
+          {/* {user.userRole === "LEADER" ?
               (<NavLink to='/employees' activeStyle>
                 Employees
               </NavLink>)
@@ -47,7 +47,7 @@ const Navbar = () => {
               (<NavLink to='/leaders' activeStyle>
                 Managers
               </NavLink>)
-          }
+          } */}
           <NavLink to='/profile' activeStyle>
             Profile
           </NavLink>
