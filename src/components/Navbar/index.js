@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     // position: 'fixed',
     // top: '0px',
     // width: '100%',
-    marginBottom:theme.spacing(2)
+    // marginBottom:theme.spacing(2)
   }
 }));
 

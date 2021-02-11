@@ -1,56 +1,64 @@
 import React, { useState } from "react";
-import { Grid, Select, MenuItem, Input, Typography } from "@material-ui/core";
+import { Grid, Select, MenuItem, Input, Typography, Card } from "@material-ui/core";
 import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
 import { BarChart, Bar } from "recharts";
-import classnames from "classnames";
-import Widget from "./Widget";
 import { makeStyles } from '@material-ui/core/styles';
+import classnames from "classnames";
+
+
 
 const useStyles =  makeStyles((theme) => ({
-  title: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: theme.spacing(1),
-  },
-  bottomStatsContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    margin: theme.spacing(1) * -2,
-    marginTop: theme.spacing(1),
-  },
-  statCell: {
-    padding: theme.spacing(2),
-  },
   totalValueContainer: {
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "space-between",
   },
-  totalValue: {
-    display: "flex",
-    alignItems: "baseline",
+  card:{
+    boxShadow: "0px 7px 20px rgba(10, 1, 50, 0.3)",
+    borderRadius: "20px",
+    paddingBottom: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    paddingLeft: theme.spacing(3),
   },
-  profitArrow: {
+  title:{
+    paddingTop: theme.spacing(2),
+    // paddingBottom: theme.spacing(2),
+  },
+  profitEffectiveArrow: {
     transform: "rotate(-45deg)",
     fill: theme.palette.success.main,
   },
-  profitArrowDanger: {
+  profitEffectiveArrowDanger: {
     transform: "rotate(45deg)",
     fill: theme.palette.secondary.main,
   },
-  selectInput: {
-    padding: 10,
-    paddingRight: 25,
-    "&:focus": {
-      backgroundColor: "white",
-    },
+  profitArrowIneffectiveDanger: {
+    transform: "rotate(-45deg)",
+    fill: theme.palette.secondary.main,
   },
-  bodyWidgetOverflow: {
-    overflow: 'auto'
+  profitArrowIneffective: {
+    transform: "rotate(45deg)",
+    fill: theme.palette.success.main,
+  },
+
+  totalValue: {
+    display: "flex",
+    alignItems: "baseline",
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3)
+  },
+  bottomTypography:{
+    // color: theme.palette.text.main,
+    fontWeight: '600',
+    fontSize: '12px',
+    fontFamily: 'Poppins, sans-serif'
+  },
+  bottomStatsContainer:{
+    display: "flex",
+    justifyContent: "space-between",
+    // margin: theme.spacing(1) * -2,
+    // marginTop: theme.spacing(1),
   }
 }));
 
@@ -65,82 +73,69 @@ export default function BigStat(props) {
   var [value, setValue] = useState("daily");
 
   return (
-    <Widget
-      header={
-        <div className={classes.title}>
-          <Typography variant="h5">{product}</Typography>
-        </div>
-      }
-      upperTitle
-      bodyClass={classes.bodyWidgetOverflow}
-    >
-      <div className={classes.totalValueContainer}>
-        <div className={classes.totalValue}>
-          <Typography variant="h3" color="text" colorBrightness="secondary">
-            {total[value]}
-          </Typography>
-          {total.percent.profit
-          ? 
-          <Typography style={{color:"#81c784"}}>
-              +{total.percent.value}%
-          </Typography> : 
-          <Typography style={{color:"#e33371"}}>
-              -{total.percent.value}%
-            </Typography>}
-        </div>
-        <BarChart width={150} height={70} data={getRandomData()}>
-          <Bar
-            dataKey="value"
-            fill="#f50057"
-            radius={10}
-            barSize={10}
-          />
-        </BarChart>
-      </div>
-      {/* <div className={classes.bottomStatsContainer}>
-        <div className={classnames(classes.statCell, classes.borderRight)}>
-          <Grid container alignItems="center">
-            <Typography variant="h6">{registrations[value].value}</Typography>
-            <ArrowForwardIcon
-              className={classnames(classes.profitArrow, {
-                [!registrations[value].profit]: classes.profitArrowDanger,
-              })}
-            />
-          </Grid>
-          <Typography size="sm" color="text" colorBrightness="secondary">
-            Registrations
-          </Typography>
-        </div>
-        <div className={classes.statCell}>
-          <Grid container alignItems="center">
-            <Typography variant="h6">{bounce[value].value}%</Typography>
-            <ArrowForwardIcon
-              className={classnames(classes.profitArrow, {
-                [!registrations[value].profit]: classes.profitArrowDanger,
-              })}
-            />
-          </Grid>
-          <Typography size="sm" color="text" colorBrightness="secondary">
-            Bounce Rate
-          </Typography>
-        </div>
-        <div className={classnames(classes.statCell, classes.borderRight)}>
-          <Grid container alignItems="center">
-            <Typography variant="h6">
-              {registrations[value].value * 10}
+    <Card className={classes.card}>
+          <div className={classes.title}>
+            <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '600',}} variant="h5">{product}</Typography>
+          </div>
+        <div className={classes.totalValueContainer}>
+          <div className={classes.totalValue}>
+            <Typography variant="h3" style={{fontFamily: 'Poppins, sans-serif', marginRight:'12px', fontWeight: '900'}}>
+              {total[value]}h 
             </Typography>
-            <ArrowForwardIcon
-              className={classnames(classes.profitArrow, {
-                [classes.profitArrowDanger]: !registrations[value].profit,
-              })}
+            <Typography> </Typography>
+              {total.percent.profit
+            ? 
+            <Typography style={{color:"#81c784"}}>
+                +{total.percent.value}%
+            </Typography> : 
+            <Typography style={{color:"#e33371"}}>
+                -{total.percent.value}%
+              </Typography>}
+          </div>
+          {/* <BarChart width={150} height={70} data={getRandomData()}>
+            <Bar
+              dataKey="value"
+              fill="#f50057"
+              radius={10}
+              barSize={10}
             />
-          </Grid>
-          <Typography size="sm" color="text" colorBrightness="secondary">
-            Views
-          </Typography>
+          </BarChart> */}
         </div>
-      </div> */}
-    </Widget>
+
+        <div className={classes.bottomStatsContainer}>
+          <div>
+            <Grid container alignItems="center">
+              <Typography variant="h6" >{registrations[value].value}%</Typography>
+              <ArrowForwardIcon className = {classes.profitEffectiveArrow}
+              />
+            </Grid>
+            <Typography className={classes.bottomTypography}>
+              Effective
+            </Typography>
+          </div>
+          <div>
+            <Grid container alignItems="center">
+                <Typography variant="h6">{registrations[value].value * 1.2}%</Typography>
+                <ArrowForwardIcon style={{  transform: "rotate(45deg)"}}
+                />
+              </Grid>
+              <Typography className={classes.bottomTypography}>
+                Neutral
+              </Typography>
+            </div>
+            <div>
+            <Grid container alignItems="center">
+                <Typography variant="h6">{registrations[value].value * 0.3}%</Typography>
+                <ArrowForwardIcon className = {classes.profitArrowIneffective}
+                />
+              </Grid>
+              <Typography className={classes.bottomTypography}>
+                Inneffective
+              </Typography>
+            </div>
+        </div>
+
+      </Card>
   );
 }
 

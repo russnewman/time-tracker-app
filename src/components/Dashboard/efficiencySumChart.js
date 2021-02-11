@@ -1,51 +1,21 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
-import { makeStyles } from '@material-ui/core/styles';
-import { Card, Typography } from '@material-ui/core';
-
-
-
-const styles = makeStyles((theme) => ({
-  card:{
-    boxShadow: "0px 10px 20px rgba(10, 1, 50, 0.3)",
-    borderRadius: "25px",
-    height: '415px'
-  },
-  header:
-  {
-    padding: theme.spacing(3),
-    paddingBottom: theme.spacing(1),
-  }
-})); 
+import ReactApexChart from 'apexcharts'
 
 
 
 
-// const series = [
-//     {
-//         name: 'effectively',
-//         data: [31]
-//     }, 
-//     {
-//         name: 'neurtral',
-//         data: [55]
-//     },
-//     {   
-//         name: 'ineffective',
-//         data: [41
-//     }
-// ]
 
 const series = [31,55,41]
-
 
 const options = {
   chart: {
     type: 'donut',
+    id: 'efficiencySum'
   },
   labels: ['Ineffective', 'Neutral', 'Effective'],
   fill: {
-    colors: ['#030C54', '#56cfe1', '#80ffdb'],
+    colors: ['#000C77', '#56cfe1', '#80ffdb'],
     opacity: 1
     },
   plotOptions: {
@@ -109,7 +79,7 @@ const options = {
             fontSize: '14px',
             fontFamily: 'Roboto, sans-seri',
             fontWeight: 100,
-            color: '#F50505'
+            colors:['#ffffff', '#020202', '#020202']
         }
       },
     
@@ -118,15 +88,42 @@ const options = {
     },
 }
 
-  export default function efficiencyByHoursChart(){
-    const  classes  = styles();
+
+const seriesWeek = [34,52,45]
+
+const optionsWeek = {
+  series: seriesWeek
+}
+
+const optionsDay = {
+  series:series
+}
+
+
+
+  export default function EfficiencySumChart(props){
+
+
+    
+      const [timePeriod, setTimePeriod] = React.useState(0);
+      
+      React.useEffect(() => {
+    
+        if (timePeriod != 0 && timePeriod == props.timePeriod){}
+
+        else if(props.timePeriod == 2){
+          ReactApexChart.exec("efficiencySum", 'updateOptions', optionsWeek, true) 
+          setTimePeriod(props.timePeriod)
+        }
+
+        else if(props.timePeriod == 1){
+          ReactApexChart.exec("efficiencySum", 'updateOptions', optionsDay, true)  
+          setTimePeriod(props.timePeriod)
+        }
+      });
       return (
-      <Card className={classes.card}>
-          <div className={classes.header}>
-            <Typography variant="h5">All day</Typography>
-          </div>
         <Chart options={options} series={series} type="donut" />
-      </Card>)
+      )
   }
   
   
