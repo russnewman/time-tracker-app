@@ -5,6 +5,8 @@ import { useTheme } from "@material-ui/styles";
 import { BarChart, Bar } from "recharts";
 import { makeStyles } from '@material-ui/core/styles';
 import classnames from "classnames";
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
 
 
@@ -49,7 +51,6 @@ const useStyles =  makeStyles((theme) => ({
     marginBottom: theme.spacing(3)
   },
   bottomTypography:{
-    // color: theme.palette.text.main,
     fontWeight: '600',
     fontSize: '12px',
     fontFamily: 'Poppins, sans-serif'
@@ -57,8 +58,6 @@ const useStyles =  makeStyles((theme) => ({
   bottomStatsContainer:{
     display: "flex",
     justifyContent: "space-between",
-    // margin: theme.spacing(1) * -2,
-    // marginTop: theme.spacing(1),
   }
 }));
 
@@ -85,10 +84,10 @@ export default function BigStat(props) {
             <Typography> </Typography>
               {total.percent.profit
             ? 
-            <Typography style={{color:"#81c784"}}>
+            <Typography style={{color:"#00cc65"}}>
                 +{total.percent.value}%
             </Typography> : 
-            <Typography style={{color:"#e33371"}}>
+            <Typography style={{color:"crimson"}}>
                 -{total.percent.value}%
               </Typography>}
           </div>
@@ -105,8 +104,8 @@ export default function BigStat(props) {
         <div className={classes.bottomStatsContainer}>
           <div>
             <Grid container alignItems="center">
-              <Typography variant="h6" >{registrations[value].value}%</Typography>
-              <ArrowForwardIcon className = {classes.profitEffectiveArrow}
+              <Typography variant="h6" style={{marginRight: '2px'}}>{registrations[value].value}%</Typography>
+              <ArrowUpwardIcon style={{color:'#00cc65'}}
               />
             </Grid>
             <Typography className={classes.bottomTypography}>
@@ -115,8 +114,8 @@ export default function BigStat(props) {
           </div>
           <div>
             <Grid container alignItems="center">
-                <Typography variant="h6">{registrations[value].value * 1.2}%</Typography>
-                <ArrowForwardIcon style={{  transform: "rotate(45deg)"}}
+                <Typography variant="h6" style={{marginRight: '2px'}}>{registrations[value].value * 1.2}%</Typography>
+                <ArrowUpwardIcon 
                 />
               </Grid>
               <Typography className={classes.bottomTypography}>
@@ -125,8 +124,8 @@ export default function BigStat(props) {
             </div>
             <div>
             <Grid container alignItems="center">
-                <Typography variant="h6">{registrations[value].value * 0.3}%</Typography>
-                <ArrowForwardIcon className = {classes.profitArrowIneffective}
+                <Typography variant="h6" style={{marginRight: '2px'}}>{registrations[value].value * 0.3}%</Typography>
+                <ArrowUpwardIcon style={{color:'crimson'}}
                 />
               </Grid>
               <Typography className={classes.bottomTypography}>

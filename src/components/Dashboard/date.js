@@ -21,8 +21,8 @@ export default function MaterialUIPickers() {
   };
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils} >
-        <KeyboardDatePicker style={{width:'172px'}}
+    <MuiPickersUtilsProvider utils={DateFnsUtils} MenuProps={{ disableScrollLock: true }} >
+        <KeyboardDatePicker style={{width:'172px'}} MenuProps={{ disableScrollLock: true }}
         disableToolbar
         // variant="inline"
         inputVariant="outlined"

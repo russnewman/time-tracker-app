@@ -19,9 +19,9 @@ const styles = makeStyles((theme) => ({
 }))
 
 
-const dataA = [43,65,34,25,53,12,34,13, 23, 20, 8, 13, 27,31,37,24,28,20,10,19,16,14,19,54]
-const dataB = [13,23,20,8,13,27,31,37,24,28,20,10,19,27,31,37,24,28,20,10,19,16,14,19,54]
-const dataC = [11,17,15,15,21,14,14,17,22,20,15,31,9, 13, 23, 20, 8, 13, 27,31,37,24,28,20,47]
+const dataA = [23,23,24,25,13,12,14,13, 23, 20, 8, 13, 17,11,17,24,28,20,10,19,16,14,19,14]
+const dataB = [13,23,20,8,13,27,31,17,14,8,10,10,11,17,21,17,24,28,20,10,19,16,14,19,14]
+const dataC = [11,12,15,15,21,14,14,17,12,10,11,11,9, 13, 23, 20, 8, 13, 27,11,17,24,18,20,7]
 const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:00'],['03:00','-','04:00'],['04:00','-','5:00'],['05:00','-','6:00'],['06:00','-','7:00'],
 ['07:00','-','8:00'],['08:00','-','9:00'],['09:00','-','10:00'], ['10:00','-','11.00'], ['11:00','-','12:00'], ['12:00','-','13:00'],
 ['13:00','-','14:00'], ['14:00','-','15:00'],['15.00','-','16:00'],['16.00','-','17:00'],['17.00','-','18:00'],
@@ -81,6 +81,24 @@ const series =  [{
     xaxis: {
       categories: categories.slice(8, 20)
     },
+    yaxis:{
+      min: 0,
+      max: 60,
+      tickAmount: 6,
+      labels: {
+        show: true,
+        align: 'right',
+        minWidth: 0,
+        maxWidth: 160,
+        style: {
+            colors: [],
+            fontSize: '12px',
+            fontFamily: 'Poppins, sans-serif',
+            fontWeight: 900,
+        },
+        formatter: (value) => { return value + 'm' },
+      },
+    },
   
     fill: {
       colors: ['#000C77', '#56cfe1', '#80ffdb'],
@@ -92,7 +110,7 @@ const series =  [{
 
 const seriesWeek =  [{
     name: 'Effective',
-    data: [44, 55, 41, 67, 22, 13,12]
+    data: [24, 15, 21, 17, 22, 13,12]
   }, {
     name: 'Neutral',
     data: [13, 23, 20, 8, 13, 27,31]
@@ -203,11 +221,10 @@ const seriesWeek =  [{
       <div>
 
           <Chart options={options} series={series} type="bar" height={370}  width={800}/>
-          <div className={classes.bottomArrows}>
+          {props.timePeriod == 1 ? (<div className={classes.bottomArrows}>
             <Button onClick={handleLeftClick}><KeyboardArrowLeftIcon/></Button>
             <Button onClick={handleRightClick}><KeyboardArrowRightIcon/></Button>
-          </div>
-
+          </div>) : (<div></div>)}
       </div>
     )
   }

@@ -70,7 +70,7 @@ const series =  [{
     fill: {
       colors: ['#e91e63', '#031d44'],
       opacity: 1
-      },
+      }
     
   }
 

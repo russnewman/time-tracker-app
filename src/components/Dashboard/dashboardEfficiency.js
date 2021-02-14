@@ -4,20 +4,20 @@ import Toolbar from '@material-ui/core/Toolbar';
 import EffectiveLineChart from './effectiveLineChart'
 import CustomDay from './date'
 
+import { Grid, Card, Container, Input, Paper, FormControl, Typography, Select, MenuItem } from '@material-ui/core';
+import TableMember from "./Employee/tableMember"
+import TableTeam from "./Team/tableTeam"
 
-
-// import MenuItem from '@material-ui/core/MenuItem';
-
-
-
-import { Grid, Card, Container, Input, Paper, FormControl, Typography, Select, MenuItem, Tabs, Tab, Button } from '@material-ui/core';
-import Table from "./table"
-
-import EfficiencyByHoursChart from './efficiencyByHoursChart'
-import EfficiencyByDayChart from './efficiencySumChart'
-import UsageByHoursChart from './usageByHoursChart'
-import UsageByDayChart from './usageSum'
+import EfficiencyChart from './Employee/efficiencyChart'
+import EfficiencyByDayChart from './Employee/efficiencySumChart'
+import UsageChart from './Employee/usageChart'
+import UsageByDayChart from './Employee/usageSum'
 import { makeStyles } from '@material-ui/core/styles';
+import EfficiencyOfTeamChart from './Team/efficiencyOfTeamChart'
+import EfficiencyOfTeamSumChart from './Team/efficiencyOfTeamSumChart'
+import UsageOfTeamChart from './Team/usageOfTeamChart'
+import UsageOfTeamSumChart from './Employee/usageOfTeamSumChart'
+
 
 
 // import React, { Fragment } from 'react';
@@ -27,7 +27,7 @@ import BigStat from "./BigStat";
 const mock = {
   bigStat: [
     {
-      product: "Workerd today",
+      product: "Worked day",
       total: {
         monthly: 4232,
         weekly: 1465,
@@ -67,7 +67,7 @@ const mock = {
       }
     },
     {
-      product: "Activity",
+      product: "Worked mounth",
       total: {
         monthly: 1025,
         weekly: 301,
@@ -109,12 +109,15 @@ const styles = makeStyles((theme) => ({
     borderRadius: "25px",
     height: '455px'
   },
-  switcher:{
+  dateAndSwitcher:{
+    display: 'flex',
+      justifyContent: 'space-between',
       paddingTop: theme.spacing(1),
-      paddingRight: theme.spacing(2),
-      textAlign: 'right'
+      paddingRight: theme.spacing(3),
+      paddingLeft: theme.spacing(2),
+      // textAlign: 'right'
   },
-  selectInput: {
+  selectInput: {  
     padding: 10,
     paddingRight: 25,
     "&:focus": {
@@ -123,7 +126,8 @@ const styles = makeStyles((theme) => ({
   },
   header:
   {
-    padding: theme.spacing(3),
+    paddingLeft: theme.spacing(3),
+    paddingTop: theme.spacing(),
     paddingBottom: theme.spacing(4),
   },
   appbar:{
@@ -140,6 +144,12 @@ const styles = makeStyles((theme) => ({
     paddingRight: '15px', 
     display: 'flex',
     justifyContent: 'flex-end'
+  },
+  typography:{
+                    paddingTop:'8px',
+                    fontFamily: 'Poppins',
+                    fontWeight: '900',
+                    fontSize: '20px'
   }
 })); 
 
@@ -187,7 +197,7 @@ export default function DashboardEfficiency(props){
               </Select>
             </FormControl>
 
-            <FormControl variant="outlined" className={classes.formControl}>
+            <FormControl MenuProps={{ disableScrollLock: true }} variant="outlined" className={classes.formControl}>
               <CustomDay/>
             </FormControl>
             
@@ -196,6 +206,7 @@ export default function DashboardEfficiency(props){
       </AppBar>
 
       <Container>
+
         <Grid container spacing={4}>
           {mock.bigStat.map(stat => (
             <Grid item md={4} sm={6} xs={12} key={stat.product}>
@@ -203,14 +214,19 @@ export default function DashboardEfficiency(props){
             </Grid>
           ))}
         </Grid>
+
+
         <Paper className={classes.paper}>
-          <Table/>
+          {subjectOfChange == 1 && <TableMember/>}
+          {subjectOfChange == 2 && <TableTeam/>}
         </Paper>
+
+
         <Grid container spacing={4}>
           <Grid item xs={12} lg={8}>
             <Card className={classes.card}>
-              <div className={classes.switcher}> 
-                <Select
+              <div className={classes.dateAndSwitcher}> 
+              <Select
                   value={chartSwitcher}
                   onChange={e => setChartSwitcher(e.target.value)}
                   input={
@@ -223,20 +239,37 @@ export default function DashboardEfficiency(props){
                   <MenuItem value="Efficiency">Efficiency</MenuItem>
                   <MenuItem value="Usage">Usage</MenuItem>
                 </Select>
+                  {timePeriod == 1 ? (<Typography className={classes.typography}>14 Feb 2021
+                    </Typography>): (<Typography className={classes.typography}> 8 Feb 2021 - 14 Feb 2021
+                    </Typography>)}
+
               </div>
-              {chartSwitcher === 'Efficiency' ? 
-              (<EfficiencyByHoursChart timePeriod={timePeriod}/>) : 
-              (<UsageByHoursChart timePeriod={timePeriod}/>)}
+              {subjectOfChange === 2 && (chartSwitcher === 'Efficiency' ? 
+                  <EfficiencyOfTeamChart timePeriod={timePeriod}/> :
+                  <UsageOfTeamChart timePeriod={timePeriod}/> 
+              )}
+              {subjectOfChange === 1 && (chartSwitcher === 'Efficiency' ? 
+                  (<EfficiencyChart timePeriod={timePeriod}/>) : 
+                  (<UsageChart timePeriod={timePeriod}/>)
+              )}
+
             </Card>
           </Grid>
           <Grid item xs={12} lg={4}>
             <Card className={classes.card}>
               <div className={classes.header}>
-                {timePeriod === 1 ? (<Typography variant="h5">All day</Typography>) : 
-                (<Typography variant="h5">All week</Typography>)}
-              
+                {timePeriod === 1 && <Typography className={classes.typography} variant="h5">Day result</Typography>}
+                {timePeriod === 2 && <Typography className={classes.typography} variant="h5">Week result</Typography>}
+                {timePeriod === 3 && <Typography className={classes.typography} variant="h5">Mounth result</Typography>}
               </div>
-              {chartSwitcher === 'Efficiency' ? (<EfficiencyByDayChart timePeriod={timePeriod}/>) : (<UsageByDayChart timePeriod={timePeriod}/>)}
+
+              {subjectOfChange === 2 && (chartSwitcher === 'Efficiency' ? 
+                  <EfficiencyOfTeamSumChart timePeriod={timePeriod}/> : 
+                  <UsageOfTeamSumChart timePeriod={timePeriod}/>)}
+              {subjectOfChange === 1 && (chartSwitcher === 'Efficiency' ? 
+                  (<EfficiencyByDayChart timePeriod={timePeriod}/>) : 
+                  (<UsageByDayChart timePeriod={timePeriod}/>)
+              )}
             </Card>
           </Grid>
         </Grid>
@@ -244,8 +277,8 @@ export default function DashboardEfficiency(props){
         <Grid container spacing={4}>
           <Grid item xs={12} lg={12}>
             <Card className={classes.card}>
-            <div className={classes.switcher}>
-                <Select
+            <div className={classes.dateAndSwitcher}>
+                <Select MenuProps={{ disableScrollLock: true }} style={{overflow: 'auto'}}
                   value={effectiveType}
                   onChange={e => {setEffectiveType(e.target.value)}}
                   input={
@@ -258,7 +291,9 @@ export default function DashboardEfficiency(props){
                   <MenuItem value={1}>Effective</MenuItem>
                   <MenuItem value={2}>Neutral</MenuItem>
                   <MenuItem value={3}>Ineffective</MenuItem>
+                  <MenuItem value={4}>Mix</MenuItem>
                 </Select>
+                
               </div>
               <EffectiveLineChart effectiveType={effectiveType} timePeriod={timePeriod}/>
             </Card>
