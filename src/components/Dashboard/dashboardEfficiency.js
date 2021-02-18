@@ -4,7 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import EffectiveLineChart from './effectiveLineChart'
 import CustomDay from './date'
 
-import { Grid, Card, Container, Input, Paper, FormControl, Typography, Select, MenuItem } from '@material-ui/core';
+import { Grid, Card, Container, Input, Paper, FormControl, Button, Typography, Select, MenuItem } from '@material-ui/core';
 import TableMember from "./Employee/tableMember"
 import TableTeam from "./Team/tableTeam"
 
@@ -17,6 +17,8 @@ import EfficiencyOfTeamChart from './Team/efficiencyOfTeamChart'
 import EfficiencyOfTeamSumChart from './Team/efficiencyOfTeamSumChart'
 import UsageOfTeamChart from './Team/usageOfTeamChart'
 import UsageOfTeamSumChart from './Employee/usageOfTeamSumChart'
+import Sites from './Sites'
+
 
 
 
@@ -141,9 +143,9 @@ const styles = makeStyles((theme) => ({
     minWidth: 150,
   },
   appbarContent: {
-    paddingRight: '15px', 
+    // paddingRight: '15px', 
     display: 'flex',
-    justifyContent: 'flex-end'
+    justifyContent: 'space-between'
   },
   typography:{
                     paddingTop:'8px',
@@ -161,6 +163,7 @@ export default function DashboardEfficiency(props){
     const [timePeriod, setTimePeriod] = React.useState(1);
     const [subjectOfChange, setSubjectOfChange] = React.useState(1);
     const [effectiveType, setEffectiveType] = React.useState(1);
+    const [view, setView] = React.useState('analytics')
 
     const handleTimeChange = (event) => {
       setTimePeriod(event.target.value);
@@ -169,12 +172,24 @@ export default function DashboardEfficiency(props){
       setSubjectOfChange(event.target.value);
     }
 
+    const handleViewChange = (event) => {
+      if(view === 'analytics'){
+        setView('sites')
+      }
+      else setView('analytics')
+    }
     return (
-
       <div>
       <AppBar className={classes.appbar}>
         <Toolbar>
           <Container className={classes.appbarContent}>
+
+
+          <Button  variant="outlined"  style={{marginTop:'8px', marginBottom:'8px', minWidth:'150px'}} onClick={handleViewChange}>
+            {view}
+          </Button>
+
+            <div>
 
           <FormControl variant="outlined" className={classes.formControl}>
               <Select
@@ -200,12 +215,13 @@ export default function DashboardEfficiency(props){
             <FormControl MenuProps={{ disableScrollLock: true }} variant="outlined" className={classes.formControl}>
               <CustomDay/>
             </FormControl>
+            </div>
             
           </Container>
         </Toolbar>
       </AppBar>
 
-      <Container>
+      {view === 'analytics' ? (<Container>
 
         <Grid container spacing={4}>
           {mock.bigStat.map(stat => (
@@ -299,7 +315,9 @@ export default function DashboardEfficiency(props){
             </Card>
           </Grid>
         </Grid>
-      </Container>
+        </Container>)
+        :
+        (<Sites/>)}
     </div>
     )
 
