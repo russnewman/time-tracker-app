@@ -18,6 +18,7 @@ import EfficiencyOfTeamSumChart from './Team/efficiencyOfTeamSumChart'
 import UsageOfTeamChart from './Team/usageOfTeamChart'
 import UsageOfTeamSumChart from './Employee/usageOfTeamSumChart'
 import Sites from './Sites'
+import SitesAllTime from './SitesAllTime'
 
 
 
@@ -317,7 +318,7 @@ export default function DashboardEfficiency(props){
         </Grid>
         </Container>)
         :
-        (<Sites/>)}
+        (<SitesAllTime subjectOfChange={subjectOfChange} timePeriod={timePeriod}/>)}
     </div>
     )
 

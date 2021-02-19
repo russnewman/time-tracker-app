@@ -48,10 +48,17 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     width: '100%',
-    marginBottom: theme.spacing(3),
-    marginTop: theme.spacing(3),
-    boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
-    borderRadius: "20px",
+    // marginBottom: theme.spacing(3),
+    // marginTop: theme.spacing(3),
+    // boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
+    // borderRadius: "20px",
+  },
+  paperSmall:{
+    width: '70%',
+    // marginBottom: theme.spacing(3),
+    // marginTop: theme.spacing(3),
+    // boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
+    // borderRadius: "20px",
   },
   editIcon: {
     fontSize:'10px'      
@@ -78,13 +85,22 @@ dialogAction: {
 
 
 
-function createData(resourse, duration, startTime, endTime, activity, type) {
-
+function createDataMemberDay(resourse, duration, startTime, endTime, activity, type) {
   return { 
     resourse: resourse, 
     duration: minutesToHours(duration), 
     startTime: startTime, 
     endTime: endTime, 
+    activityRate: computeActivityRate(activity, duration),
+    activity: minutesToHours(activity),
+    type: type
+    };
+}
+
+function createData(resourse, duration, activity, type) {
+  return { 
+    resourse: resourse, 
+    duration: minutesToHours(duration), 
     activityRate: computeActivityRate(activity, duration),
     activity: minutesToHours(activity),
     type: type
@@ -112,23 +128,68 @@ function processUrl(url){
     return url.replace('https://','')
 }
 
-const items = [
-  createData('https://music.yandex.ru/home', 159, 15.31, 18.00, 130, 'neutral'),
-  createData('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
-  createData('https://www.youtube.com/', 22, 15.40, 16.02, 14,'ineffective'),
-  createData('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
-  createData('https://www.youtube.com/', 22, 15.40, 16.02, 14,'ineffective'),
-  createData('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
-  createData('https://www.youtube.com/', 22, 15.40, 16.02, 14,'ineffective')
+const itemsDayMember = [
+  createDataMemberDay('https://music.yandex.ru/home', 159, 15.31, 18.00, 130, 'neutral'),
+  createDataMemberDay('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
+  createDataMemberDay('https://www.youtube.com/', 22, 15.40, 16.02, 14,'ineffective'),
+  createDataMemberDay('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
+  createDataMemberDay('https://www.youtube.com/', 22, 15.40, 16.02, 14,'ineffective'),
+  createDataMemberDay('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
+  createDataMemberDay('https://www.youtube.com/', 22, 15.40, 16.02, 14,'ineffective')
 ];
 
-export default function AcccessibleTable() {
+const itemsWeekMember = [
+  createData('https://music.yandex.ru/home', 559,  130, 'neutral'),
+  createData('https://spring.io/', 534,  1, 'effective'),
+  createData('https://www.youtube.com/', 22, 14,'ineffective'),
+  createData('https://www.w3.org/', 123, 100, 'effective'),
+  createData('https://ru.reactjs.org/', 14, 11, 'effective'),
+  createData('https://angular.io/', 99, 50, 'effective'),
+  createData('https://vk.com/feed', 156, 140, 'ineffective')
+];
 
-  // const [rows, setRows] = React.useState(items)
-    const rows = items
 
-  
+const itemsDayTeam = [
+  createData('https://www.google.com/', 145, 130, 'neutral'),
+  createData('https://stackoverflow.com/', 559,  530, 'effective'),
+  createData('https://spring.io/', 534,  320, 'effective'),
+  createData('https://www.youtube.com/', 22, 14,'ineffective'),
+  createData('https://music.yandex.ru/', 123, 100, 'neutral'),
+  createData('https://ru.reactjs.org/', 14, 11, 'effective'),
+  createData('https://angular.io/', 99, 50, 'effective'),
+  createData('https://vuejs.org/', 340, 298, 'effective'),
+  createData('https://vk.com/feed', 156, 140, 'ineffective')
+]
 
+
+const itemsWeekTeam = [
+  createData('https://www.google.com/', 8845, 1130, 'neutral'),
+  createData('https://stackoverflow.com/', 1559,  1430, 'effective'),
+  createData('https://spring.io/', 4534,  1320, 'effective'),
+  createData('https://www.youtube.com/', 1222, 1214,'ineffective'),
+  createData('https://music.yandex.ru/', 2223, 1200, 'neutral'),
+  createData('https://ru.reactjs.org/', 124, 111, 'effective'),
+  createData('https://angular.io/', 2999, 1500, 'effective'),
+  createData('https://vuejs.org/', 340, 298, 'effective'),
+  createData('https://vk.com/feed', 990, 740, 'ineffective')
+]
+
+
+
+export default function AcccessibleTable(props) {
+
+
+
+  const subjectOfChange = props.subjectOfChange
+  const timePeriod = props.timePeriod
+  let items
+
+  if (subjectOfChange === 1 && timePeriod === 1) items = itemsDayMember
+  else if (subjectOfChange === 1 && timePeriod === 2) items = itemsWeekMember
+  else if (subjectOfChange === 2 && timePeriod === 1) items = itemsDayTeam
+  else if (subjectOfChange === 2 && timePeriod === 2) items = itemsWeekTeam
+
+  const [rows, setRows] = React.useState(items)
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [page, setPage] = React.useState(0);
 
@@ -137,13 +198,14 @@ export default function AcccessibleTable() {
   const [resourseName, setResourseName] = React.useState("")
   const [type, setType] = React.useState("")
   const [ind, setInd] = React.useState(0)
-
-
-
   const classes = useStyles();
-
-
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+
+  React.useEffect(() => {
+    setRows(items);
+  }, [items])
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -169,14 +231,10 @@ export default function AcccessibleTable() {
       row.type = newType
   }
 
-  // updateRows(rows, 1, '')
-  // console.log(rows)
-
-
   return (
     <div>
-        <Container>
-            <Paper className={classes.paper}>
+        <Container style={{display: 'flex', justifyContent: 'center'}}>
+            <Paper className={timePeriod === 1 && subjectOfChange === 1 ? classes.paper : classes.paperSmall}>
                 <TableContainer>
                 <Table  className={classes.table}
                         aria-labelledby="tableTitle"
@@ -189,8 +247,8 @@ export default function AcccessibleTable() {
                             <Typography className="font-weight-bold">Web resourse</Typography>
                             </TableCell>
                         <TableCell align="right"><Typography className="font-weight-bold">Duration</Typography></TableCell>
-                        <TableCell align="right"><Typography className="font-weight-bold">Start time</Typography></TableCell>
-                        <TableCell align="right"><Typography className="font-weight-bold">End time</Typography></TableCell>
+                        {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right"><Typography className="font-weight-bold">Start time</Typography></TableCell>}
+                        {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right"><Typography className="font-weight-bold">End time</Typography></TableCell>}
                         <TableCell align="right"><Typography className="font-weight-bold">Activity</Typography></TableCell>
                     </TableRow>
                     </TableHead>
@@ -214,8 +272,8 @@ export default function AcccessibleTable() {
 
                             {row.duration}
                             </TableCell>
-                        <TableCell align="right">{row.startTime}</TableCell>
-                        <TableCell align="right">{row.endTime}</TableCell>
+                       { timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right">{row.startTime}</TableCell>}
+                        {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right">{row.endTime}</TableCell>}
                         <TableCell align="right">
                             <Typography style={{display: 'inline-block', fontWeight:'500'}} >{row.activityRate}</Typography>
                             <Typography className="text-black-50" style={{fontSize:'11px'}} >{row.activity}</Typography>
@@ -236,7 +294,7 @@ export default function AcccessibleTable() {
                 <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={items.length}
+                        count={rows.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onChangePage={handleChangePage}
@@ -244,7 +302,7 @@ export default function AcccessibleTable() {
                     />
                 </Paper>
 
-               <ChangeResourseType rows={rows} ind={ind} open={open} onClose={handleClose}/> 
+               <ChangeResourseType rows={rows} ind={ind} subjectOfChange={subjectOfChange} open={open} onClose={handleClose}/> 
 
        </Container> 
     </div>
@@ -259,6 +317,7 @@ function ChangeResourseType(props) {
   let ind = props.ind
   const onClose = props.onClose
   const open = props.open
+  const subjectOfChange = props.subjectOfChange
 
   let row = rows[ind]
   const resourseName = row.resourse
@@ -274,7 +333,7 @@ function ChangeResourseType(props) {
   const handleClose = () => {
     onClose();
     setType(row.type)
-    setSelectValue('employee')
+    setSelectValue('team')
   };
 
   const handleSave = () =>{
@@ -294,21 +353,23 @@ function ChangeResourseType(props) {
       <DialogContent className={classes.dialogContent}>
 
             <Container style={{ display: 'flex', flexDirection:'row', justifyContent: 'center'}}>
-              <div style={{width: '56px', marginRight: '96px', marginTop:'6px'}}>
-                <Select
-                      value={selectValue}
-                      onChange={e => setSelectValue(e.target.value)}
-                      input={
-                        <Input
-                          disableUnderline
-                          classes={{ input: classes.selectInput }}
-                        />
-                      }
-                    >
-                  <MenuItem value="employee">This employee</MenuItem>
-                  <MenuItem value="team">All team</MenuItem>
-                </Select>
+                {subjectOfChange == 1 && 
+                <div style={{width: '56px', marginRight: '96px', marginTop:'6px'}}>
+                  <Select
+                        value={selectValue}
+                        onChange={e => setSelectValue(e.target.value)}
+                        input={
+                          <Input
+                            disableUnderline
+                            classes={{ input: classes.selectInput }}
+                          />
+                        }
+                      >
+                    <MenuItem value="team">All team</MenuItem>
+                    <MenuItem value="employee">This employee</MenuItem>
+                  </Select>
                 </div>
+              }
                 <RadioGroup  row aria-label="position" value={type} onChange={handleChange}>
                   <FormControlLabel value="effective" control={<ERadio/>} label="Effective" />
                   <FormControlLabel value="neutral" control={<NRadio/>} label="Neutral" />
