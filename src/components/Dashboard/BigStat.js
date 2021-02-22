@@ -13,8 +13,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 const useStyles =  makeStyles((theme) => ({
   totalValueContainer: {
     display: "flex",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
+    alignItems: "baseline",
   },
   card:{
     boxShadow: "0px 7px 20px rgba(10, 1, 50, 0.3)",
@@ -27,28 +26,9 @@ const useStyles =  makeStyles((theme) => ({
     paddingTop: theme.spacing(2),
     // paddingBottom: theme.spacing(2),
   },
-  profitEffectiveArrow: {
-    transform: "rotate(-45deg)",
-    fill: theme.palette.success.main,
-  },
-  profitEffectiveArrowDanger: {
-    transform: "rotate(45deg)",
-    fill: theme.palette.secondary.main,
-  },
-  profitArrowIneffectiveDanger: {
-    transform: "rotate(-45deg)",
-    fill: theme.palette.secondary.main,
-  },
-  profitArrowIneffective: {
-    transform: "rotate(45deg)",
-    fill: theme.palette.success.main,
-  },
-
   totalValue: {
-    display: "flex",
-    alignItems: "baseline",
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3)
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   bottomTypography:{
     fontWeight: '600',
@@ -61,85 +41,137 @@ const useStyles =  makeStyles((theme) => ({
   }
 }));
 
+function minutesToHours(minutes){
+  const hours = Math.floor(minutes/60)
+  const min = minutes % 60
+  if (hours != 0){
+      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
+      return hours+'h'
+  }
+  return minutes%60+'m'
+}   
 
 
 export default function BigStat(props) {
-  var { product, total, color, registrations, bounce } = props;
+  var { category, total, percentage} = props;
   var classes = useStyles();
   var theme = useTheme();
 
-  // local
-  var [value, setValue] = useState("daily");
 
   return (
+
+    
     <Card className={classes.card}>
-          <div className={classes.title}>
-            <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '600',}} variant="h5">{product}</Typography>
-          </div>
+        <div className={classes.title}>
+            <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '600',}} variant="h6">{category}</Typography>
+        </div>
         <div className={classes.totalValueContainer}>
           <div className={classes.totalValue}>
-            <Typography variant="h3" style={{fontFamily: 'Poppins, sans-serif', marginRight:'12px', fontWeight: '900'}}>
-              {total[value]}h 
-            </Typography>
-            <Typography> </Typography>
-              {total.percent.profit
-            ? 
-            <Typography style={{color:"#00cc65"}}>
-                +{total.percent.value}%
-            </Typography> : 
-            <Typography style={{color:"crimson"}}>
-                -{total.percent.value}%
-              </Typography>}
-          </div>
-          {/* <BarChart width={150} height={70} data={getRandomData()}>
-            <Bar
-              dataKey="value"
-              fill="#f50057"
-              radius={10}
-              barSize={10}
-            />
-          </BarChart> */}
-        </div>
-
-        <div className={classes.bottomStatsContainer}>
-          <div>
-            <Grid container alignItems="center">
-              <Typography variant="h6" style={{marginRight: '2px'}}>{registrations[value].value}%</Typography>
-              <ArrowUpwardIcon style={{color:'#00cc65'}}
-              />
-            </Grid>
-            <Typography className={classes.bottomTypography}>
-              Effective
+            <Typography variant="h4" style={{fontFamily: 'Poppins, sans-serif', marginRight:'12px', fontWeight: '900'}}>
+              {minutesToHours(total.value)}
             </Typography>
           </div>
-          <div>
-            <Grid container alignItems="center">
-                <Typography variant="h6" style={{marginRight: '2px'}}>{registrations[value].value * 1.2}%</Typography>
-                <ArrowUpwardIcon 
-                />
-              </Grid>
-              <Typography className={classes.bottomTypography}>
-                Neutral
-              </Typography>
-            </div>
-            <div>
-            <Grid container alignItems="center">
-                <Typography variant="h6" style={{marginRight: '2px'}}>{registrations[value].value * 0.3}%</Typography>
-                <ArrowUpwardIcon style={{color:'crimson'}}
-                />
-              </Grid>
-              <Typography className={classes.bottomTypography}>
-                Inneffective
-              </Typography>
-            </div>
+          {(category === 'Effective' || category === 'Neutral')&& 
+                (total.percent.profit
+                      ? 
+                <div>
+                  <ArrowUpwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
+                  <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
+                      {total.percent.value}%
+                  </Typography>
+                </div> : 
+                <div>
+                    <ArrowDownwardIcon style={{color: 'crimson'}}/>
+                    <Typography style={{color:"crimson", display: 'inline-block'}}>
+                        {total.percent.value}%
+                      </Typography>
+                </div>)
+            }
+            {/* {category === 'Neutral' && 
+                (total.percent.profit
+                      ? 
+                <div style={{marginRight: '90px'}}>
+                  <ArrowUpwardIcon style={{marginTop: '-8px'}}/>
+                  <Typography style={{ display: 'inline-block', fontSize: '14px'}}>
+                      {total.percent.value}%
+                  </Typography>
+                </div> : 
+                <div>
+                    <ArrowDownwardIcon/>
+                    <Typography style={{display: 'inline-block'}}>
+                        {total.percent.value}%
+                      </Typography>
+                </div>)
+            } */}
+            {(category === 'Ineffective' || category === 'Without') && 
+                (total.percent.profit
+                      ? 
+                <div >
+                  <ArrowUpwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
+                  <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
+                      {total.percent.value}%
+                  </Typography>
+                </div> : 
+                <div>
+                    <ArrowDownwardIcon style={{color: '#00cc65'}}/>
+                    <Typography style={{color:"#00cc65", display: 'inline-block'}}>
+                        {total.percent.value}%
+                      </Typography>
+                </div>)
+            }
         </div>
 
+        <div className={classes.totalValueContainer}>
+          <Typography className="text-black-50" style={{fontSize:'20 px', marginRight:'12px'}}>{percentage.value}%</Typography>
+          <div style={{marginRight: '90px'}}>
+            {(category === 'Effective' || category === 'Neutral') && (percentage.percent.profit ? 
+                    (<div>
+                      <ArrowUpwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
+                      <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
+                          {percentage.percent.value}%
+                      </Typography>
+                    </div>)
+                     : 
+                    (<div>
+                      <ArrowDownwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
+                      <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
+                        {percentage.percent.value}%
+                      </Typography>
+                    </div>))
+            }
+            {/* {category === 'Neutral' && (percentage.percent.profit ? 
+                    (<div>
+                      <ArrowUpwardIcon style={{marginTop: '-8px'}}/>
+                      <Typography style={{display: 'inline-block', fontSize: '14px'}}>
+                        {percentage.percent.value}%
+                      </Typography>
+                    </div>)
+                     : 
+                    (<div>
+                      <ArrowDownwardIcon style={{ marginTop: '-8px'}}/>
+                      <Typography style={{display: 'inline-block', fontSize: '14px'}}>
+                        {percentage.percent.value}%
+                      </Typography>
+                    </div>))
+            } */}
+            {(category === 'Ineffective' || category === 'Without') && (percentage.percent.profit ? 
+                    (<div>
+                      <ArrowUpwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
+                      <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
+                        {percentage.percent.value}%
+                      </Typography>
+                    </div>)
+                     : 
+                    (<div>
+                      <ArrowDownwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
+                      <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
+                        {percentage.percent.value}%
+                      </Typography>
+                    </div>))
+            }
+            
+          </div>
+        </div>
       </Card>
   );
-}
-
-function getRandomData() {
-  return Array(7)
-    .fill()
-    .map(() => ({ value: Math.floor(Math.random() * 10) + 1 }));
 }

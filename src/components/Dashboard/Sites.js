@@ -18,6 +18,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { withStyles } from '@material-ui/core/styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
+import ByHoursChart from './Employee/byHoursChart'
 
 
 const ERadio = withStyles({
@@ -48,17 +49,17 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     width: '100%',
-    // marginBottom: theme.spacing(3),
-    // marginTop: theme.spacing(3),
-    // boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
-    // borderRadius: "20px",
+    marginBottom: theme.spacing(3),
+    marginTop: theme.spacing(3),
+    boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
+    borderRadius: "20px",
   },
   paperSmall:{
     width: '70%',
-    // marginBottom: theme.spacing(3),
-    // marginTop: theme.spacing(3),
-    // boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
-    // borderRadius: "20px",
+    marginBottom: theme.spacing(3),
+    marginTop: theme.spacing(3),
+    boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
+    borderRadius: "20px",
   },
   editIcon: {
     fontSize:'10px'      
@@ -178,8 +179,6 @@ const itemsWeekTeam = [
 
 export default function AcccessibleTable(props) {
 
-
-
   const subjectOfChange = props.subjectOfChange
   const timePeriod = props.timePeriod
   let items
@@ -233,6 +232,9 @@ export default function AcccessibleTable(props) {
 
   return (
     <div>
+        <Paper className={classes.paper} style={{height: '200px'}}>
+              <ByHoursChart/>
+        </Paper>
         <Container style={{display: 'flex', justifyContent: 'center'}}>
             <Paper className={timePeriod === 1 && subjectOfChange === 1 ? classes.paper : classes.paperSmall}>
                 <TableContainer>

@@ -203,10 +203,6 @@ const seriesWeek =  [{
       }
     });
 
-
-
-    console.log("END", endInd)
-    console.log(catLen)
     return(
       <div>
           <Chart options={options} series={series} type="bar" height={370}  width={800}/>

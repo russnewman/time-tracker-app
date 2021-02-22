@@ -8,9 +8,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableFooter from  '@material-ui/core/TableFooter';
 import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
-import { Container, Input, Paper, Typography, TextField, Select, Button, DialogContent, MenuItem, Grid } from '@material-ui/core';
+import { Container, Input, Paper, Typography, TextField,  Toolbar, Fab, Select, Button, DialogContent, MenuItem, Grid } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import IconButton from '@material-ui/core/IconButton';
+import AppBar from '@material-ui/core/AppBar';
+import CloseIcon from '@material-ui/icons/Close';
+
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -51,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     width: '100%',
     marginBottom: theme.spacing(3),
-    marginTop: theme.spacing(3),
+    // marginTop: theme.spacing(3),
     boxShadow: "0px 2px 12px rgba(10, 1, 20, 0.3)",
     borderRadius: "15px",
   },
@@ -61,6 +64,11 @@ const useStyles = makeStyles((theme) => ({
     // marginTop: theme.spacing(3),
     // boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
     // borderRadius: "20px",
+  },
+  appBar:{
+    background: '#060b26',
+    position: 'relative',
+    marginBottom: theme.spacing(3)
   },
   editIcon: {
     fontSize:'10px'      
@@ -122,8 +130,10 @@ const items = [
 
 export default function AcccessibleTable(props) {
 
-    const subjectOfChange = props.subjectOfChange
-    const timePeriod = props.timePeriod
+
+    const employee = props.employee
+    const closeMainDialog = props.onMainDialogClose
+
 
     const classes = useStyles();
 
@@ -142,9 +152,14 @@ export default function AcccessibleTable(props) {
     React.useEffect(() => {
         setRows(items);
       }, [items])
+
     
     const [openChangeDialog, setOpenChangeDialog] = React.useState(false);
     const [openAddDialog, setOpenAddDialog] = React.useState(false);
+
+    // React.useEffect(() => {
+    //   setOpenAddDialog(props.openAddDialog);
+    // }, [props.openAddDialog])
 
     const [resourseName, setResourseName] = React.useState("")
 
@@ -194,16 +209,32 @@ export default function AcccessibleTable(props) {
   }
 
   return (
+    <div>
+    <AppBar className={classes.appBar}>
+      <Toolbar>
+        <IconButton edge="start" color="inherit" onClick={()=>{closeMainDialog()}} aria-label="close" style={{marginLeft: '112px', marginRight: '32px'}}>
+          <CloseIcon />
+        </IconButton>
+        <Typography variant="h6" className={classes.title}>
+          {employee.fullName}
+        </Typography>
+        <div style={{ float: 'right', display: 'flex', marginLeft: 'auto', marginRight: '112px'}}>
+          <Fab size="small" color = "secondary" onClick={()=>setOpenAddDialog(true)} >
+              <AddIcon style={{fontSize: '30px'}}/>
+          </Fab>
+      </div>
+      </Toolbar>
+    </AppBar>
+
     <Container>
         {/* <Button  variant="outlined"  style={{marginTop:'8px', marginBottom:'8px', minWidth:'150px'}}>
             Add
         </Button> */}
-
-        <div style={{align: 'right', display: 'flex'}}>
+        {/* <div style={{ float: 'right'}}>
             <IconButton onClick={()=>setOpenAddDialog(true)}>
-                <AddIcon style={{fontSize: '40px'}}/>
+                <AddIcon style={{fontSize: '30px'}}/>
             </IconButton>
-        </div>
+        </div> */}
         <Grid container spacing={4}>
             <Grid item md={4} sm={6} xs={12}>
                 <Paper className={classes.paper}>
@@ -356,9 +387,10 @@ export default function AcccessibleTable(props) {
             </Grid>
         </Grid>
         
-        <ChangeResourseType rows={rows} resourseName={resourseName} subjectOfChange={subjectOfChange} open={openChangeDialog} onClose={handleCloseChangeDialog}/>
+        <ChangeResourseType rows={rows} resourseName={resourseName} open={openChangeDialog} onClose={handleCloseChangeDialog}/>
         <AddResourse rows={rows} open={openAddDialog} onClose={handleCloseAddDialog}></AddResourse> 
     </Container>
+    </div>
   );
 }
 
@@ -370,7 +402,7 @@ function ChangeResourseType(props) {
   let resourseName = props.resourseName
   const onClose = props.onClose
   const open = props.open
-  const subjectOfChange = props.subjectOfChange
+  // const subjectOfChange = props.subjectOfChange
 
 
   const tmp =  rows.find(row => row.resourse === resourseName)
@@ -407,7 +439,7 @@ function ChangeResourseType(props) {
       <DialogContent className={classes.dialogContent}>
 
             <Container style={{ display: 'flex', flexDirection:'row', justifyContent: 'center'}}>
-                {subjectOfChange == 1 && 
+                
                 <div style={{width: '56px', marginRight: '96px', marginTop:'6px'}}>
                   <Select
                         value={selectValue}
@@ -423,7 +455,7 @@ function ChangeResourseType(props) {
                     <MenuItem value="employee">This employee</MenuItem>
                   </Select>
                 </div>
-              }
+              
                 <RadioGroup  row aria-label="position" value={type} onChange={handleChange}>
                   <FormControlLabel value="effective" control={<ERadio/>} label="Effective" />
                   <FormControlLabel value="neutral" control={<NRadio/>} label="Neutral" />
@@ -481,7 +513,6 @@ function ChangeResourseType(props) {
     const handleTypeChange = (event) => setType(event.target.value)
     const handleResourseChange = (event) => setNewResourse(event.target.value)
     
-  
   
     return (
       <div>

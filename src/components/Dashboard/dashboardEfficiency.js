@@ -4,7 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import EffectiveLineChart from './effectiveLineChart'
 import CustomDay from './date'
 
-import { Grid, Card, Container, Input, Paper, FormControl, Button, Typography, Select, MenuItem } from '@material-ui/core';
+import { Grid, Card, Container, Input, Paper, FormControl, Button,IconButton, Typography, Select, MenuItem } from '@material-ui/core';
 import TableMember from "./Employee/tableMember"
 import TableTeam from "./Team/tableTeam"
 
@@ -20,6 +20,14 @@ import UsageOfTeamSumChart from './Employee/usageOfTeamSumChart'
 import Sites from './Sites'
 import SitesAllTime from './SitesAllTime'
 
+import EqualizerRoundedIcon from '@material-ui/icons/EqualizerRounded';
+import TimelineIcon from '@material-ui/icons/Timeline';
+import InsertChartOutlinedRoundedIcon from '@material-ui/icons/InsertChartOutlinedRounded';
+import DonutLargeRoundedIcon from '@material-ui/icons/DonutLargeRounded';
+import WebAssetIcon from '@material-ui/icons/WebAsset';
+import ByHoursChart from './Employee/byHoursChart'
+
+
 
 
 
@@ -30,64 +38,48 @@ import BigStat from "./BigStat";
 const mock = {
   bigStat: [
     {
-      product: "Worked day",
+      category: "Effective",
       total: {
-        monthly: 4232,
-        weekly: 1465,
-        daily: 199,
-        percent: { value: 3.7, profit: false }
+        value: 154,
+        percent: { value: 3.7, profit: true }
       },
-      color: "Worked week",
-      registrations: {
-        monthly: { value: 830, profit: false },
-        weekly: { value: 215, profit: true },
-        daily: { value: 33, profit: true }
-      },
-      bounce: {
-        monthly: { value: 4.5, profit: false },
-        weekly: { value: 3, profit: true },
-        daily: { value: 3.25, profit: true }
-      }
+      percentage: {
+        value: 32,
+        percent: {value: 9, profit: false}
+      } 
     },
     {
-      product: "Worked week",
+      category: "Neutral",
       total: {
-        monthly: 754,
-        weekly: 180,
-        daily: 27,
+        value: 75,
         percent: { value: 2.5, profit: true }
       },
-      color: "warning",
-      registrations: {
-        monthly: { value: 32, profit: true },
-        weekly: { value: 8, profit: true },
-        daily: { value: 2, profit: false }
-      },
-      bounce: {
-        monthly: { value: 2.5, profit: true },
-        weekly: { value: 4, profit: false },
-        daily: { value: 4.5, profit: false }
-      }
+      percentage: {
+        value: 14,
+        percent: {value: 4, profit: true}
+      } 
     },
     {
-      product: "Worked mounth",
+      category: "Ineffective",
       total: {
-        monthly: 1025,
-        weekly: 301,
-        daily: 44,
+        value: 40,
         percent: { value: 3.1, profit: true }
       },
-      color: "secondary",
-      registrations: {
-        monthly: { value: 230, profit: true },
-        weekly: { value: 58, profit: false },
-        daily: { value: 15, profit: false }
+      percentage: {
+        value: 21,
+        percent: {value: 11, profit: false}
+      } 
+    },
+    {
+      category: "Without",
+      total: {
+        value: 189,
+        percent: { value: 10, profit: true }
       },
-      bounce: {
-        monthly: { value: 21.5, profit: false },
-        weekly: { value: 19.35, profit: false },
-        daily: { value: 10.1, profit: true }
-      }
+      percentage: {
+        value: 35,
+        percent: {value: 4.7, profit: true}
+      } 
     }
   ],
 };
@@ -165,6 +157,7 @@ export default function DashboardEfficiency(props){
     const [subjectOfChange, setSubjectOfChange] = React.useState(1);
     const [effectiveType, setEffectiveType] = React.useState(1);
     const [view, setView] = React.useState('analytics')
+    const [flag, setFlag] = React.useState(false)
 
     const handleTimeChange = (event) => {
       setTimePeriod(event.target.value);
@@ -179,54 +172,64 @@ export default function DashboardEfficiency(props){
       }
       else setView('analytics')
     }
+
+    React.useEffect(() => {
+      setFlag(true);
+    })
+
     return (
       <div>
-      <AppBar className={classes.appbar}>
-        <Toolbar>
-          <Container className={classes.appbarContent}>
+        <AppBar className={classes.appbar}>
+          <Toolbar>
+            <Container className={classes.appbarContent}>
 
 
-          <Button  variant="outlined"  style={{marginTop:'8px', marginBottom:'8px', minWidth:'150px'}} onClick={handleViewChange}>
-            {view}
-          </Button>
+            {/* <Button  variant="outlined"  style={{marginTop:'8px', marginBottom:'8px', minWidth:'150px'}} onClick={handleViewChange}>
+              {view}
+            </Button> */}
 
-            <div>
+            <IconButton  style={{marginTop:'8px', marginBottom:'8px', marginLeft:'-16px', minWidth:'56px', minHeight: '56px'}} onClick={handleViewChange} >
+                {view === 'analytics' ? <WebAssetIcon style={{color: '#000000', fontSize:'32px'}}/> : <InsertChartOutlinedRoundedIcon style={{color: '#000000', fontSize:'32px'}}/>}
+            </IconButton>
 
-          <FormControl variant="outlined" className={classes.formControl}>
-              <Select
-                value={subjectOfChange}
-                onChange={handleSubjecChange}
-              >
-                <MenuItem value={1}>Member</MenuItem>
-                <MenuItem value={2}>All Team</MenuItem>
-                <MenuItem value={3}>Me</MenuItem>
-              </Select>
-            </FormControl>
 
-            <FormControl variant="outlined" className={classes.formControl}>
-              <Select
-                value={timePeriod}
-                onChange={handleTimeChange}
-              >
-                <MenuItem value={1}>Day</MenuItem>
-                <MenuItem value={2}>Week</MenuItem>
-              </Select>
-            </FormControl>
+            <div style={{marginRight:'-10px'}}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                  <Select
+                    value={subjectOfChange}
+                    onChange={handleSubjecChange}
+                  >
+                    <MenuItem value={1}>Member</MenuItem>
+                    <MenuItem value={2}>All Team</MenuItem>
+                    <MenuItem value={3}>Me</MenuItem>
+                  </Select>
+                </FormControl>
 
-            <FormControl MenuProps={{ disableScrollLock: true }} variant="outlined" className={classes.formControl}>
-              <CustomDay/>
-            </FormControl>
-            </div>
-            
-          </Container>
-        </Toolbar>
-      </AppBar>
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <Select
+                    value={timePeriod}
+                    onChange={handleTimeChange}
+                  >
+                    <MenuItem value={1}>Day</MenuItem>
+                    <MenuItem value={2}>Week</MenuItem>
+                  </Select>
+                </FormControl>
 
-      {view === 'analytics' ? (<Container>
+                <FormControl MenuProps={{ disableScrollLock: true }} variant="outlined" className={classes.formControl}>
+                  <CustomDay/>
+                </FormControl>
+              </div>
+              
+            </Container>
+          </Toolbar>
+        </AppBar>
 
-        <Grid container spacing={4}>
+      {view === 'analytics' ? (
+      <div style={{paddingLeft: '64px', paddingRight: '64px'}}>
+
+        <Grid container spacing={2}>
           {mock.bigStat.map(stat => (
-            <Grid item md={4} sm={6} xs={12} key={stat.product}>
+            <Grid item md={3} sm={6} xs={12} key={stat.category}>
               <BigStat {...stat}/>
             </Grid>
           ))}
@@ -261,11 +264,11 @@ export default function DashboardEfficiency(props){
                     </Typography>)}
 
               </div>
-              {subjectOfChange === 2 && (chartSwitcher === 'Efficiency' ? 
+              {flag && subjectOfChange === 2 && (chartSwitcher === 'Efficiency' ? 
                   <EfficiencyOfTeamChart timePeriod={timePeriod}/> :
                   <UsageOfTeamChart timePeriod={timePeriod}/> 
               )}
-              {subjectOfChange === 1 && (chartSwitcher === 'Efficiency' ? 
+              {flag && subjectOfChange === 1 && (chartSwitcher === 'Efficiency' ? 
                   (<EfficiencyChart timePeriod={timePeriod}/>) : 
                   (<UsageChart timePeriod={timePeriod}/>)
               )}
@@ -280,16 +283,16 @@ export default function DashboardEfficiency(props){
                 {timePeriod === 3 && <Typography className={classes.typography} variant="h5">Mounth result</Typography>}
               </div>
 
-              {subjectOfChange === 2 && (chartSwitcher === 'Efficiency' ? 
+              {flag && subjectOfChange === 2 && (chartSwitcher === 'Efficiency' ? 
                   <EfficiencyOfTeamSumChart timePeriod={timePeriod}/> : 
                   <UsageOfTeamSumChart timePeriod={timePeriod}/>)}
-              {subjectOfChange === 1 && (chartSwitcher === 'Efficiency' ? 
+              {flag && subjectOfChange === 1 && (chartSwitcher === 'Efficiency' ? 
                   (<EfficiencyByDayChart timePeriod={timePeriod}/>) : 
                   (<UsageByDayChart timePeriod={timePeriod}/>)
               )}
             </Card>
           </Grid>
-        </Grid>
+        </Grid> 
 
         <Grid container spacing={4}>
           <Grid item xs={12} lg={12}>
@@ -316,9 +319,19 @@ export default function DashboardEfficiency(props){
             </Card>
           </Grid>
         </Grid>
-        </Container>)
+
+
+        
+        <Grid container spacing={4}>
+          <Grid item xs={12} lg={12}>
+            <Card className={classes.card} style={{height: '200px'}}>
+              <ByHoursChart/>
+            </Card>
+          </Grid>
+        </Grid>
+        </div>)
         :
-        (<SitesAllTime subjectOfChange={subjectOfChange} timePeriod={timePeriod}/>)}
+        (<Sites subjectOfChange={subjectOfChange} timePeriod={timePeriod}/>)}
     </div>
     )
 

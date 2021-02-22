@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Paper, makeStyles, TableBody, TableRow, TableCell, Toolbar, InputAdornment } from '@material-ui/core';
+import { Paper, makeStyles, TableBody, TableRow, TableCell, Typography, TextField} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined';
 
 import Notification from "../components/employees/Notification";
@@ -12,57 +11,166 @@ import AuthService from "../services/auth.service"
 import EmployeeService from "../services/employee.service";
 
 
+import Table from '@material-ui/core/Table';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
+
+
 const useStyles = makeStyles(theme => ({
     pageContent: {
         margin: theme.spacing(5),
-        padding: theme.spacing(3),
-        // width: '100%',
-        // position: 'fixed',
-        // marginTop: theme.spacing(3),
-
+        boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
+        borderRadius: "25px",
     },
     searchInput: {
-        width: '75%'
+        width: '176px',
+        paddingLeft: '48px',
     },
     newButton: {
         position: 'absolute',
         right: '10px'
     },
     employeesComponent:{
-        // position: 'fixed',
-        // marginTop: theme.spacing(1),
-        // top: '60px',
         width: '100%',
         position: 'absolute',
-        // top: '40px',
-        // marginTop: theme.spacing(3),
-      }
+      },
+    root: {
+        width: '100%',
+      },
+      paper: {
+        width: '100%',
+        marginBottom: theme.spacing(3),
+        marginTop: theme.spacing(3),
+        boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
+        borderRadius: "25px",
+      },
+      table: {
+        minWidth: 750,
+      },
 }))
 
+
+
 const headCells = [
-    { id: 'email', label: 'Email Address' },
-    { id: 'fullName', label: 'Leader Name' },
-    { id: 'department', label: 'Department' },
-    { id: 'position', label: 'Position' },
-    { id: 'actions', disableSorting: true }
-]
+    { id: 'email', alignRight: false, disablePadding: true, label: 'Email Adress' },
+    { id: 'fullName', alignRight: false, disablePadding: false, label: 'Manager Name'},
+    { id: 'department', alignRight: false, disablePadding: false, label: 'Department'},
+    { id: 'position', alignRight: false, disablePadding: false, label: 'Position' },
+    { id: 'action', alignRight: false, disablePadding: false, label: 'Action' },
+  ];
+
+
+function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+  
+function getComparator(order, orderBy) {
+    return order === 'desc'
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) return order;
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+}
+
+
+
+function EnhancedTableHead(props) {
+    const { classes, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const createSortHandler = (property) => (event) => {
+      onRequestSort(event, property);
+    };
+  
+    return (
+      <TableHead>
+        <TableRow>
+          <TableCell padding="checkbox">
+          </TableCell>
+          {headCells.map((headCell) => (
+            <TableCell
+              key={headCell.id}
+              align={headCell.alignRight ? 'right' : 'left'}
+              padding={headCell.disablePadding ? 'none' : 'default'}
+              sortDirection={orderBy === headCell.id ? order : false}
+            >
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                <Typography className="font-weight-bold">{headCell.label}</Typography>
+                {orderBy === headCell.id ? (
+                  <span className={classes.visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </span>
+                ) : null}
+              </TableSortLabel>
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+    );
+  }
+
+
+
 
 export default function LeadersComponent() {
 
-    const [records, setRecords] = useState(AuthService.getCurrentUser().managers)
+    const [rows, setRows] = useState(AuthService.getCurrentUser().managers)
 
     const classes = useStyles();
     const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
     const [userManager, setUserManager ]=useState(AuthService.getCurrentUser().userManager)
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('name');
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
     const {
         TblContainer,
         TblHead,
         TblPagination,
         recordsAfterPagingAndSorting
-    } = useTable(records, headCells, filterFn);
+    } = useTable(rows, headCells, filterFn);
+
+
+
+
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+      };
+    
+    
+      const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+      };
+    
+      const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+      };
+
+
 
     useEffect(()=>{
         EmployeeService.getManagerRest()
@@ -79,7 +187,7 @@ export default function LeadersComponent() {
 
         EmployeeService.getAllManagersRest()
         .then((response) =>{
-            setRecords(response)
+            setRows(response)
         },
         error =>{
             setNotify({
@@ -125,6 +233,58 @@ export default function LeadersComponent() {
         return(
             <>
             <Paper className={classes.pageContent}>
+            <Typography style={{paddingLeft: '64px', paddingTop: '24px', paddingBottom: '24px'}} variant="h4">Your manager</Typography>
+
+                <div className={classes.root}>
+                    <TableContainer>
+
+                    <Table
+                        className={classes.table}
+                        aria-labelledby="tableTitle"
+                        aria-label="enhanced table"
+                    >
+                        <TableHead>
+                            <TableRow>
+                                <TableCell padding="checkbox"></TableCell>
+                                <TableCell><Typography className="font-weight-bold">Email</Typography></TableCell>
+                                <TableCell><Typography className="font-weight-bold">Full name</Typography></TableCell>
+                                <TableCell><Typography className="font-weight-bold">Department</Typography></TableCell>
+                                <TableCell><Typography className="font-weight-bold">Position</Typography></TableCell>
+                                <TableCell><Typography className="font-weight-bold">Action</Typography></TableCell>
+
+
+                            </TableRow>
+                        </TableHead>
+
+                        <TableBody>
+                            <TableRow key={userManager.id}>
+                                <TableCell padding="checkbox"></TableCell>
+                                <TableCell>{userManager.email}</TableCell>
+                                <TableCell>{userManager.fullName}</TableCell>
+                                <TableCell>{userManager.department}</TableCell>
+                                <TableCell>{userManager.position}</TableCell>
+                                
+                                <TableCell>
+                                <Controls.ActionButton
+                                                color="secondary"
+                                                onClick={() => {
+                                                    setConfirmDialog({
+                                                        isOpen: true,
+                                                        title: 'Are you sure to delete this record?',
+                                                        onConfirm: () => {deleteManager() }
+                                                    })
+                                                }}>
+                                                <CloseIcon fontSize="small" />
+                                            </Controls.ActionButton>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                    </TableContainer>
+                </div>
+            </Paper>
+
+            {/* <Paper className={classes.pageContent}>
                 <h4>Your manager</h4>
                 <TblContainer>
                     <TblHead />
@@ -151,7 +311,7 @@ export default function LeadersComponent() {
                         </TableRow>
                     </TableBody>
                 </TblContainer>
-            </Paper>
+            </Paper>  */}
             <ConfirmDialog
                 confirmDialog={confirmDialog}
                 setConfirmDialog={setConfirmDialog}
@@ -166,7 +326,79 @@ export default function LeadersComponent() {
     else
     return (
         <>
+        <div style={{paddingRight: '32px', paddingLeft:'32px'}}>
             <Paper className={classes.pageContent}>
+                <TextField style={{width: '27%', marginLeft: '48px', marginBottom: '16px', marginTop: '16px'}} label="Search employee" onChange={handleSearch}>
+                </TextField>
+                <div className={classes.root}>
+                    <TableContainer>
+                    <Table
+                        className={classes.table}
+                        aria-labelledby="tableTitle"
+                        aria-label="enhanced table"
+                    >
+                        <EnhancedTableHead
+                            classes={classes}
+                            order={order}
+                            orderBy={orderBy}
+                            onRequestSort={handleRequestSort}
+                            rowCount={rows.length}
+                        />
+
+
+                        <TableBody>
+                        {stableSort(filterFn.fn(rows), getComparator(order, orderBy))
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((item, index) => {
+                            const labelId = `enhanced-table-checkbox-${index}`;
+
+                            return (
+                                <TableRow
+                                    hover
+                                    role="checkbox"
+                                    tabIndex={-1}
+                                    key={item.fullName}
+                                >
+                                <TableCell padding="checkbox">
+                                </TableCell>
+                                <TableCell component="th" id={labelId} scope="row" padding="none">
+                                    {item.email}
+                                </TableCell>
+                                <TableCell>{item.fullName}</TableCell>
+                                <TableCell>{item.department}</TableCell>
+                                <TableCell>{item.position}</TableCell>
+                                <TableCell>
+
+                                            <Controls.ActionButton
+                                                    color="primary"
+                                                    onClick={() => { chooseManager(item) }}>
+                                                <CheckCircleOutlineOutlinedIcon fontSize="small" />
+                                            </Controls.ActionButton>
+
+                                    </TableCell>
+                                </TableRow>
+                            );
+                            })}
+                        </TableBody>
+                    </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                </div>
+            </Paper>
+        </div>
+
+
+
+
+            {/* <Paper className={classes.pageContent}>
                 <Toolbar>
                     <Controls.Input
                         label="Search manager by email"
@@ -201,7 +433,7 @@ export default function LeadersComponent() {
                     </TableBody>
                 </TblContainer>
                 <TblPagination />
-            </Paper>
+            </Paper> */}
 
             <Notification
                 notify={notify}

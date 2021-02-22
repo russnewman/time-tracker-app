@@ -107,7 +107,10 @@ const headCells = [
   { id: 'effectiveRate', alignRight: true, disablePadding: false, label: 'Effective' },
   { id: 'neutralRate', alignRight: true, disablePadding: false, label: 'Neutral' },
   { id: 'ineffectiveRate', alignRight: true, disablePadding: false, label: 'Ineffective' },
+  { id: 'i', alignRight: true, disablePadding: false, label: 'Without category' },
   { id: 'total', alignRight: true, disablePadding: false, label: 'Total' },
+  { id: 'department', alignRight: true, disablePadding: false, label: 'Department' },
+  { id: 'status', alignRight: true, disablePadding: false, label: 'Status' }
 ];
 
 function EnhancedTableHead(props) {

@@ -319,7 +319,7 @@ export default function EffectiveLineChart(props){
     return(
       <div>
           {/* {effectiveType === 4 ? <Chart options={opt}></Chart>} */}
-          <Chart options={optionsEffective} series={seriesEffectiveDay} type="area" height={370}  width={1225}/>
+          <Chart options={optionsEffective} series={seriesEffectiveDay} type="area" height={370}  width={1390}/>
           {props.timePeriod == 1 ? (<div className={classes.bottomArrows}>
           <Button onClick={handleLeftClick}><KeyboardArrowLeftIcon/></Button>
           <Button onClick={handleRightClick}><KeyboardArrowRightIcon/></Button>
