@@ -116,7 +116,7 @@ const optionsDay = {
         }
       });
       return (
-        <Chart options={options} series={series} type="donut" />
+        <Chart options={options} series={series} type="donut" width={'100%'} height={'90%'}/>
       )
   }
   

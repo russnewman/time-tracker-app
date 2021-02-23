@@ -124,7 +124,7 @@ const series =  [{
       });
 
       return (
-        <Chart options={options} series={series} type="bar" height={400}  width={900}/>
+        <Chart options={options} series={series} type="bar" height={400}  width={'100%'}/>
       )
   }
   

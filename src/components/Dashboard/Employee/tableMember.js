@@ -132,7 +132,10 @@ function EnhancedTableHead(props) {
   );
 }
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
+
+  const setSubjectOfChange = props.setSubjectOfChange
+
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('name');
@@ -141,9 +144,14 @@ export default function EnhancedTable() {
   const [selectedMember, setSelectedMember] = React.useState(null);
 
   const handleCheck = (event, name) =>{
-        selectedMember === name ? 
-        setSelectedMember(null) : setSelectedMember(name)
-        
+        if (selectedMember === name){
+          setSubjectOfChange(2)
+          setSelectedMember(null)
+        }
+        else{
+          setSubjectOfChange(1)
+          setSelectedMember(name)
+        }
   }
 
   const handleRequestSort = (event, property) => {

@@ -19,24 +19,31 @@ const styles = makeStyles((theme) => ({
 }))
 
 
-const dataA = [23,23,24,25,13,12,14,13, 23, 20, 8, 13, 17,11,17,24,28,20,10,19,16,14,19,14]
-const dataB = [13,23,20,8,13,27,31,17,14,8,10,10,11,17,21,17,24,28,20,10,19,16,14,19,14]
-const dataC = [11,12,15,15,21,14,14,17,12,10,11,11,9, 13, 23, 20, 8, 13, 27,11,17,24,18,20,7]
+const dataA = [23,23,24,25,13,12,14,13, 23, 20, 8, 13, 17,11,12,12 ,20,20,10,19,16,14,19,14]
+const dataB = [13,13,20,8,13,27,31,17,14,8,10,10,11,2,11,11,4,12,12,10,15,11,14,12,14]
+const dataC = [11,12,15,15,11,14,4,17,5,10,11,11,9, 9, 13, 12, 8, 13, 17,11,17,24,18,20,7]
+const dataD = [2,3,10,9,12,10,7,17,9,10,11,5,9, 4, 5, 1, 0, 0, 3, 2, 7,4,12,1,0]
+
 const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:00'],['03:00','-','04:00'],['04:00','-','5:00'],['05:00','-','6:00'],['06:00','-','7:00'],
 ['07:00','-','8:00'],['08:00','-','9:00'],['09:00','-','10:00'], ['10:00','-','11.00'], ['11:00','-','12:00'], ['12:00','-','13:00'],
 ['13:00','-','14:00'], ['14:00','-','15:00'],['15.00','-','16:00'],['16.00','-','17:00'],['17.00','-','18:00'],
 ['18.00','-','19:00'],['19.00','-','20:00'],['20.00','-','21:00'], ['21.00','-','22:00'], ['22.00','-','23:00'],['23.00','-','00:00']]
 
 const series =  [{
-    name: 'PRODUCT A',
+    name: 'Effective',
     data: dataA.slice(8,20)
   }, {
-    name: 'PRODUCT B',
+    name: 'Neutral',
     data: dataB.slice(8,20)
   }, {
-    name: 'PRODUCT C',
+    name: 'Ineffective',
     data: dataC.slice(8,20)
-  }]
+  },
+  {
+    name: 'Without category',
+    data: dataD.slice(8,20)
+  }
+]
   
   
   const options = {
@@ -53,11 +60,11 @@ const series =  [{
         speed: 300,
         animateGradually: {
             enabled: true,
-            delay: 150
+            delay: 1
         },
         dynamicAnimation: {
             enabled: true,
-            speed: 350
+            speed: 450
         }
       
     },
@@ -68,7 +75,7 @@ const series =  [{
   
     plotOptions: {
       bar: {
-        borderRadius: 6,
+        // borderRadius: 6,
         columnWidth: '25%',
       }
     },
@@ -101,7 +108,7 @@ const series =  [{
     },
   
     fill: {
-      colors: ['#000C77', '#56cfe1', '#80ffdb'],
+      colors: ['#d90368', '#f5cc00', '#00cc99', '#bcb8b1'],
       opacity: 1
       },
   }
@@ -155,14 +162,18 @@ const seriesWeek =  [{
 
       const newOpt = {
       series: [{
-          name: 'PRODUCT A',
+          name: 'Effective',
           data: dataA.slice(newBeginInd, newBeginInd + 12)
         }, {
-          name: 'PRODUCT B',
+          name: 'Neutral',
           data: dataB.slice(newBeginInd, newBeginInd + 12)
         }, {
-          name: 'PRODUCT C',
+          name: 'Ineffective',
           data: dataC.slice(newBeginInd, newBeginInd + 12)
+        },
+        {
+          name: 'Without category',
+          data: dataD.slice(newBeginInd, newBeginInd + 12)
         }],
         xaxis:{
           categories: categories.slice(newBeginInd, newBeginInd + 12)
@@ -183,15 +194,20 @@ const seriesWeek =  [{
 
         const newOptions = {
           series: [{
-            name: 'PRODUCT A',
+            name: 'Effective',
             data: dataA.slice(newBeginInd, newBeginInd + 12)
           }, {
-            name: 'PRODUCT B',
+            name: 'Neutral',
             data: dataB.slice(newBeginInd, newBeginInd + 12)
           }, {
-            name: 'PRODUCT C',
+            name: 'Ineffective',
             data: dataC.slice(newBeginInd, newBeginInd +12)
-          }],
+          },
+          {
+            name: 'Without category',
+            data: dataD.slice(newBeginInd, newBeginInd +12)
+          }
+        ],
           xaxis:{
             categories: categories.slice(newBeginInd, newBeginInd + 12)
           }
@@ -220,7 +236,7 @@ const seriesWeek =  [{
     return(
       <div>
 
-          <Chart options={options} series={series} type="bar" height={370}  width={800}/>
+          <Chart options={options} series={series} type="bar" height={370}  width={'100%'}/>
           {props.timePeriod == 1 ? (<div className={classes.bottomArrows}>
             <Button onClick={handleLeftClick}><KeyboardArrowLeftIcon/></Button>
             <Button onClick={handleRightClick}><KeyboardArrowRightIcon/></Button>

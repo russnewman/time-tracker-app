@@ -1,21 +1,33 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import ReactApexChart from 'apexcharts'
+import { FaRegClosedCaptioning } from 'react-icons/fa';
 
 
 
 
 
-const series = [31,55,41]
+const series = [127,172,61, 76]
+
+function minutesToHours(minutes){
+  const hours = Math.floor(minutes/60)
+  const min = minutes % 60
+  if (hours != 0){
+      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
+      return hours+'h'
+  }
+  return minutes%60+'m'
+}   
+
 
 const options = {
   chart: {
     type: 'donut',
     id: 'efficiencySum'
   },
-  labels: ['Ineffective', 'Neutral', 'Effective'],
+  labels: ['Ineffective', 'Neutral', 'Effective', 'Without category'],
   fill: {
-    colors: ['#000C77', '#56cfe1', '#80ffdb'],
+    colors: ['#d90368', '#ffee32', '#00cc99', '#bcb8b1'],
     opacity: 1
     },
   plotOptions: {
@@ -43,8 +55,7 @@ const options = {
                         color: '#373d3f',
                         offsetY: 16,
                         formatter: function (val) {
-                            if(val == 1) return val + ' hour'
-                            return val + ' hours'
+                            return minutesToHours(val)
                         }
                     },
                     total: {
@@ -56,9 +67,9 @@ const options = {
                         fontWeight: 700,
                         color: '#373d3f',
                         formatter: function (w) {
-                          return w.globals.seriesTotals.reduce((a, b) => {
+                          return minutesToHours(w.globals.seriesTotals.reduce((a, b) => {
                             return a + b
-                          }, 0) + ' hours'
+                          }, 0))
                         }
                       }
                 }
@@ -66,9 +77,21 @@ const options = {
         }
     },
 
-    colors: ['#030C54', '#56cfe1', '#80ffdb'],
+    tooltip: {
+      enabled: false
+    },
+    yaxis:{
+      min: 0,
+      max: 600,
+      tickAmount: 5,
+    },
+
+    colors: ['#030C54', '#56cfe1', '#80ffdb', '#bcb8b1'],
     dataLabels: {
         enabled: true,
+        // formatter: function (val, opts) {
+        //   return val + 'sdgfsdg'
+        // },
         dropShadow: {
             enabled: false
         },
@@ -79,7 +102,7 @@ const options = {
             fontSize: '14px',
             fontFamily: 'Roboto, sans-seri',
             fontWeight: 100,
-            colors:['#ffffff', '#020202', '#020202']
+            colors:['#020202', '#020202', '#020202', '#020202']
         }
       },
     
@@ -89,10 +112,33 @@ const options = {
 }
 
 
-const seriesWeek = [34,52,45]
+const seriesWeek = [142,67,121, 100]
 
 const optionsWeek = {
-  series: seriesWeek
+  series: seriesWeek,
+  plotOptions: {
+    pie: {
+        donut: {
+            labels: {
+                show: true,
+                total: {
+                    show: true,
+                    showAlways: false,
+                    label: 'Average',
+                    fontSize: '22px',
+                    fontFamily: 'Roboto, sans-seri',
+                    fontWeight: 700,
+                    color: '#373d3f',
+                    formatter: function (w) {
+                      return minutesToHours(w.globals.seriesTotals.reduce((a, b) => {
+                        return a + b
+                      }, 0))
+                    }
+                  }
+              }
+            }
+      }
+    }
 }
 
 const optionsDay = {
@@ -122,7 +168,7 @@ const optionsDay = {
         }
       });
       return (
-        <Chart options={options} series={series} type="donut" />
+        <Chart options={options} series={series} type="donut" width={'100%'} height={'80%'} />
       )
   }
   

@@ -6,7 +6,7 @@ import CustomDay from './date'
 
 import { Grid, Card, Container, Input, Paper, FormControl, Button,IconButton, Typography, Select, MenuItem } from '@material-ui/core';
 import TableMember from "./Employee/tableMember"
-import TableTeam from "./Team/tableTeam"
+import Table from "./table"
 
 import EfficiencyChart from './Employee/efficiencyChart'
 import EfficiencyByDayChart from './Employee/efficiencySumChart'
@@ -128,7 +128,17 @@ const styles = makeStyles((theme) => ({
   appbar:{
     marginBottom: theme.spacing(2),
     backgroundColor: '#ffffff',
-    position: 'sticky'
+    position: 'sticky',
+    // overflowX: 'hidden',
+    width: '100%',
+    // overflowX: 'hidden',
+    // overflowY: 'hidden',
+    // maxWidth: '100%',
+    // position: 'fixed',
+    // width: '100%',
+    // height: '50px',
+    // top: '30px',
+    
     // height: '80px'
   },
   formControl: {
@@ -141,11 +151,14 @@ const styles = makeStyles((theme) => ({
     justifyContent: 'space-between'
   },
   typography:{
-                    paddingTop:'8px',
-                    fontFamily: 'Poppins',
-                    fontWeight: '900',
-                    fontSize: '20px'
-  }
+    paddingTop:'8px',
+    fontFamily: 'Poppins',
+    fontWeight: '900',
+    fontSize: '20px'
+  },
+  // cont:{
+  //   overflow: 'hidden'
+  // }
 })); 
 
 
@@ -154,11 +167,15 @@ export default function DashboardEfficiency(props){
     const [chartSwitcher, setChartSwitcher] = React.useState('Efficiency')
     const classes = styles()
     const [timePeriod, setTimePeriod] = React.useState(1);
-    const [subjectOfChange, setSubjectOfChange] = React.useState(1);
+    const [subjectOfChange, setSubjectOfChange] = React.useState(2);
+    const [writing, setWriting] = React.useState('All team')
     const [effectiveType, setEffectiveType] = React.useState(1);
     const [view, setView] = React.useState('analytics')
     const [flag, setFlag] = React.useState(false)
 
+
+
+    const s = 'All team'
     const handleTimeChange = (event) => {
       setTimePeriod(event.target.value);
     };
@@ -177,36 +194,29 @@ export default function DashboardEfficiency(props){
       setFlag(true);
     })
 
+
+    console.log("sadsdf", writing)
+
     return (
-      <div>
+      <div className={classes.cont}>
         <AppBar className={classes.appbar}>
           <Toolbar>
             <Container className={classes.appbarContent}>
 
+            <div style={{ alignItems: 'center', marginLeft: '-90px', display: 'flex'}}>
+                  <IconButton onClick={handleViewChange} >
+                    {view === 'analytics' ? <WebAssetIcon style={{color: '#000000', fontSize:'32px'}}/> : <InsertChartOutlinedRoundedIcon style={{color: '#000000', fontSize:'32px'}}/>}
+                  </IconButton>
+                  <Typography variant="h5" style={{color: 'black', fontWeight: '500', marginLeft: '16px', display: 'inline-block'}}>
+                      {writing}
+                  </Typography>
+            </div>
 
-            {/* <Button  variant="outlined"  style={{marginTop:'8px', marginBottom:'8px', minWidth:'150px'}} onClick={handleViewChange}>
-              {view}
-            </Button> */}
-
-            <IconButton  style={{marginTop:'8px', marginBottom:'8px', marginLeft:'-16px', minWidth:'56px', minHeight: '56px'}} onClick={handleViewChange} >
-                {view === 'analytics' ? <WebAssetIcon style={{color: '#000000', fontSize:'32px'}}/> : <InsertChartOutlinedRoundedIcon style={{color: '#000000', fontSize:'32px'}}/>}
-            </IconButton>
-
-
-            <div style={{marginRight:'-10px'}}>
+            <div style={{marginRight:'-90px'}}>
               <FormControl variant="outlined" className={classes.formControl}>
-                  <Select
-                    value={subjectOfChange}
-                    onChange={handleSubjecChange}
-                  >
-                    <MenuItem value={1}>Member</MenuItem>
-                    <MenuItem value={2}>All Team</MenuItem>
-                    <MenuItem value={3}>Me</MenuItem>
-                  </Select>
                 </FormControl>
-
                 <FormControl variant="outlined" className={classes.formControl}>
-                  <Select
+                  <Select MenuProps={{ disableScrollLock: true }} 
                     value={timePeriod}
                     onChange={handleTimeChange}
                   >
@@ -216,16 +226,17 @@ export default function DashboardEfficiency(props){
                 </FormControl>
 
                 <FormControl MenuProps={{ disableScrollLock: true }} variant="outlined" className={classes.formControl}>
-                  <CustomDay/>
+                  <CustomDay MenuProps={{ disableScrollLock: true }} />
                 </FormControl>
-              </div>
+            </div>
               
             </Container>
           </Toolbar>
         </AppBar>
+      {/* {writing} */}
 
       {view === 'analytics' ? (
-      <div style={{paddingLeft: '64px', paddingRight: '64px'}}>
+      <div className = {classes.cont} style={{paddingLeft: '64px', paddingRight: '64px'}}>
 
         <Grid container spacing={2}>
           {mock.bigStat.map(stat => (
@@ -237,8 +248,8 @@ export default function DashboardEfficiency(props){
 
 
         <Paper className={classes.paper}>
-          {subjectOfChange == 1 && <TableMember/>}
-          {subjectOfChange == 2 && <TableTeam/>}
+          {/* {subjectOfChange == 1 && <TableMember setSubjectOfChange={setSubjectOfChange}/>} */}
+          <Table setSubjectOfChange={setSubjectOfChange} setWriting={setWriting} writing={writing}/>
         </Paper>
 
 
@@ -324,9 +335,9 @@ export default function DashboardEfficiency(props){
         
         <Grid container spacing={4}>
           <Grid item xs={12} lg={12}>
-            <Card className={classes.card} style={{height: '200px'}}>
+            {/* <Card className={classes.card} style={{height: '200px'}}>
               <ByHoursChart/>
-            </Card>
+            </Card> */}
           </Grid>
         </Grid>
         </div>)

@@ -16,10 +16,13 @@ import AuthService from "../../services/auth.service"
 
 const useStyles = makeStyles((theme) => ({
   navbar:{
+    // position: 'relative',
+    // top: '0px',
+    // left: '0px',
     // position: 'fixed',
     // top: '0px',
     // width: '100%',
-    // marginBottom:theme.spacing(2)
+    marginBottom: '-1px'
   }
 }));
 
@@ -52,10 +55,6 @@ const Navbar = () => {
             Profile
           </NavLink>
         </NavMenu>
-
-        {/* <Link to={"/dashboard"} variant="body2">
-                            <Button  variant="contained" color="primary">Sign Out</Button>    
-                        </Link> */}
 
           <Link to={'/sign-in'} variant="body2">
               <Button variant="contained" color="secondary" onClick={handleLogOut}>Sign Out</Button>   

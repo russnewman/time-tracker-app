@@ -8,9 +8,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableFooter from  '@material-ui/core/TableFooter';
 import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
-import { Container, Input, Paper, Typography, Select, Button, DialogContent, MenuItem } from '@material-ui/core';
+import { Container, Input, Paper, Typography, Select, DialogActions, Button, DialogContent, MenuItem } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import IconButton from '@material-ui/core/IconButton';
+import DialogContentText from '@material-ui/core/DialogContentText';
+
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -19,6 +21,7 @@ import { withStyles } from '@material-ui/core/styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import ByHoursChart from './Employee/byHoursChart'
+import KeyboardOutlinedIcon from '@material-ui/icons/KeyboardOutlined';
 
 
 const ERadio = withStyles({
@@ -85,8 +88,7 @@ dialogAction: {
 }));
 
 
-
-function createDataMemberDay(resourse, duration, startTime, endTime, activity, type) {
+function createDataMemberDay(resourse, duration, startTime, endTime, activity, type, keylog) {
   return { 
     resourse: resourse, 
     duration: minutesToHours(duration), 
@@ -94,7 +96,8 @@ function createDataMemberDay(resourse, duration, startTime, endTime, activity, t
     endTime: endTime, 
     activityRate: computeActivityRate(activity, duration),
     activity: minutesToHours(activity),
-    type: type
+    type: type, 
+    keylog: keylog
     };
 }
 
@@ -126,17 +129,29 @@ function minutesToHours(minutes){
 
 
 function processUrl(url){
-    return url.replace('https://','')
+  if(url) return url.replace('https://','')
+  return
 }
 
+const keylogs = [
+  'Raindrops Keep Fallin On My Head - Perry Como',
+  'Cras mattis consectetur purus sit amet fermentum.\n' +
+  'Cras justo odio, dapibus ac facilisis in, egestas eget quam.\n' +
+  'Morbi leo risus, porta ac consectetur ac, vestibulum at eros.' +
+  'Praesent commodo cursus magna, vel scelerisque nisl consectetur et.',
+  'CTRL+C CTRL+V',
+  'Sometheng interesting',
+  'вк'
+]
+
 const itemsDayMember = [
-  createDataMemberDay('https://music.yandex.ru/home', 159, 15.31, 18.00, 130, 'neutral'),
+  createDataMemberDay('https://music.yandex.ru/home', 159, 15.31, 18.00, 130, 'neutral', keylogs[0]),
   createDataMemberDay('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
-  createDataMemberDay('https://www.youtube.com/', 22, 15.40, 16.02, 14,'ineffective'),
+  createDataMemberDay('https://www.google.com/', 22, 15.40, 16.02, 14,'neutral', keylogs[4]),
   createDataMemberDay('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
-  createDataMemberDay('https://www.youtube.com/', 22, 15.40, 16.02, 14,'ineffective'),
+  createDataMemberDay('https://www.youtube.com/', 22, 15.40, 16.02, 14,'ineffective', keylogs[3]),
   createDataMemberDay('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
-  createDataMemberDay('https://www.youtube.com/', 22, 15.40, 16.02, 14,'ineffective')
+  createDataMemberDay('https://vk.com/feed', 22, 15.40, 16.02, 14,'ineffective', keylogs[1])
 ];
 
 const itemsWeekMember = [
@@ -193,10 +208,16 @@ export default function AcccessibleTable(props) {
   const [page, setPage] = React.useState(0);
 
 
+
+  //////////////////////////////////////////
+  const [row, setRow] = React.useState('')
+
+
   const [open, setOpen] = React.useState(false);
-  const [resourseName, setResourseName] = React.useState("")
-  const [type, setType] = React.useState("")
-  const [ind, setInd] = React.useState(0)
+  const [openKeylog, setOpenKeylog] = React.useState(false);
+  // const [resourseName, setResourseName] = React.useState("");
+  // const [type, setType] = React.useState("");
+  const [ind, setInd] = React.useState(0);
   const classes = useStyles();
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -214,15 +235,23 @@ export default function AcccessibleTable(props) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const handleClose = (value) => {
+  const handleClose = () => {
     setOpen(false);
   };
+  const handleCloseKeylog = () => {
+    setOpenKeylog(false)
+  }
 
   const openDialog = (row, ind) => {
     setInd(ind)
-    setResourseName(row.resourse)
-    setType(row.type)
+    // setResourseName(row.resourse)
+    // setType(row.type)
     setOpen(true)
+  }
+
+  const openKeylogDialog = (row) =>{
+    setRow(row)
+    setOpenKeylog(true)
   }
 
   const updateRows = (rows, ind, newType) => {
@@ -232,10 +261,15 @@ export default function AcccessibleTable(props) {
 
   return (
     <div>
-        <Paper className={classes.paper} style={{height: '200px'}}>
-              <ByHoursChart/>
-        </Paper>
-        <Container style={{display: 'flex', justifyContent: 'center'}}>
+        {(subjectOfChange === 1 && timePeriod === 1) &&
+        <div style={{display: 'flex', justifyContent: 'center', paddingLeft: '64px', paddingRight: '64px'}}>
+            <Paper className={classes.paper}>
+              {/* <Typography>Hello</Typography> */}
+                  <ByHoursChart/>
+            </Paper>
+        </div>
+        }
+        <div style={{display: 'flex', justifyContent: 'center', paddingLeft: '64px', paddingRight: '64px'}}>
             <Paper className={timePeriod === 1 && subjectOfChange === 1 ? classes.paper : classes.paperSmall}>
                 <TableContainer>
                 <Table  className={classes.table}
@@ -252,8 +286,12 @@ export default function AcccessibleTable(props) {
                         {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right"><Typography className="font-weight-bold">Start time</Typography></TableCell>}
                         {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right"><Typography className="font-weight-bold">End time</Typography></TableCell>}
                         <TableCell align="right"><Typography className="font-weight-bold">Activity</Typography></TableCell>
+                        {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right"><Typography className="font-weight-bold">Keylogger</Typography></TableCell>}
                     </TableRow>
                     </TableHead>
+
+
+
                     <TableBody>
                     {(rowsPerPage > 0
                           ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -274,14 +312,24 @@ export default function AcccessibleTable(props) {
 
                             {row.duration}
                             </TableCell>
-                       { timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right">{row.startTime}</TableCell>}
+                        {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right">{row.startTime}</TableCell>}
                         {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right">{row.endTime}</TableCell>}
-                        <TableCell align="right">
+                          <TableCell align="right">
                             <Typography style={{display: 'inline-block', fontWeight:'500'}} >{row.activityRate}</Typography>
                             <Typography className="text-black-50" style={{fontSize:'11px'}} >{row.activity}</Typography>
                           {/* {row.activity} */}
                           </TableCell>
 
+                          {timePeriod === 1 && subjectOfChange === 1 && 
+                            <TableCell align="right">
+                              {row.keylog && 
+                                <IconButton onClick={()=>{openKeylogDialog(row)}}>
+                                  <KeyboardOutlinedIcon/>
+                                </IconButton>
+                              }
+                            </TableCell>
+
+                          }
                         </TableRow>
 
                     ))}
@@ -305,8 +353,9 @@ export default function AcccessibleTable(props) {
                 </Paper>
 
                <ChangeResourseType rows={rows} ind={ind} subjectOfChange={subjectOfChange} open={open} onClose={handleClose}/> 
+               {(subjectOfChange === 1 && timePeriod === 1) && <KeyloggerDialog row={row} open={openKeylog} onClose={handleCloseKeylog}/>}
 
-       </Container> 
+       </div> 
     </div>
   );
 }
@@ -322,6 +371,7 @@ function ChangeResourseType(props) {
   const subjectOfChange = props.subjectOfChange
 
   let row = rows[ind]
+  // let row = props.row
   const resourseName = row.resourse
 
   const [type, setType] = React.useState(row.type)
@@ -349,7 +399,8 @@ function ChangeResourseType(props) {
 
 
   return (
-      <div>
+    
+  <div>
     <Dialog onClose={handleClose} fullWidth maxWidth='sm' aria-labelledby="simple-dialog-title" open={open} className={classes.dialog}>
       <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h3 style={{fontWeight: '500'}}>{processUrl(resourseName)}</h3></DialogTitle>
       <DialogContent className={classes.dialogContent}>
@@ -395,3 +446,77 @@ function ChangeResourseType(props) {
   }
 
 
+
+function KeyloggerDialog(props){
+
+
+  const onClose = props.onClose
+  const open = props.open
+  const row = props.row
+  console.log('Row', row)
+  // const resourse = props.resourse
+  // const startTime = props.startTime
+  // const EndTime = props.endTime
+
+  const [scroll, setScroll] = React.useState('paper');
+
+
+
+  const descriptionElementRef = React.useRef(null);
+  React.useEffect(() => {
+    if (open) {
+      const { current: descriptionElement } = descriptionElementRef;
+      if (descriptionElement !== null) {
+        descriptionElement.focus();
+      }
+    }
+  }, [open]);
+
+
+  const handleClose = () => {
+    onClose()
+  };
+
+
+  return(
+    <Dialog
+    fullWidth maxWidth='sm'
+      PaperProps={{
+        style: { borderRadius: 10 }
+      }}
+      open={open}
+      onClose={handleClose}
+      scroll={scroll}
+      aria-labelledby="scroll-dialog-title"
+      aria-describedby="scroll-dialog-description">
+      <DialogTitle id="scroll-dialog-title">
+        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <Typography variant='h6' style={{display: 'inline-block', fontWeight: '500'}}>
+          {processUrl(row.resourse)} 
+        </Typography>
+        <Typography style={{display: 'inline-block'}}>
+          {row.startTime} - {row.endTime}
+        </Typography>
+        </div>
+        </DialogTitle>
+      <DialogContent dividers={scroll === 'paper'}>
+        <DialogContentText
+          id="scroll-dialog-description"
+          ref={descriptionElementRef}
+          tabIndex={-1}>
+            {/* sdfsdfkjlwejfwk;wf */}
+            {row.keylog}
+          {/* {[...new Array(1)]
+            .map(
+              () =>
+                'Cras mattis consectetur purus sit amet fermentum.\n' +
+                'Cras justo odio, dapibus ac facilisis in, egestas eget quam.\n' +
+                'Morbi leo risus, porta ac consectetur ac, vestibulum at eros.' +
+                'Praesent commodo cursus magna, vel scelerisque nisl consectetur et.'
+            )
+            .join('\n')} */}
+        </DialogContentText>
+      </DialogContent>
+    </Dialog>
+  )
+}

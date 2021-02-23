@@ -9,7 +9,9 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 // import Typography from '@material-ui/core/Typography';
-import Typography from '../../../wrappers/Typography';
+import Typography from '../../wrappers/Typography';
+import Checkbox from '@material-ui/core/Checkbox';
+
 
 
 
@@ -39,26 +41,34 @@ const useStyles = makeStyles((theme) => ({
       top: 20,
       width: 1,
     },
+    tableRow: {
+      "&$hover:hover": {
+        backgroundColor: "blue"
+      },
+      "&$selected, &$selected:hover": {
+        backgroundColor: "blue"
+      }
+    },
   })); 
 
 
-function createData(name, effective, effectiveRate, neutral, neutralRate, ineffective, ineffectiveRate, total) {
-  return { name, effective, effectiveRate, neutral, neutralRate, ineffective, ineffectiveRate, total};
+function createData(name, department, status, effective, effectiveRate, neutral, neutralRate, ineffective, ineffectiveRate, without, withoutRate, total) {
+  return { name, department, status, effective, effectiveRate, neutral, neutralRate, ineffective, ineffectiveRate, without, withoutRate, total};
 }
 
 const rows = [
-  createData('Cupcake', '31m', '60%', '2h 30m', '32%','2h 40m', '38%', '5h 51m'),
-  createData('Donut', '21m', '10%', '4h 31m', '53%','1h 40m', '38%', '4h 23m'),
-  createData('Eclair', '4h 2m', '40%', '1h 30m', '22%', '1h', '20%', '7h 2m'),
-  createData('Frozen yoghurt', '1h', '2%', '2h', '32%','4h', '90%', '9h 52m'),
-  createData('Gingerbread', '4h 20m', '18%', '0m', '0%','0m', '0%', '4h 20m'),
-  createData('Honeycomb', '31m', '90%', '2h 30m', '32%','2h 40m', '38%', '5h 51m'),
-  createData('Ice cream sandwich', '9h', '1%', '1m', '99%','2h', '38%', '15h 52m'),
-  createData('Jelly Bean', '1h 3m', '55%', '2h 30m', '29%','2h 43m', '28%', '16h 51m'),
-  createData('KitKat', '31m', '30%', '2h 30m', '32%','2h 40m', '38%', '5h 51m'),
-  createData('Lollipop', '4h 20m', '18%', '0m', '0%','0m', '0%', '4h 20m'),
-  createData('Marshmallow', '21m', '14%', '4h 31m', '23%','1h 40m', '38%', '1h 23m'),
-  createData('Nougat', '21m', '10%', '4h 31m', '53%','1h 40m', '38%', '23m'),
+  createData('Cupcake','Dev', true, '31m', '60%', '2h 30m', '32%','2h 40m', '38%', '1h 39m', '28%', '5h 51m'),
+  createData('Donut','ML', false, '21m', '10%', '4h 31m', '53%','1h 40m', '38%', '3h 20m', '39%', '4h 23m'),
+  createData('Eclair','Analytics', true, '4h 2m', '40%', '1h 30m', '22%', '1h', '20%', '24m', '19%','7h 2m'),
+  createData('Frozen yoghurt','Analytic', false,'1h', '2%', '2h', '32%','4h', '90%','2m', '1%', '9h 52m'),
+  createData('Gingerbread','Dev', false, '4h 20m', '18%', '0m', '0%','0m', '0%','54m', '18%', '4h 20m'),
+  createData('Honeycomb', 'Dev', true, '31m', '90%', '2h 30m', '32%','2h 40m', '38%','20m', '9%', '5h 51m'),
+  createData('Ice cream sandwich', "HR", true, '9h', '1%', '1m', '99%','2h', '38%', '5h 52m', '79%', '15h 52m'),
+  createData('Jelly Bean', 'Bookkeeping', false, '1h 3m', '55%', '2h 30m', '29%','2h 43m', '28%','2h 34m', '39%', '16h 51m'),
+  createData('KitKat', '31m', 'Inner Managament', true,'30%', '2h 30m', '32%','2h 40m', '38%', '2h 51m', '39%','5h 51m'),
+  createData('Lollipop', 'Analytics', false, '4h 20m', '18%', '0m', '0%','0m', '0%', '2h 1m', '34%', '4h 20m'),
+  createData('Marshmallow', 'Research', true, '21m', '14%', '4h 31m', '23%','1h 40m', '38%', '4h', '42%', '1h 23m'),
+  createData('Nougat', 'ML', false, '21m', '10%', '4h 31m', '53%','1h 40m', '38%','2h 19m', '29%', '23m'),
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -104,13 +114,13 @@ function stableSort(array, comparator) {
 
 const headCells = [
   { id: 'name', alignRight: false, disablePadding: true, label: 'Members' },
+  { id: 'department', alignRight: true, disablePadding: false, label: 'Department' },
+  { id: 'status', alignRight: true, disablePadding: false, label: 'Status' },
   { id: 'effectiveRate', alignRight: true, disablePadding: false, label: 'Effective' },
   { id: 'neutralRate', alignRight: true, disablePadding: false, label: 'Neutral' },
   { id: 'ineffectiveRate', alignRight: true, disablePadding: false, label: 'Ineffective' },
-  { id: 'i', alignRight: true, disablePadding: false, label: 'Without category' },
+  { id: 'withoutRate', alignRight: true, disablePadding: false, label: 'Without category' },
   { id: 'total', alignRight: true, disablePadding: false, label: 'Total' },
-  { id: 'department', alignRight: true, disablePadding: false, label: 'Department' },
-  { id: 'status', alignRight: true, disablePadding: false, label: 'Status' }
 ];
 
 function EnhancedTableHead(props) {
@@ -150,20 +160,35 @@ function EnhancedTableHead(props) {
   );
 }
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
+
+
+  const setSubjectOfChange = props.setSubjectOfChange;
+  const setWriting = props.setWriting;
+  const writing = props.writing;
+
+
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('name');
-  const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [selectedMember, setSelectedMember] = React.useState(null);
+  const [selectedMember, setSelectedMember] = React.useState(writing);
+
 
   const handleCheck = (event, name) =>{
-        selectedMember === name ? 
-        setSelectedMember(null) : setSelectedMember(name)
-        
+    if (selectedMember === name){
+      setSelectedMember(null)
+      setSubjectOfChange(2)
+      setWriting('All team')
+    }
+    else{
+      setSelectedMember(name)
+      setSubjectOfChange(1)
+      setWriting(name)
+    }
   }
+
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -208,38 +233,67 @@ export default function EnhancedTable() {
 
                   return (
                     <TableRow
+                      classes={{ hover: classes.hover }}
+                      className={classes.tableRow}
                       hover
                       onClick={(event) => handleCheck(event, row.name)}
                       role="checkbox"
                       tabIndex={-1}
                       key={row.name}
-                      selected={isItemSelected}
+                      // selected={isItemSelected}
                     >
-                      <TableCell>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          // color="primary"
+                          checked={isItemSelected}
+                        />
                       </TableCell>
+
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         <Typography value={row.name} style={{fontSize: "16px"}}/>
                         <span className="text-black-50">
                             <Typography style={{fontSize:'11px'}} value={'UI Engineer'}/>
                         </span>
                       </TableCell>
+
+                      <TableCell align="right">{row.department}</TableCell>
+
+                      <TableCell align="right">
+                          {row.status ? <div className="badge badge-success h-auto">
+                                            ACTIVE
+                                        </div>:
+                                            <div className="badge badge-danger h-auto">
+                                                NOT ACTIVE
+                                            </div>
+                          }
+                        </TableCell>
+
                       <TableCell align="right">
                           {row.effectiveRate > '50%' ? (
                             <Typography style={{display: 'inline-block', fontWeight:'500', color:'springgreen'}} value={row.effectiveRate}/>)
                              : (<Typography style={{display: 'inline-block', fontWeight:'500'}} value={row.effectiveRate}/>)}
                           <Typography className="text-black-50" style={{fontSize:'11px'}} value={row.effective}/>
                       </TableCell>
+
                       <TableCell align="right">
                         <Typography style={{display: 'inline-block', fontWeight:'500'}} value={row.neutralRate}/>
                         <Typography className="text-black-50" style={{fontSize:'11px'}} value={row.neutral}/>
                       </TableCell>
-                      <TableCell align="right">
-                        {row.ineffectiveRate > '20%' ? (<Typography style={{display: 'inline-block', fontWeight:'500', color:'crimson'}} value={row.ineffectiveRate}/>) : 
-                        (<Typography style={{display: 'inline-block', fontWeight:'500'}} value={row.ineffectiveRate}/>)}
 
-                        {/* <Typography style={{display: 'inline-block', fontWeight:'500'}} value={row.ineffectiveRate}/> */}
+                      <TableCell align="right">
+                        {row.ineffectiveRate > '20%' ? 
+                          (<Typography style={{display: 'inline-block', fontWeight:'500', color:'crimson'}} value={row.ineffectiveRate}/>) 
+                          : 
+                          (<Typography style={{display: 'inline-block', fontWeight:'500'}} value={row.ineffectiveRate}/>)
+                        }
                         <Typography className="text-black-50" style={{fontSize:'11px'}} value={row.ineffective}/>
                       </TableCell>
+
+                      <TableCell align="right">
+                        <Typography style={{display: 'inline-block', fontWeight:'500'}} value={row.withoutRate}/>
+                        <Typography className="text-black-50" style={{fontSize:'11px'}} value={row.without}/>
+                      </TableCell>
+
                       <TableCell align="right">
                           {row.total}
                         </TableCell>

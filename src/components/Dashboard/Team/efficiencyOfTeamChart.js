@@ -18,9 +18,25 @@ const styles = makeStyles((theme) => ({
 }))
 
 
-const dataEffective = [3.5,3,1.1,1.5,4.3,3.7,2.1,2.2, 2.3, 2, 0.8, 0.3]
-const dataNeutral = [1.3,2.3,2,0.8,1.3,2.7,3.1,1.7,1.4,0.7,1,1]
-const dataIneffective = [1.1,1.2,1.5,1.5,2.1,1.4,1.4,1.7,1.2,1.0,1.1,1.1]
+function minutesToHours(minutes){
+  const hours = Math.floor(minutes/60)
+  const min = minutes % 60
+  if (hours != 0){
+      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
+      return hours+'h'
+  }
+  return minutes%60+'m'
+}   
+
+
+const dataEffective = [121,60,143,90,41,200,100, 131, 300, 100, 57,99]
+const dataNeutral = [136,190,101,98,230,15,240, 23, 90,20,34,90]
+const dataIneffective = [200,120,10,10,15,20, 11, 0,76,1.0,80,1]
+const dataWithout = [200,55,104,210,100,201,0, 100, 10,99,20,33]
+
+const maxYVal = 600
+const tickAmount = 5
+
 const categories = [['Cupcake'],['Donut'], ['Eclair'],['Frozen yoghurt'],['Gingerbread'],['Honeycomb'],['Ice cream sandwich'],
 ['Jelly Bean'],['KitKat'],['Lollipop'], ['Marshmallow'], ['Nougat']]
 
@@ -32,8 +48,13 @@ const series =  [{
     data: dataNeutral.slice(0,6)
   }, {
     name: 'Ineffective',
-    data: dataIneffective.slice(0,6)
-  }]
+    data: dataIneffective.slice(0,6),
+  },
+  {
+    name: 'Without',
+    data: dataWithout.slice(0,6)
+  }
+]
   
   
   const options = {
@@ -51,7 +72,7 @@ const series =  [{
         speed: 300,
         animateGradually: {
             enabled: true,
-            delay: 150
+            delay: 1
         },
         dynamicAnimation: {
             enabled: true,
@@ -81,6 +102,11 @@ const series =  [{
     }
     ,
     yaxis:{
+
+      min: 0,
+      max: maxYVal,
+      tickAmount: tickAmount,
+
       labels: {
         show: true,
         align: 'right',
@@ -92,12 +118,12 @@ const series =  [{
             fontFamily: 'Poppins, sans-serif',
             fontWeight: 900,
         },
-        formatter: (value) => { return value + 'h' },
+        formatter: (value) => { return minutesToHours(value) },
       },
     },
   
     fill: {
-      colors: ['#000C77', '#56cfe1', '#80ffdb'],
+      colors: ['#d90368', '#f5cc00', 'springgreen', '#bcb8b1'],
       opacity: 1
       },
   }
@@ -143,7 +169,7 @@ const seriesWeek =  [{
 
       const newOpt = {
       series: [{
-          name: 'Effecctive',
+          name: 'Effective',
           data: dataEffective.slice(newBeginInd, newEndInd + 1)
         }, {
           name: 'Neutral',
@@ -151,6 +177,10 @@ const seriesWeek =  [{
         }, {
           name: 'Ineffective',
           data: dataIneffective.slice(newBeginInd, newEndInd + 1)
+        },
+        {
+          name: 'Without category',
+          data: dataWithout.slice(newBeginInd, newEndInd + 1)
         }],
         xaxis:{
           categories: categories.slice(newBeginInd, newEndInd + 1)
@@ -178,7 +208,12 @@ const seriesWeek =  [{
           }, {
             name: 'Ineffective',
             data: dataIneffective.slice(newBeginInd, newEndInd + 1)
-          }],
+          },
+          {
+            name: 'Without category',
+            data: dataWithout.slice(newBeginInd, newEndInd + 1)
+          }
+        ],
           xaxis:{
             categories: categories.slice(newBeginInd, newEndInd + 1)
           }
