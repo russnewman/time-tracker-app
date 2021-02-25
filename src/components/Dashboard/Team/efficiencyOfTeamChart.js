@@ -30,9 +30,15 @@ function minutesToHours(minutes){
 
 
 const dataEffective = [121,60,143,90,41,200,100, 131, 300, 100, 57,99]
-const dataNeutral = [136,190,101,98,230,15,240, 23, 90,20,34,90]
-const dataIneffective = [200,120,10,10,15,20, 11, 0,76,1.0,80,1]
+const dataNeutral =   [136,190,101,98,230,15,240, 23, 90,20,34,90]
+const dataIneffective = [100,120,10,10,15,20, 11, 0,76,1.0,80,1]
 const dataWithout = [200,55,104,210,100,201,0, 100, 10,99,20,33]
+
+const dataEffectiveWeek = [121,230,240,250,130,120,140,123,243,120,86,135]
+const dataNeutralWeek = [100,212,20,80,130,270,310,107,14,78,101,100]
+const dataIneffectiveWeek = [20,120,150,154,76,45,13,67,72,50,61,21]
+const dataWithoutWeek = [132,11,13,53,46,97,120,53,62,78,23,109]
+
 
 const maxYVal = 600
 const tickAmount = 5
@@ -40,16 +46,19 @@ const tickAmount = 5
 const categories = [['Cupcake'],['Donut'], ['Eclair'],['Frozen yoghurt'],['Gingerbread'],['Honeycomb'],['Ice cream sandwich'],
 ['Jelly Bean'],['KitKat'],['Lollipop'], ['Marshmallow'], ['Nougat']]
 
-const series =  [{
-    name: 'Effective',
-    data: dataEffective.slice(0,6)
-  }, {
-    name: 'Neutral',
-    data: dataNeutral.slice(0,6)
-  }, {
+const series =  [
+  {
     name: 'Ineffective',
     data: dataIneffective.slice(0,6),
   },
+  {
+    name: 'Neutral',
+    data: dataNeutral.slice(0,6)
+  }, 
+  {
+    name: 'Effective',
+    data: dataEffective.slice(0,6)
+  }, 
   {
     name: 'Without',
     data: dataWithout.slice(0,6)
@@ -123,32 +132,35 @@ const series =  [{
     },
   
     fill: {
-      colors: ['#d90368', '#f5cc00', 'springgreen', '#bcb8b1'],
+      colors: ['#d90368', '#f5cc00', '#00cc99', '#bcb8b1'],
       opacity: 1
       },
   }
 
 
-  const dataEffectiveWeek = [23,23,24,25,13,12,14,13, 23, 20, 8, 13]
-  const dataNeutralWeek = [13,23,20,8,13,27,31,17,14,8,10,10]
-  const dataIneffectiveWeek = [11,12,15,15,21,14,14,17,12,10,11,11]
-
-const seriesWeek =  [{
-    name: 'Effective',
-    data: dataEffectiveWeek.slice(0,6)
-  }, {
-    name: 'Neutral',
-    data: dataNeutralWeek.slice(0,6)
-  }, {
-    name: 'Ineffective',
-    data: dataIneffectiveWeek.slice(0,6)
-  }]
-  
-  const optionsWeek = {
-    series: seriesWeek
-  }
-  const optionsDay = {
-    series: series
+  function computeNewOptions(beginInd, endInd, dataEffective, dataNeutral, dataIneffective, dataWithout){
+    return {
+      series: [
+        {
+          name: 'Ineffective',
+          data: dataIneffective.slice(beginInd, endInd + 1)
+        },
+        {
+        name: 'Neutral',
+        data: dataNeutral.slice(beginInd, endInd + 1)
+      },
+      {
+        name: 'Effective',
+        data: dataEffective.slice(beginInd, endInd + 1)
+      },
+      {
+        name: 'Without category',
+        data: dataWithout.slice(beginInd, endInd + 1)
+      }],
+      xaxis:{
+        categories: categories.slice(beginInd, endInd + 1)
+      }
+    }
   }
 
 
@@ -167,25 +179,20 @@ const seriesWeek =  [{
       else newBeginInd = beginInd - 6
       let newEndInd = newBeginInd + 6 <= categories.length -1 ? newBeginInd + 6 : categories.length - 1
 
-      const newOpt = {
-      series: [{
-          name: 'Effective',
-          data: dataEffective.slice(newBeginInd, newEndInd + 1)
-        }, {
-          name: 'Neutral',
-          data: dataNeutral.slice(newBeginInd, newEndInd + 1)
-        }, {
-          name: 'Ineffective',
-          data: dataIneffective.slice(newBeginInd, newEndInd + 1)
-        },
-        {
-          name: 'Without category',
-          data: dataWithout.slice(newBeginInd, newEndInd + 1)
-        }],
-        xaxis:{
-          categories: categories.slice(newBeginInd, newEndInd + 1)
-        }
+      let dataE, dataN, dataI, dataW
+      if (timePeriod === 2){
+        dataE = dataEffectiveWeek
+        dataN = dataNeutralWeek
+        dataI = dataIneffectiveWeek
+        dataW = dataWithoutWeek
       }
+      else {
+        dataE = dataEffective
+        dataN = dataNeutral
+        dataI = dataIneffective
+        dataW = dataWithout
+      }
+      const newOpt = computeNewOptions(newBeginInd, newEndInd, dataE, dataN, dataI, dataW)
       setBeginInd(newBeginInd)
       setEndInd(newEndInd)
       ReactApexChart.exec("efficiencyOfEmployees", 'updateOptions', newOpt, true)
@@ -197,30 +204,24 @@ const seriesWeek =  [{
         if (endInd > categories.length - 1 - 6) newEndInd = categories.length - 1
         else newEndInd = endInd + 6
         let newBeginInd = newEndInd-6 >= 0 ? newEndInd - 6 : 0
-
-        const newOptions = {
-          series: [{
-            name: 'Effective',
-            data: dataEffective.slice(newBeginInd, newEndInd + 1)
-          }, {
-            name: 'Neutral',
-            data: dataNeutral.slice(newBeginInd, newEndInd + 1)
-          }, {
-            name: 'Ineffective',
-            data: dataIneffective.slice(newBeginInd, newEndInd + 1)
-          },
-          {
-            name: 'Without category',
-            data: dataWithout.slice(newBeginInd, newEndInd + 1)
-          }
-        ],
-          xaxis:{
-            categories: categories.slice(newBeginInd, newEndInd + 1)
-          }
+        
+        let dataE, dataN, dataI, dataW
+        if (timePeriod === 2){
+          dataE = dataEffectiveWeek
+          dataN = dataNeutralWeek
+          dataI = dataIneffectiveWeek
+          dataW = dataWithoutWeek
         }
+        else {
+          dataE = dataEffective
+          dataN = dataNeutral
+          dataI = dataIneffective
+          dataW = dataWithout
+        }
+        const newOpt = computeNewOptions(newBeginInd, newEndInd, dataE, dataN, dataI, dataW)
         setBeginInd(newBeginInd)
         setEndInd(newEndInd)
-        ReactApexChart.exec("efficiencyOfEmployees", 'updateOptions', newOptions, true)
+        ReactApexChart.exec("efficiencyOfEmployees", 'updateOptions', newOpt, true)
     }
     
 
@@ -228,19 +229,21 @@ const seriesWeek =  [{
       if (timePeriod != 0 && timePeriod == props.timePeriod){}
 
       else if(props.timePeriod == 2){
-        ReactApexChart.exec("efficiencyOfEmployees", 'updateOptions', optionsWeek, true)  
+        const newOpt = computeNewOptions(beginInd, endInd, dataEffectiveWeek, dataNeutralWeek, dataIneffectiveWeek, dataWithoutWeek)
+        ReactApexChart.exec("efficiencyOfEmployees", 'updateOptions', newOpt, true)  
         setTimePeriod(props.timePeriod)
       }
 
       else if(props.timePeriod == 1){
-        ReactApexChart.exec("efficiencyOfEmployees", 'updateOptions', optionsDay, true)
+        const newOpt = computeNewOptions(beginInd, endInd, dataEffective, dataNeutral, dataIneffective, dataWithout)
+        ReactApexChart.exec("efficiencyOfEmployees", 'updateOptions', newOpt, true)
         setTimePeriod(props.timePeriod)
       }
     });
 
     return(
       <div>
-          <Chart options={options} series={series} type="bar" height={370}  width={800}/>
+          <Chart options={options} series={series} type="bar" height={370}  width={'100%'}/>
           <div className={classes.bottomArrows}>
             {beginInd === 0 ? (<Button disabled><KeyboardArrowLeftIcon/></Button>):(<Button onClick={handleLeftClick}><KeyboardArrowLeftIcon/></Button>)}
             {endInd === catLen - 1 ? (<Button disabled><KeyboardArrowRightIcon/></Button>) : (<Button onClick={handleRightClick}><KeyboardArrowRightIcon/></Button>)}

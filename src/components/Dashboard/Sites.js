@@ -24,11 +24,14 @@ import ByHoursChart from './Employee/byHoursChart'
 import KeyboardOutlinedIcon from '@material-ui/icons/KeyboardOutlined';
 
 
+// '#d90368', '#f5cc00', '#00cc99', '#bcb8b1' 
+
+
+
 const ERadio = withStyles({
   root: {
-    // color: green[400],
     '&$checked': {
-      color: '#00e572',
+      color: '#00cc99',
     },
   },
   checked: {},
@@ -36,9 +39,8 @@ const ERadio = withStyles({
 
 const NRadio = withStyles({
   root: {
-    // color: green[400],
     '&$checked': {
-      color: '#6a9bc3',
+      color: '#f5cc00',
     },
   },
   checked: {},
@@ -303,9 +305,12 @@ export default function AcccessibleTable(props) {
                                 <IconButton className={classes.editIcon} style={{marginRight:'8px'}} onClick={()=>{openDialog(row, index)}}>
                                     <CreateIcon style={{fontSize:'14px'}}/>
                                 </IconButton>
-                                {row.type === 'effective' && <a style={{color:'#00e572'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
-                                {row.type === 'neutral' && <a style={{color:'steelblue'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
-                                {row.type === 'ineffective' && <a style={{color:'crimson'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
+
+                                {row.type === 'effective' && <a style={{color:'#00cc99'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
+                                {row.type === 'neutral' && <a style={{color:'#f5cc00'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
+                                {row.type === 'ineffective' && <a style={{color:'#d90368'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
+                                {row.type === 'without' && <a style={{color:'#bcb8b1'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
+
                             </div>                                                         
                         </TableCell>
                         <TableCell align="right">

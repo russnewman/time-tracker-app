@@ -6,13 +6,26 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Card, Typography } from '@material-ui/core';
 
 
-const series = [31,55]
+
+
+function minutesToHours(minutes){
+  const hours = Math.floor(minutes/60)
+  const min = minutes % 60
+  if (hours != 0){
+      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
+      return hours+'h'
+  }
+  return minutes%60+'m'
+}   
+
+
+const series = [310,55]
 const options = {
   chart: {
     type: 'donut',
     id: 'usageSum'
   },
-  labels: ['Ineffective', 'Neutral'],
+  labels: ['Using', 'Waste'],
   fill: {
     colors: ['#e91e63', '#031d44'],
     opacity: 1
@@ -42,8 +55,7 @@ const options = {
                         color: '#373d3f',
                         offsetY: 16,
                         formatter: function (val) {
-                            if(val == 1) return val + ' hour'
-                            return val + ' hours'
+                            return minutesToHours(val)
                         }
                     },
                     total: {
@@ -55,11 +67,11 @@ const options = {
                         fontWeight: 700,
                         color: '#373d3f',
                         formatter: function (w) {
-                          return w.globals.seriesTotals.reduce((a, b) => {
+                          return minutesToHours(w.globals.seriesTotals.reduce((a, b) => {
                             return a + b
-                          }, 0) + ' hours'
+                          }, 0))
                         }
-                      }
+                    }
                 }
             }
         }
@@ -82,19 +94,36 @@ const options = {
         },
     },
     
-    legend: {
-    show: false
-    },
+    legend: {show: false},
+    tooltip: {enabled: false}
 }
 
-const seriesWeek = [23,19]
+const seriesWeek = [323,19]
 
 const optionsWeek = {
-  series: seriesWeek
+  series: seriesWeek,
+  plotOptions: {
+    pie: {
+        donut: {
+            labels: {
+                total: {label: 'Average'}
+            }
+          }
+      }
+  }
 }
 
 const optionsDay = {
-  series: series
+  series: series,
+  plotOptions: {
+    pie: {
+        donut: {
+            labels: {
+                total: {label: 'Total'}
+            }
+          }
+      }
+  }
 }
 
   export default function UsageSum(props){

@@ -39,8 +39,6 @@ const options = {
                         show: true,
                         fontSize: '25px',
                         fontFamily: 'Roboto, sans-serif',
-
-                        // fontFamily: 'Helvetica, Arial, sans-serif',
                         fontWeight: 700,
                         color: '#373d3f',
                         formatter: function (val) {
@@ -80,18 +78,8 @@ const options = {
     tooltip: {
       enabled: false
     },
-    yaxis:{
-      min: 0,
-      max: 600,
-      tickAmount: 5,
-    },
-
-    colors: ['#030C54', '#56cfe1', '#80ffdb', '#bcb8b1'],
     dataLabels: {
         enabled: true,
-        // formatter: function (val, opts) {
-        //   return val + 'sdgfsdg'
-        // },
         dropShadow: {
             enabled: false
         },
@@ -107,7 +95,7 @@ const options = {
       },
     
     legend: {
-    show: false
+      show: false
     },
 }
 
@@ -120,15 +108,8 @@ const optionsWeek = {
     pie: {
         donut: {
             labels: {
-                show: true,
                 total: {
-                    show: true,
-                    showAlways: false,
                     label: 'Average',
-                    fontSize: '22px',
-                    fontFamily: 'Roboto, sans-seri',
-                    fontWeight: 700,
-                    color: '#373d3f',
                     formatter: function (w) {
                       return minutesToHours(w.globals.seriesTotals.reduce((a, b) => {
                         return a + b
@@ -136,21 +117,25 @@ const optionsWeek = {
                     }
                   }
               }
-            }
+          }
       }
     }
 }
 
 const optionsDay = {
-  series:series
+  series:series,
+  plotOptions: {
+    pie: {
+        donut: {
+            labels: {
+                total: {label: 'Total'}
+            }
+          }
+      }
+    }
 }
-
-
-
   export default function EfficiencySumChart(props){
 
-
-    
       const [timePeriod, setTimePeriod] = React.useState(0);
       
       React.useEffect(() => {

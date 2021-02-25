@@ -3,14 +3,26 @@ import Chart from 'react-apexcharts';
 import ReactApexChart from 'apexcharts'
 
 
-const series = [21,55]
+const series = [404,55]
+
+
+function minutesToHours(minutes){
+  const hours = Math.floor(minutes/60)
+  const min = minutes % 60
+  if (hours != 0){
+      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
+      return hours+'h'
+  }
+  return minutes%60+'m'
+}   
+
 
 const options = {
   chart: {
     type: 'donut',
     id: 'usageOfEmployeesSum'
   },
-  labels: ['Ineffective', 'Neutral', 'Effective'],
+  labels: ['Using', 'Waste'],
   fill: {
     colors: ['#e91e63', '#031d44'],
     opacity: 1
@@ -38,29 +50,30 @@ const options = {
                         color: '#373d3f',
                         offsetY: 16,
                         formatter: function (val) {
-                            if(val == 1) return val + ' hour'
-                            return val + ' hours'
+                            return minutesToHours(val)
                         }
                     },
                     total: {
                         show: true,
                         showAlways: false,
-                        label: 'Total',
+                        label: 'Average',
                         fontSize: '22px',
                         fontFamily: 'Roboto, sans-seri',
                         fontWeight: 700,
                         color: '#373d3f',
                         formatter: function (w) {
                             console.log("ASDSA",w.globals)
-                          return w.globals.seriesTotals.reduce((a, b) => {
+                          return minutesToHours(w.globals.seriesTotals.reduce((a, b) => {
                             return a + b
-                          }, 0) + ' hours'
+                          }, 0))
                         }
                       }
                 }
             }
         }
     },
+
+    tooltip:{enabled: false},
 
     colors: ['#030C54', '#56cfe1', '#80ffdb'],
     dataLabels: {
@@ -78,46 +91,43 @@ const options = {
             colors: ['#ffffff', '#ffffff']
         }
       },
-    
     legend: {
     show: false
     },
 }
 
 
-const seriesWeek = [36,42]
-
+const seriesWeek = [450,77]
 const optionsWeek = {
   series: seriesWeek
 }
-
 const optionsDay = {
   series:series
 }
 
 
 
-  export default function EfficiencySumChart(props){
+export default function UsageOfTeamSumChart(props){
 
-      const [timePeriod, setTimePeriod] = React.useState(0);
-      
-      React.useEffect(() => {
+    const [timePeriod, setTimePeriod] = React.useState(0);
     
-        if (timePeriod != 0 && timePeriod == props.timePeriod){}
+    React.useEffect(() => {
+  
+      if (timePeriod != 0 && timePeriod == props.timePeriod){}
 
-        else if(props.timePeriod == 2){
-          ReactApexChart.exec("usageOfEmployeesSum", 'updateOptions', optionsWeek, true) 
-          setTimePeriod(props.timePeriod)
-        }
+      else if(props.timePeriod == 2){
+        ReactApexChart.exec("usageOfEmployeesSum", 'updateOptions', optionsWeek, true) 
+        setTimePeriod(props.timePeriod)
+      }
 
-        else if(props.timePeriod == 1){
-          ReactApexChart.exec("usageOfEmployeesSum", 'updateOptions', optionsDay, true)  
-          setTimePeriod(props.timePeriod)
-        }
-      });
-      return (
-        <Chart options={options} series={series} type="donut" width={'100%'} height={'90%'}/>
-      )
-  }
+      else if(props.timePeriod == 1){
+        ReactApexChart.exec("usageOfEmployeesSum", 'updateOptions', optionsDay, true)  
+        setTimePeriod(props.timePeriod)
+      }
+    });
+    return (
+      <Chart options={options} series={series} type="donut" width={'100%'} height={'80%'}/>
+    )
+}
   
   

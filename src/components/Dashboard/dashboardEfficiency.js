@@ -11,80 +11,19 @@ import Table from "./table"
 import EfficiencyChart from './Employee/efficiencyChart'
 import EfficiencyByDayChart from './Employee/efficiencySumChart'
 import UsageChart from './Employee/usageChart'
-import UsageByDayChart from './Employee/usageSum'
+import UsageSumChart from './Employee/usageSum'
 import { makeStyles } from '@material-ui/core/styles';
 import EfficiencyOfTeamChart from './Team/efficiencyOfTeamChart'
 import EfficiencyOfTeamSumChart from './Team/efficiencyOfTeamSumChart'
 import UsageOfTeamChart from './Team/usageOfTeamChart'
-import UsageOfTeamSumChart from './Employee/usageOfTeamSumChart'
+import UsageOfTeamSumChart from './Team/usageOfTeamSumChart'
 import Sites from './Sites'
-import SitesAllTime from './SitesAllTime'
 
-import EqualizerRoundedIcon from '@material-ui/icons/EqualizerRounded';
-import TimelineIcon from '@material-ui/icons/Timeline';
 import InsertChartOutlinedRoundedIcon from '@material-ui/icons/InsertChartOutlinedRounded';
-import DonutLargeRoundedIcon from '@material-ui/icons/DonutLargeRounded';
 import WebAssetIcon from '@material-ui/icons/WebAsset';
-import ByHoursChart from './Employee/byHoursChart'
-
-
-
-
-
-// import React, { Fragment } from 'react';
 
 import BigStat from "./BigStat";
-
-const mock = {
-  bigStat: [
-    {
-      category: "Effective",
-      total: {
-        value: 154,
-        percent: { value: 3.7, profit: true }
-      },
-      percentage: {
-        value: 32,
-        percent: {value: 9, profit: false}
-      } 
-    },
-    {
-      category: "Neutral",
-      total: {
-        value: 75,
-        percent: { value: 2.5, profit: true }
-      },
-      percentage: {
-        value: 14,
-        percent: {value: 4, profit: true}
-      } 
-    },
-    {
-      category: "Ineffective",
-      total: {
-        value: 40,
-        percent: { value: 3.1, profit: true }
-      },
-      percentage: {
-        value: 21,
-        percent: {value: 11, profit: false}
-      } 
-    },
-    {
-      category: "Without",
-      total: {
-        value: 189,
-        percent: { value: 10, profit: true }
-      },
-      percentage: {
-        value: 35,
-        percent: {value: 4.7, profit: true}
-      } 
-    }
-  ],
-};
-
-
+import Mock from "./Mock"
 
 const styles = makeStyles((theme) => ({
   paperSettings:{
@@ -174,8 +113,7 @@ export default function DashboardEfficiency(props){
     const [flag, setFlag] = React.useState(false)
 
 
-
-    const s = 'All team'
+    // const s = 'All team'
     const handleTimeChange = (event) => {
       setTimePeriod(event.target.value);
     };
@@ -195,7 +133,11 @@ export default function DashboardEfficiency(props){
     })
 
 
-    console.log("sadsdf", writing)
+    let mock
+    if (subjectOfChange === 1 && timePeriod === 1) mock = Mock.mockMemberDay
+    if (subjectOfChange === 2 && timePeriod === 1) mock = Mock.mockTeamDay
+    if (subjectOfChange === 1 && timePeriod === 2) mock = Mock.mockMemberWeek
+    if (subjectOfChange === 2 && timePeriod === 2) mock = Mock.mockTeamWeek
 
     return (
       <div className={classes.cont}>
@@ -239,6 +181,8 @@ export default function DashboardEfficiency(props){
       <div className = {classes.cont} style={{paddingLeft: '64px', paddingRight: '64px'}}>
 
         <Grid container spacing={2}>
+
+          
           {mock.bigStat.map(stat => (
             <Grid item md={3} sm={6} xs={12} key={stat.category}>
               <BigStat {...stat}/>
@@ -299,7 +243,7 @@ export default function DashboardEfficiency(props){
                   <UsageOfTeamSumChart timePeriod={timePeriod}/>)}
               {flag && subjectOfChange === 1 && (chartSwitcher === 'Efficiency' ? 
                   (<EfficiencyByDayChart timePeriod={timePeriod}/>) : 
-                  (<UsageByDayChart timePeriod={timePeriod}/>)
+                  (<UsageSumChart timePeriod={timePeriod}/>)
               )}
             </Card>
           </Grid>

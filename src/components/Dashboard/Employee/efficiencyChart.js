@@ -19,6 +19,20 @@ const styles = makeStyles((theme) => ({
 }))
 
 
+function minutesToHours(minutes){
+  const hours = Math.floor(minutes/60)
+  const min = minutes % 60
+  if (hours != 0){
+      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
+      return hours+'h'
+  }
+  return minutes%60+'m'
+}   
+
+const maxYVal = 600
+const tickAmount = 5
+
+
 const dataA = [23,23,24,25,13,12,14,13, 23, 20, 8, 13, 17,11,12,12 ,20,20,10,19,16,14,19,14]
 const dataB = [13,13,20,8,13,27,31,17,14,8,10,10,11,2,11,11,4,12,12,10,15,11,14,12,14]
 const dataC = [11,12,15,15,11,14,4,17,5,10,11,11,9, 9, 13, 12, 8, 13, 17,11,17,24,18,20,7]
@@ -29,15 +43,18 @@ const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:
 ['13:00','-','14:00'], ['14:00','-','15:00'],['15.00','-','16:00'],['16.00','-','17:00'],['17.00','-','18:00'],
 ['18.00','-','19:00'],['19.00','-','20:00'],['20.00','-','21:00'], ['21.00','-','22:00'], ['22.00','-','23:00'],['23.00','-','00:00']]
 
-const series =  [{
-    name: 'Effective',
-    data: dataA.slice(8,20)
-  }, {
-    name: 'Neutral',
-    data: dataB.slice(8,20)
-  }, {
+const series =  [ 
+  {
     name: 'Ineffective',
     data: dataC.slice(8,20)
+  },
+  {
+    name: 'Neutral',
+    data: dataB.slice(8,20)
+  },
+  {
+    name: 'Effective',
+    data: dataA.slice(8,20)
   },
   {
     name: 'Without category',
@@ -66,16 +83,12 @@ const series =  [{
             enabled: true,
             speed: 450
         }
-      
-    },
-    toolbar:{
-      show: false
-    }
+      },
+      toolbar:{show: false}
     },
   
     plotOptions: {
       bar: {
-        // borderRadius: 6,
         columnWidth: '25%',
       }
     },
@@ -106,7 +119,6 @@ const series =  [{
         formatter: (value) => { return value + 'm' },
       },
     },
-  
     fill: {
       colors: ['#d90368', '#f5cc00', '#00cc99', '#bcb8b1'],
       opacity: 1
@@ -114,22 +126,37 @@ const series =  [{
   }
 
 
-
-const seriesWeek =  [{
-    name: 'Effective',
-    data: [24, 15, 21, 17, 22, 13,12]
-  }, {
-    name: 'Neutral',
-    data: [13, 23, 20, 8, 13, 27,31]
-  }, {
+const seriesWeek =  [
+  {
     name: 'Ineffective',
-    data: [11, 17, 15, 15, 21, 14,14]
-  }]
+    data: [30, 17, 79, 87, 41, 0,0]
+  },
+  {
+    name: 'Neutral',
+    data: [23, 21, 200, 223, 214, 0,0]
+  }, 
+  {
+    name: 'Effective',
+    data: [120, 210, 100, 100, 100, 0,0]
+  },
+  {
+    name: 'Without',
+    data: [230, 10, 98, 155, 242, 0, 0]
+  }
+]
   
   const optionsWeek = {
     series: seriesWeek,
     xaxis: {
       categories: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    },
+    yaxis:{
+      min: 0,
+      max: maxYVal,
+      tickAmount: tickAmount,
+      labels: {
+        formatter: (value) => { return minutesToHours(value) },
+      },
     },
   }
 
@@ -137,7 +164,15 @@ const seriesWeek =  [{
     series: series,
     xaxis: {
       categories:  categories.slice(8, 20)
-    }
+    },
+    yaxis:{
+      min: 0,
+      max: 60,
+      tickAmount: 6,
+      labels: {
+        formatter: (value) => { return value + 'm'  },
+      },
+    },
   }
 
 
@@ -186,7 +221,6 @@ const seriesWeek =  [{
     const handleRightClick = event => {
 
         if (beginInd == 12) return
-
 
         let newBeginInd = beginInd
         if (beginInd == 0) newBeginInd = 8

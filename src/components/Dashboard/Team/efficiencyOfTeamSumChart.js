@@ -4,18 +4,27 @@ import ReactApexChart from 'apexcharts'
 
 
 
+function minutesToHours(minutes){
+  const hours = Math.floor(minutes/60)
+  const min = minutes % 60
+  if (hours != 0){
+      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
+      return hours+'h'
+  }
+  return minutes%60+'m'
+}   
 
 
-const series = [21,55,44]
+const series = [54,92,181, 171]
 
 const options = {
   chart: {
     type: 'donut',
     id: 'efficiencyOfEmployeesSum'
   },
-  labels: ['Ineffective', 'Neutral', 'Effective'],
+  labels: ['Ineffective', 'Neutral', 'Effective', 'Without'],
   fill: {
-    colors: ['#000C77', '#56cfe1', '#80ffdb'],
+    colors: ['#d90368', '#ffee32', '#00cc99', '#bcb8b1'],  
     opacity: 1
     },
   plotOptions: {
@@ -27,8 +36,6 @@ const options = {
                         show: true,
                         fontSize: '25px',
                         fontFamily: 'Roboto, sans-serif',
-
-                        // fontFamily: 'Helvetica, Arial, sans-serif',
                         fontWeight: 700,
                         color: '#373d3f',
                         formatter: function (val) {
@@ -43,30 +50,28 @@ const options = {
                         color: '#373d3f',
                         offsetY: 16,
                         formatter: function (val) {
-                            if(val == 1) return val + ' hour'
-                            return val + ' hours'
+                            return minutesToHours(val)
                         }
                     },
                     total: {
                         show: true,
                         showAlways: false,
-                        label: 'Total',
+                        label: 'Average',
                         fontSize: '22px',
                         fontFamily: 'Roboto, sans-seri',
                         fontWeight: 700,
                         color: '#373d3f',
                         formatter: function (w) {
-                          return w.globals.seriesTotals.reduce((a, b) => {
+                          return minutesToHours(w.globals.seriesTotals.reduce((a, b) => {
                             return a + b
-                          }, 0) + ' hours'
+                          }, 0))
                         }
-                      }
+                    }
                 }
             }
         }
     },
 
-    colors: ['#030C54', '#56cfe1', '#80ffdb'],
     dataLabels: {
         enabled: true,
         dropShadow: {
@@ -79,17 +84,15 @@ const options = {
             fontSize: '14px',
             fontFamily: 'Roboto, sans-seri',
             fontWeight: 100,
-            colors:['#ffffff', '#020202', '#020202']
+            colors:['#020202', '#020202', '#020202', '#020202']
         }
       },
-    
-    legend: {
-    show: false
-    },
+    legend: {show: false},
+    tooltip: {enabled: false},
 }
 
 
-const seriesWeek = [38,42,49]
+const seriesWeek = [21,100,123, 119]
 
 const optionsWeek = {
   series: seriesWeek

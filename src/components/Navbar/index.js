@@ -23,6 +23,16 @@ const useStyles = makeStyles((theme) => ({
     // top: '0px',
     // width: '100%',
     marginBottom: '-1px'
+  },
+  navMenu:{
+    // display: 'flex',
+    // justifyContent: 'space-between',
+    marginLeft: '56px'
+  },
+  signOut:{
+    marginRight: '60px',
+    display: 'flex',
+    alignItems: 'center'
   }
 }));
 
@@ -37,27 +47,33 @@ const Navbar = () => {
     <>
       <Nav  className={classes.navbar}>
         <Bars />
-        <NavMenu>
-          <NavLink to='/dashboard' activeStyle>
-            Dashboard
-          </NavLink>
+        <NavMenu className={classes.navMenu}>
+          {/* <div> */}
+            <NavLink to='/dashboard' activeStyle>
+              Dashboard
+            </NavLink>
 
-          {user.userRole === "LEADER" ?
-              (<NavLink to='/employees' activeStyle>
-                Employees
-              </NavLink>)
-              :
-              (<NavLink to='/leaders' activeStyle>
-                Managers
-              </NavLink>)
-          }
-          <NavLink to='/profile' activeStyle>
-            Profile
-          </NavLink>
+            {user.userRole === "LEADER" ?
+                (<NavLink to='/employees' activeStyle>
+                  Employees
+                </NavLink>)
+                :
+                (<NavLink to='/leaders' activeStyle>
+                  Managers
+                </NavLink>)
+            }
+            <NavLink to='/profile' activeStyle>
+              Profile
+            </NavLink>
+          {/* </div> */}
         </NavMenu>
+            {/* <Button>
+              <Link  to={'/sign-in'} variant="body2" className={classes.signOut}>>
 
-          <Link to={'/sign-in'} variant="body2">
-              <Button variant="contained" color="secondary" onClick={handleLogOut}>Sign Out</Button>   
+              </Link>
+            </Button> */}
+          <Link to={'/sign-in'} variant="body2" className={classes.signOut}>
+              <Button variant="contained" color="primary"  onClick={handleLogOut}>Sign Out</Button>   
           </Link>
 
       </Nav>

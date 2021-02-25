@@ -43,11 +43,14 @@ const resultSeries = () => {
   let res = []
   for (let ind = 0; ind < resourses.length; ind++){
     const data = resourses[ind]
+
+
+    // '#d90368', '#f5cc00', '#00cc99', '#bcb8b1'
     let color = ""
-    if (data.type === 'effective') color = 'springgreen'
-    else if(data.type === 'neutral') color = '#338EFF'
-    else if(data.type === 'ineffective') color = '#FF337A'
-    else color = 'black'
+    if (data.type === 'effective') color = '#00cc99'
+    else if(data.type === 'neutral') color = '#f5cc00'
+    else if(data.type === 'ineffective') color = '#d90368'
+    else color = '#bcb8b1'
 
     res.push(
       {
@@ -71,122 +74,6 @@ const resultSeries = () => {
 
 
 const series = resultSeries()
-console.log("RES", series)
-
-// const series = [
-
-//     // John Jay
-//     {
-//         name: 'Spring',
-//         data: [
-//           {
-//             x: 'T',
-//             y: [
-//               new Date(2021, 2, 25, 1, 10).getTime(),
-//               new Date(2021, 2, 25, 2, 23) .getTime()
-//             ],
-//             fillColor: 'springgreen'
-//           }
-//         ]
-//       },
-//     {
-//       name: 'Spring',
-//       data: [
-//         {
-//           x: 'T',
-//           y: [
-//             new Date(2021, 2, 25, 9, 10).getTime(),
-//             new Date(2021, 2, 25, 10, 23) .getTime()
-//           ],
-//           fillColor: 'springgreen'
-//         }
-//       ]
-//     },
-//     // Edmund Randolph
-//     {
-//       name: 'Vk',
-//       data: [
-//         {
-//           x: 'T',
-//           y: [
-//             new Date(2021, 2, 25, 10, 23).getTime(),
-//             new Date(2021, 2, 25, 12, 34).getTime()
-//           ],
-//           fillColor: '#FF337A'
-//         }
-//       ]
-//     },
-//     // Timothy Pickering
-//     {
-//       name: 'T',
-//       data: [
-//         {
-//           x: 'T',
-//           y: [
-//             new Date(2021, 2, 25, 12, 34).getTime(),
-//             new Date(2021, 2, 25, 16, 42).getTime()
-//           ],
-//           fillColor: '#FF337A'
-//         }
-//       ]
-//     },
-//     // Charles Lee
-//     {
-//       name: 'Neutral',
-//       data: [
-//         {
-//           x: 'T',
-//           y: [
-//             new Date(2021, 2, 25, 16, 42).getTime(),
-//             new Date(2021, 2, 25, 19, 24).getTime()
-//           ],
-//           fillColor: '#338EFF'
-//         }
-//       ]
-//     },
-//     // John Marshall
-//     {
-//       name: 'Effective',
-//       data: [
-//         {
-//           x: 'T',
-//           y: [
-//             new Date(2021, 2, 25, 19, 24).getTime(),
-//             new Date(2021, 2, 25, 19, 27).getTime()
-//           ],
-//           fillColor: 'springgreen'
-//         }
-//       ]
-//     },
-//     // Levi Lincoln
-//     {
-//       name: 'Effective',
-//       data: [
-//         {
-//           x: 'T',
-//           y: [
-//             new Date(2021, 2, 25, 19, 27).getTime(),
-//             new Date(2021, 2, 25, 19, 36).getTime()
-//           ],
-//           fillColor: 'springgreen'
-//         }
-//       ]
-//     },
-//     // James Madison
-//     {
-//       name: 'Neutral',
-//       data: [
-//         {
-//           x: 'T',
-//           y: [
-//             new Date(2021, 2, 25, 20, 40).getTime(),
-//             new Date(2021, 2, 25, 21, 54).getTime()
-//           ],
-//           fillColor: '#338EFF'
-//         }
-//       ]
-//     }
-//   ]
 
  const options = {
     chart: {
@@ -216,7 +103,6 @@ console.log("RES", series)
       }
     },
     colors:['#000000'],
-    
     xaxis: {
       type: 'datetime'
     },
@@ -256,7 +142,7 @@ console.log("RES", series)
     
     return(
       <div style={{paddingTop: '16px'}}>
-          <Chart options={options} series={series} type="rangeBar" height={150} width={1370}/>
+          <Chart options={options} series={series} type="rangeBar" height={150} width={'100%'}/>
       </div>
     )
   }
