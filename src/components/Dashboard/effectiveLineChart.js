@@ -18,6 +18,16 @@ const styles = makeStyles((theme) => ({
 }))
 
 
+function minutesToHours(minutes){
+  const hours = Math.floor(minutes/60)
+  const min = minutes % 60
+  if (hours != 0){
+      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
+      return hours+'h'
+  }
+  return minutes%60+'m'
+}   
+
 
 const dataA = [43,23,34,25,53,12,34,13, 23, 20, 8, 13, 27,31,37,24,28,20,10,19,16,14,19,54]
 const dataB = [13,23,20,8,13,27,31,37,24,28,20,10,19,27,31,37,24,28,20,10,19,16,14,19,54]
@@ -110,21 +120,22 @@ const categories = [['00:00 - 01:00'],['01:00 - 2:00'], ['02:00 - 3:00'],['03:00
             },
         }
   }
+  // colors: ['#d90368', '#f5cc00', '#00cc99', '#bcb8b1'],
 
 
   const optionsIneffectiveDay = {
       series: seriesIneffectiveDay,
-      colors: ['#000C77'],
+      colors: ['#d90368'],
   }
 
   const optionsNeutralDay = {
       series: seriesNeutralDay,
-      colors: ['#56cfe1']
+      colors: ['#f5cc00']
   }
     
   const seriesEffectiveWeek =  [{
     name: 'Effective',
-    data: [44, 55, 41, 67, 22, 13,12]
+    data: [2, 6, 7, 5, 3, 2,2]
   }]
 
 
@@ -135,8 +146,8 @@ const categories = [['00:00 - 01:00'],['01:00 - 2:00'], ['02:00 - 3:00'],['03:00
     },
     yaxis:{
       min: 0,
-      max: 60,
-      tickAmount: 6,
+      max: 10,
+      tickAmount: 5,
       labels: {
         show: true,
         align: 'right',
@@ -151,7 +162,7 @@ const categories = [['00:00 - 01:00'],['01:00 - 2:00'], ['02:00 - 3:00'],['03:00
         formatter: (value) => { return value + 'h' },
       },
     },
-    colors :['#80ffdb'],
+    colors :['#00cc99'],
   }
 
 
@@ -178,7 +189,7 @@ const categories = [['00:00 - 01:00'],['01:00 - 2:00'], ['02:00 - 3:00'],['03:00
         formatter: (value) => { return value + 'm' },
       },
     },
-    colors :['#80ffdb']
+    colors :['#00cc99']
 
   }
 

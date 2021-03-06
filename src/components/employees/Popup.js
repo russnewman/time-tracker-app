@@ -1,11 +1,11 @@
 import React from 'react'
-import { Dialog, DialogTitle, DialogContent, makeStyles, Typography } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, makeStyles, Typography, IconButton} from '@material-ui/core';
 import Controls from "./controls/Controls";
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close'
 
 const useStyles = makeStyles(theme => ({
     dialogWrapper: {
-        padding: theme.spacing(2),
+        // padding: theme.spacing(2),
         position: 'absolute',
         top: theme.spacing(5)
     },
@@ -21,16 +21,20 @@ export default function Popup(props) {
 
     return (
         <Dialog open={openPopup} maxWidth="md" classes={{ paper: classes.dialogWrapper }}>
-            <DialogTitle className={classes.dialogTitle}>
-                <div style={{ display: 'flex' }}>
-                    <Typography variant="h6" component="div" style={{ flexGrow: 1 }}>
+            <DialogTitle className={classes.dialogTitle} style={{color: 'white', backgroundColor: '#060b26'}}>
+                <div style={{ display: 'flex'}}>
+                    <Typography variant="h6" component="div" style={{ flexGrow: 1, fontWeight: '600', marginTop: '8px' }}>
                         {title}
                     </Typography>
-                    <Controls.ActionButton
+
+                    <IconButton size="small" color = "secondary" style={{marginRight: '16px'}} onClick={()=>{setOpenPopup(false)}} >
+                        <CloseIcon />
+                    </IconButton>
+                    {/* <Controls.ActionButton
                         color="secondary"
                         onClick={()=>{setOpenPopup(false)}}>
                         <CloseIcon />
-                    </Controls.ActionButton>
+                    </Controls.ActionButton> */}
                 </div>
             </DialogTitle>
             <DialogContent dividers>

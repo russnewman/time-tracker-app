@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Avatar from '@material-ui/core/Avatar';
-import { Paper, IconButton, Icon, Button, DialogContent, Container} from "@material-ui/core";
+import { Paper, IconButton, Icon, Button, DialogContent, Container, Typography} from "@material-ui/core";
 import PermIdentityOutlinedIcon from '@material-ui/icons/PermIdentityOutlined';
 import Controls from "./employees/controls/Controls";
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -24,7 +24,9 @@ const useStyles = makeStyles(theme => ({
         top: theme.spacing(5)
     },
     dialogTitle: {
-        textAlign: 'center'
+        textAlign: 'center',
+        backgroundColor: '#060b26',
+        color: 'white'
     },
     dialogContent: {
         textAlign: 'center',
@@ -37,16 +39,17 @@ const useStyles = makeStyles(theme => ({
     titleIcon: {
         // backgroundColor: "#f8324526",#060b26
         // backgroundColor: "#4aedc4",
-        backgroundColor: "#060b26",
+        backgroundColor: "whie",
+        marginTop: '20px',
 
-        color: "#f50057",
+        color: "#060b26",
         justify:"center",
-        '&:hover': {
-            backgroundColor: "#00b0ff",
-            cursor: 'default'
-        },
+        // '&:hover': {
+        //     backgroundColor: "#00b0ff",
+        //     cursor: 'default'
+        // },
         '& .MuiSvgIcon-root': {
-            fontSize: '8rem',
+            fontSize: '10rem',
         }
     },
     formControl: {
@@ -251,7 +254,7 @@ export default function ProfileInfo(props) {
                         <Button type="submit" variant="contained" color="secondary" style={{width:"192px"}}>Update</Button>
                     </Grid>
                     <Grid item>
-                        <Button variant="contained" onClick={handleClickOpen} style={{width:"192px"}}>Change Password</Button>
+                        <Button variant="contained" onClick={handleClickOpen} style={{width:"192px", backgroundColor: 'white'}}>Change Password</Button>
                     </Grid>
             </Grid>
             </form>
@@ -272,7 +275,7 @@ export default function ProfileInfo(props) {
             <Grid container justify="center">
                     <IconButton disableRipple className={classes.titleIcon}>
                             {/* <NotListedLocationIcon /> */}
-                            <PermIdentityOutlinedIcon/>
+                            <PersonRoundedIcon/>
                     </IconButton>
             </Grid>
             <Form onSubmit={handleSubmit}>
@@ -443,7 +446,7 @@ export default function ProfileInfo(props) {
                 setNotify={setNotify}
             />
           <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open} className={classes.dialog}>
-            <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}>Change password</DialogTitle>
+            <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><Typography variant="h6">Change password</Typography></DialogTitle>
             <DialogContent className={classes.dialogContent}>
     
                 <form onSubmit={handlePasswordSubmit}>

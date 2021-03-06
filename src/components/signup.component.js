@@ -31,6 +31,15 @@ const useStyles = makeStyles((theme) => ({
     inputField:{
         width: '30ch',
     },
+    signUpButton:{
+        width: '100%',
+        backgroundColor: '#060b26', 
+        color: 'white',
+        '&:hover': {
+            backgroundColor: "#000361",
+            cursor: 'default'
+        },
+    }
   }));
 
 
@@ -116,8 +125,9 @@ export default function SignUp(props) {
                 role
             )
             .then((response)=>{
-                    setRedirect("/dashboard")
-                    console.log(response)
+                    if (role === 'employee') setRedirect("/leaders")
+                    else setRedirect("/dashboard")
+                    // console.log(response)
 
                 },
                 error => {
@@ -218,7 +228,7 @@ export default function SignUp(props) {
                                     value={role}
                                     onChange={handleRoleChange}
                                     >
-                                        <MenuItem value={"leader"}>Leader</MenuItem>
+                                        <MenuItem value={"leader"}>Manager</MenuItem>
                                         <MenuItem value={"employee"}>Employee</MenuItem>
                                     </Select>
                             </FormControl>
@@ -238,13 +248,13 @@ export default function SignUp(props) {
                     </Grid>
 
                     <Grid container md={12} >
-                            <Button variant="contained" color="primary" style={{width: '100%'}} type="submit">Sign Up</Button>    
+                            <Button variant="contained" color="primary" className={classes.signUpButton} style={{width: '100%'}} type="submit">Sign Up</Button>    
                     </Grid>
 
                     <Grid container justify="flex-end">
                         <Grid item>
                         <Link to={"/sign-in"} variant="body2">
-                            <Typography variant="caption">
+                            <Typography variant="caption" style={{color: '#060b26'}}>
                                 Already have an account? Sign in
                             </Typography>
                         </Link>

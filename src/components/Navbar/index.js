@@ -8,9 +8,10 @@ import {
   NavBtnLink
 } from './NavbarElements';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button } from "@material-ui/core";
+import { Button, Typography, IconButton } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import AuthService from "../../services/auth.service"
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 
 
 
@@ -29,10 +30,22 @@ const useStyles = makeStyles((theme) => ({
     // justifyContent: 'space-between',
     marginLeft: '56px'
   },
-  signOut:{
-    marginRight: '60px',
-    display: 'flex',
-    alignItems: 'center'
+  // signOut:{
+  //   marginRight: '62px',
+  //   // marginTop: '12px',
+  //   display: 'flex',
+  //   alignItems: 'center',
+  //   height: '40px',
+  //   background: '#00a6fb',
+  //   color: 'black'
+  // }
+
+  exitIcon: {
+    fontSize: '32px',
+    '&:hover': {
+      color: "#f50057",
+      // cursor: 'default'
+  }
   }
 }));
 
@@ -49,9 +62,11 @@ const Navbar = () => {
         <Bars />
         <NavMenu className={classes.navMenu}>
           {/* <div> */}
+          {user.userRole === 'LEADER' && 
             <NavLink to='/dashboard' activeStyle>
               Dashboard
-            </NavLink>
+            </NavLink>}
+
 
             {user.userRole === "LEADER" ?
                 (<NavLink to='/employees' activeStyle>
@@ -72,9 +87,16 @@ const Navbar = () => {
 
               </Link>
             </Button> */}
-          <Link to={'/sign-in'} variant="body2" className={classes.signOut}>
+
+          <div>
+            <Typography variant='h6' style={{color: 'white', display: 'inline-block', marginRight: '24px', fontWeight:'500', marginTop: '15px'}}>{user.email}</Typography>
+            <IconButton component={ Link } to="/sign-in" variant="contained" style={{display: 'inline-block', color: 'white', marginRight: '48px'}}>
+                <ExitToAppOutlinedIcon className={classes.exitIcon}/>
+            </IconButton>
+          </div>
+          {/* <Link to={'/sign-in'} variant="body2" className={classes.signOut}>
               <Button variant="contained" color="primary"  onClick={handleLogOut}>Sign Out</Button>   
-          </Link>
+          </Link> */}
 
       </Nav>
     </>

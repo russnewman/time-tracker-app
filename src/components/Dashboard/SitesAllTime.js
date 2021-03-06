@@ -84,7 +84,9 @@ const useStyles = makeStyles((theme) => ({
   },
   dialogTitle: {
     textAlign: 'center',
-    fontWeight: '900'
+    fontWeight: '900',
+    backgroundColor: '#060b26',
+    color: 'white'
   },
   dialogContent: {
     // textAlign: 'center',
@@ -215,17 +217,23 @@ export default function AcccessibleTable(props) {
     <div>
     <AppBar className={classes.appBar}>
       <Toolbar>
-        <IconButton edge="start" color="inherit" onClick={()=>{closeMainDialog()}} aria-label="close" style={{marginLeft: '112px', marginRight: '32px'}}>
+        {/* <IconButton edge="start" color="inherit" onClick={()=>{closeMainDialog()}} style={{marginLeft: '112px', marginRight: '32px'}}>
           <CloseIcon />
+        </IconButton> */}
+        <IconButton edge="start" color="inherit" onClick={()=>setOpenAddDialog(true)} style={{marginLeft: '112px', marginRight: '32px'}}>
+          <AddIcon style={{fontSize: '30px'}}/>
         </IconButton>
         <Typography variant="h6" className={classes.title}>
           {employee.fullName}
         </Typography>
         <div style={{ float: 'right', display: 'flex', marginLeft: 'auto', marginRight: '112px'}}>
-          <Fab size="small" color = "secondary" onClick={()=>setOpenAddDialog(true)} >
+          {/* <IconButton size="small" color = "secondary" onClick={()=>setOpenAddDialog(true)} >
               <AddIcon style={{fontSize: '30px'}}/>
-          </Fab>
-      </div>
+          </IconButton> */}
+          <IconButton size="small" color = "secondary" onClick={()=>{closeMainDialog()}} >
+            <CloseIcon />
+          </IconButton>
+        </div>
       </Toolbar>
     </AppBar>
 
@@ -441,7 +449,7 @@ function ChangeResourseType(props) {
   return (
     <div>
     <Dialog onClose={handleClose} fullWidth maxWidth='sm' aria-labelledby="simple-dialog-title" open={open} className={classes.dialog}>
-      <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h3 style={{fontWeight: '500'}}>{processUrl(resourseName)}</h3></DialogTitle>
+      <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h5 style={{fontWeight: '600'}}>{processUrl(resourseName)}</h5></DialogTitle>
       <DialogContent className={classes.dialogContent}>
 
             <Container style={{ display: 'flex', flexDirection:'row', justifyContent: 'center'}}>
@@ -523,7 +531,7 @@ function ChangeResourseType(props) {
     return (
       <div>
       <Dialog onClose={handleClose} fullWidth maxWidth='sm' aria-labelledby="simple-dialog-title" open={open} className={classes.dialog}>
-        <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h3 style={{fontWeight: '500'}}>Add resourse</h3></DialogTitle>
+        <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h5 style={{fontWeight: '600'}}>Add resourse</h5></DialogTitle>
         <DialogContent className={classes.dialogContent}>
   
 

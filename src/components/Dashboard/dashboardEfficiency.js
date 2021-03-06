@@ -212,10 +212,10 @@ export default function DashboardEfficiency(props){
                   }
                 >
                   <MenuItem value="Efficiency">Efficiency</MenuItem>
-                  <MenuItem value="Usage">Usage</MenuItem>
+                  <MenuItem value="Usage">Using</MenuItem>
                 </Select>
-                  {timePeriod == 1 ? (<Typography className={classes.typography}>14 Feb 2021
-                    </Typography>): (<Typography className={classes.typography}> 8 Feb 2021 - 14 Feb 2021
+                  {timePeriod == 1 ? (<Typography className={classes.typography}>1 Mar 2021
+                    </Typography>): (<Typography className={classes.typography}> 1 Mar 2021 - 7 Mar 2021
                     </Typography>)}
 
               </div>
@@ -266,7 +266,7 @@ export default function DashboardEfficiency(props){
                   <MenuItem value={1}>Effective</MenuItem>
                   <MenuItem value={2}>Neutral</MenuItem>
                   <MenuItem value={3}>Ineffective</MenuItem>
-                  <MenuItem value={4}>Mix</MenuItem>
+                  {/* <MenuItem value={4}>Mix</MenuItem> */}
                 </Select>
                 
               </div>

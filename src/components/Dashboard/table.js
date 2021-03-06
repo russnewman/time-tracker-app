@@ -52,23 +52,36 @@ const useStyles = makeStyles((theme) => ({
   })); 
 
 
-function createData(name, department, status, effective, effectiveRate, neutral, neutralRate, ineffective, ineffectiveRate, without, withoutRate, total) {
-  return { name, department, status, effective, effectiveRate, neutral, neutralRate, ineffective, ineffectiveRate, without, withoutRate, total};
+function createData(
+  name, 
+  position, 
+  department, 
+  status, 
+  effective, 
+  effectiveRate, 
+  neutral, 
+  neutralRate, 
+  ineffective, 
+  ineffectiveRate, 
+  without, 
+  withoutRate, 
+  total) {
+  return { name, position, department, status, effective, effectiveRate, neutral, neutralRate, ineffective, ineffectiveRate, without, withoutRate, total};
 }
 
 const rows = [
-  createData('Cupcake','Dev', true, '31m', '60%', '2h 30m', '32%','2h 40m', '38%', '1h 39m', '28%', '5h 51m'),
-  createData('Donut','ML', false, '21m', '10%', '4h 31m', '53%','1h 40m', '38%', '3h 20m', '39%', '4h 23m'),
-  createData('Eclair','Analytics', true, '4h 2m', '40%', '1h 30m', '22%', '1h', '20%', '24m', '19%','7h 2m'),
-  createData('Frozen yoghurt','Analytic', false,'1h', '2%', '2h', '32%','4h', '90%','2m', '1%', '9h 52m'),
-  createData('Gingerbread','Dev', false, '4h 20m', '18%', '0m', '0%','0m', '0%','54m', '18%', '4h 20m'),
-  createData('Honeycomb', 'Dev', true, '31m', '90%', '2h 30m', '32%','2h 40m', '38%','20m', '9%', '5h 51m'),
-  createData('Ice cream sandwich', "HR", true, '9h', '1%', '1m', '99%','2h', '38%', '5h 52m', '79%', '15h 52m'),
-  createData('Jelly Bean', 'Bookkeeping', false, '1h 3m', '55%', '2h 30m', '29%','2h 43m', '28%','2h 34m', '39%', '16h 51m'),
-  createData('KitKat', '31m', 'Inner Managament', true,'30%', '2h 30m', '32%','2h 40m', '38%', '2h 51m', '39%','5h 51m'),
-  createData('Lollipop', 'Analytics', false, '4h 20m', '18%', '0m', '0%','0m', '0%', '2h 1m', '34%', '4h 20m'),
-  createData('Marshmallow', 'Research', true, '21m', '14%', '4h 31m', '23%','1h 40m', '38%', '4h', '42%', '1h 23m'),
-  createData('Nougat', 'ML', false, '21m', '10%', '4h 31m', '53%','1h 40m', '38%','2h 19m', '29%', '23m'),
+  createData('Bobrov Artur','Senior Software Engineer','Development', true, '31m', '60%', '2h 30m', '32%','2h 40m', '38%', '1h 39m', '28%', '5h 51m'),
+  createData('Michaylov Dmitry','Ml engineer','Development', false, '21m', '10%', '4h 31m', '53%','1h 40m', '38%', '3h 20m', '39%', '4h 23m'),
+  createData('Lisa Davies','Business analyst','Analytics', true, '4h 2m', '40%', '1h 30m', '22%', '1h', '20%', '24m', '19%','7h 2m'),
+  createData('Mark Evans', 'Business analyst', 'Analytics', false,'1h', '2%', '2h', '32%','4h', '90%','2m', '1%', '9h 52m'),
+  createData('Novikova Anna','Junior software engineer','Development', false, '4h 20m', '18%', '0m', '0%','0m', '0%','54m', '18%', '4h 20m'),
+  createData('David Smith','Lead software engineer','Development', true, '31m', '90%', '2h 30m', '32%','2h 40m', '38%','20m', '9%', '5h 51m'),
+  createData('Kuznezova Veronika','Junior hr specialist', "HR", true, '9h', '1%', '1m', '99%','2h', '38%', '5h 52m', '79%', '15h 52m'),
+  createData('Prokhorov Andrew', 'Accounter', 'Bookkeeping', false, '1h 3m', '55%', '2h 30m', '29%','2h 43m', '28%','2h 34m', '39%', '16h 51m'),
+  createData('Popov Ilya', 'Manager', 'Inner Managament', true, '31m','30%', '2h 30m', '32%','2h 40m', '38%', '2h 51m', '39%','5h 51m'),
+  createData('Paul Taylor','Business analyst', 'Analytics', false, '4h 20m', '18%', '0m', '0%','0m', '0%', '2h 1m', '34%', '4h 20m'),
+  createData('Maria Jones', 'Researcher', 'Research', true, '21m', '14%', '4h 31m', '23%','1h 40m', '38%', '4h', '42%', '1h 23m'),
+  createData('Sorokin Alexandr','Ml engineer', 'Development', false, '21m', '10%', '4h 31m', '53%','1h 40m', '38%','2h 19m', '29%', '23m'),
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -114,6 +127,7 @@ function stableSort(array, comparator) {
 
 const headCells = [
   { id: 'name', alignRight: false, disablePadding: true, label: 'Members' },
+  // { id: 'position', alignRight: false, disablePadding: true, label: 'Position' },
   { id: 'department', alignRight: true, disablePadding: false, label: 'Department' },
   { id: 'status', alignRight: true, disablePadding: false, label: 'Status' },
   { id: 'effectiveRate', alignRight: true, disablePadding: false, label: 'Effective' },
@@ -252,7 +266,7 @@ export default function EnhancedTable(props) {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         <Typography value={row.name} style={{fontSize: "16px"}}/>
                         <span className="text-black-50">
-                            <Typography style={{fontSize:'11px'}} value={'UI Engineer'}/>
+                            <Typography style={{fontSize:'11px'}} value={row.position}/>
                         </span>
                       </TableCell>
 

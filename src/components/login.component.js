@@ -29,6 +29,12 @@ const styles = makeStyles((theme) => ({
     buuttonSignIn: {
         width: '100%',
         margin: theme.spacing(2),
+        backgroundColor: '#060b26', 
+        color: 'white',
+        '&:hover': {
+            backgroundColor: "#000361",
+            cursor: 'default'
+        },
     }
   }));
 
@@ -111,10 +117,10 @@ export default function SignIn(props){
 
                 <form onSubmit={handleSubmit}>
                     <Grid  container justify="center">
-                        <Grid item >
+                        <Grid item>
                             <TextField required  
                             label="Email" 
-                            style={{width: '100%'}}
+                            style={{width: '100%', color: 'red'}}
                                 margin="normal" 
                                 onChange={handleChangeEmail}
                                 helperText={emailErrMessage}/>
@@ -125,7 +131,7 @@ export default function SignIn(props){
 
                     <Grid container  justify="center" md={12}>
                         {/* <Link to={"/dashboard"} variant="body2"> */}
-                            <Button className={classes.buuttonSignIn} variant="contained" color="primary" type="submit">Sign In</Button>    
+                            <Button className={classes.buuttonSignIn} variant="contained" type="submit">Sign In</Button>    
                         {/* </Link> */}
                     </Grid>
 
@@ -138,9 +144,9 @@ export default function SignIn(props){
                                 </Link>
                         </Grid> */}
                         <Grid item>
-                            <Link to={"/sign-up"} variant="body2">
+                            <Link to={"/sign-up"} variant="body2" style={{color: '#060b26'}}>
 
-                                    <Typography variant="caption">
+                                    <Typography variant="caption" >
                                         Don't have an account? Sign up.
                                     </Typography>
                             </Link>

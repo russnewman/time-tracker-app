@@ -40,8 +40,8 @@ const dataWasteWeek= [100,212,20,80,130,270,310,107,14,78,101,100]
 const maxYVal = 600
 const tickAmount = 5
 
-const categories = [['Cupcake'],['Donut'], ['Eclair'],['Frozen yoghurt'],['Gingerbread'],['Honeycomb'],['Ice cream sandwich'],
-['Jelly Bean'],['KitKat'],['Lollipop'], ['Marshmallow'], ['Nougat']]
+const categories = [['Bobrov Artur'],['Kuznezova Veronika'], ['Lisa Davies'],['Maria Jones'],['Mark Evans'],['Michaylov Dmitry'],['Novikova Anna'],
+['David Smith'],['Paul Taylor'],['Popov Ilya'], ['Prokhorov Andrew'], ['Sorokin Alexandr']]
 
 const series =  [
   {

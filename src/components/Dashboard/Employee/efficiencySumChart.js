@@ -132,7 +132,7 @@ const optionsDay = {
             }
           }
       }
-    }
+  }
 }
   export default function EfficiencySumChart(props){
 

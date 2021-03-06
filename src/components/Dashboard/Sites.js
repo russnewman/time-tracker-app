@@ -77,7 +77,10 @@ const useStyles = makeStyles((theme) => ({
   },
   dialogTitle: {
     textAlign: 'center',
-    fontWeight: '900'
+    fontWeight: '900',
+    backgroundColor: '#060b26',
+    color: 'white',
+    fontWeight: '600'
   },
   dialogContent: {
     // textAlign: 'center',
@@ -147,13 +150,13 @@ const keylogs = [
 ]
 
 const itemsDayMember = [
-  createDataMemberDay('https://music.yandex.ru/home', 159, 15.31, 18.00, 130, 'neutral', keylogs[0]),
-  createDataMemberDay('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
-  createDataMemberDay('https://www.google.com/', 22, 15.40, 16.02, 14,'neutral', keylogs[4]),
-  createDataMemberDay('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
-  createDataMemberDay('https://www.youtube.com/', 22, 15.40, 16.02, 14,'ineffective', keylogs[3]),
-  createDataMemberDay('https://spring.io/', 2, 11.11, 11.13, 1, 'effective'),
-  createDataMemberDay('https://vk.com/feed', 22, 15.40, 16.02, 14,'ineffective', keylogs[1])
+  createDataMemberDay('https://music.yandex.ru/home', 159, '11:31', '12:00', 130, 'neutral', keylogs[0]),
+  createDataMemberDay('https://spring.io/', 2, '12:11', '12:13', 1, 'effective'),
+  createDataMemberDay('https://www.google.com/', 22, '12:40', '13:02', 14,'neutral', keylogs[4]),
+  createDataMemberDay('https://spring.io/', 2, '13:11', '13:13', 1, 'effective'),
+  createDataMemberDay('https://www.youtube.com/', 22, '13:50', '13:51', 14,'ineffective', keylogs[3]),
+  createDataMemberDay('https://spring.io/', 2, '13:51', '14:13', 1, 'effective'),
+  createDataMemberDay('https://vk.com/feed', 22, '14:40', '14:49', 14,'ineffective', keylogs[1])
 ];
 
 const itemsWeekMember = [
@@ -407,7 +410,7 @@ function ChangeResourseType(props) {
     
   <div>
     <Dialog onClose={handleClose} fullWidth maxWidth='sm' aria-labelledby="simple-dialog-title" open={open} className={classes.dialog}>
-      <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h3 style={{fontWeight: '500'}}>{processUrl(resourseName)}</h3></DialogTitle>
+      <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h5 style={{fontWeight: '700'}}>{processUrl(resourseName)}</h5></DialogTitle>
       <DialogContent className={classes.dialogContent}>
 
             <Container style={{ display: 'flex', flexDirection:'row', justifyContent: 'center'}}>
@@ -494,9 +497,9 @@ function KeyloggerDialog(props){
       scroll={scroll}
       aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description">
-      <DialogTitle id="scroll-dialog-title">
+      <DialogTitle id="scroll-dialog-title" style={{backgroundColor: '#060b26', color: 'white'}}>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-        <Typography variant='h6' style={{display: 'inline-block', fontWeight: '500'}}>
+        <Typography variant='h6' style={{display: 'inline-block', fontWeight: '900'}}>
           {processUrl(row.resourse)} 
         </Typography>
         <Typography style={{display: 'inline-block'}}>
