@@ -60,12 +60,5 @@ export function getAllEmployees() {
     //map departmentID to department title
     let departments = getDepartmentCollection();
     arr.push(data)
-    // console.log(employees)
-    // console.log(arr)
 
-
-    // return employees.map(x => ({
-    //     ...x,
-    //     department: departments[x.departmentId - 1].title
-    // }))
 }

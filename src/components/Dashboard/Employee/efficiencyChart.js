@@ -7,6 +7,7 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 
 import ReactApexChart from 'apexcharts';
 
+import EfficiencyService from '../../../services/efficiency.service'
 
 
 const styles = makeStyles((theme) => ({
@@ -18,52 +19,31 @@ const styles = makeStyles((theme) => ({
   }
 }))
 
+function secondsToHours(seconds){
+  const hours = Math.floor(seconds/3600)
+  const minutes = Math.floor(seconds % 3600 / 60)
+  const sec = seconds % 3600 % 60
 
-function minutesToHours(minutes){
-  const hours = Math.floor(minutes/60)
-  const min = minutes % 60
   if (hours != 0){
-      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
+      if (minutes != 0){
+        if (sec != 0) return  hours+ 'h' + ' ' + minutes + 'm' + ' ' + sec + 's'
+        return hours+ 'h' + ' ' + minutes + 'm'
+      } 
       return hours+'h'
   }
-  return minutes%60+'m'
+  if (minutes != 0){
+    if (sec != 0) return minutes + 'm' + ' ' + sec + 's'
+    return  minutes + 'm'
+  }
+  return sec + 's'
 }   
-
-const maxYVal = 600
-const tickAmount = 5
-
-
-const dataA = [0,0,0,0,0,0,0,0, 23, 20, 8, 13, 17,11,12,12 ,20,20,10,19,0,0,0,0]
-const dataB = [0,0,0,0,0,0,0,0,14,8,10,10,11,2,11,11,4,12,12,10,15,0,0,0,0]
-const dataC = [0,0,0,0,0,0,0,0,5,10,11,11,9, 9, 13, 12, 8, 13, 17,11,17,0,0,0,0]
-const dataD = [0,0,0,0,0,0,0,0,9,10,11,5,9, 4, 5, 1, 0, 0, 3, 2, 7,0,0,0,0]
 
 const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:00'],['03:00','-','04:00'],['04:00','-','5:00'],['05:00','-','6:00'],['06:00','-','7:00'],
 ['07:00','-','8:00'],['08:00','-','9:00'],['09:00','-','10:00'], ['10:00','-','11.00'], ['11:00','-','12:00'], ['12:00','-','13:00'],
 ['13:00','-','14:00'], ['14:00','-','15:00'],['15.00','-','16:00'],['16.00','-','17:00'],['17.00','-','18:00'],
 ['18.00','-','19:00'],['19.00','-','20:00'],['20.00','-','21:00'], ['21.00','-','22:00'], ['22.00','-','23:00'],['23.00','-','00:00']]
-
-const series =  [ 
-  {
-    name: 'Ineffective',
-    data: dataC.slice(8,20)
-  },
-  {
-    name: 'Neutral',
-    data: dataB.slice(8,20)
-  },
-  {
-    name: 'Effective',
-    data: dataA.slice(8,20)
-  },
-  {
-    name: 'Without category',
-    data: dataD.slice(8,20)
-  }
-]
   
-  
-  const options = {
+  const optionsDefault = {
     chart: {
       id: 'efficiency',
       type: 'bar',
@@ -103,7 +83,7 @@ const series =  [
     },
     yaxis:{
       min: 0,
-      max: 60,
+      max: 3600,
       tickAmount: 6,
       labels: {
         show: true,
@@ -116,7 +96,7 @@ const series =  [
             fontFamily: 'Poppins, sans-serif',
             fontWeight: 900,
         },
-        formatter: (value) => { return value + 'm' },
+        formatter: (value) => { return secondsToHours(value) + 'm' },
       },
     },
     fill: {
@@ -126,24 +106,46 @@ const series =  [
   }
 
 
-const seriesWeek =  [
+  
+const seriesDay =  [
   {
     name: 'Ineffective',
-    data: [30, 17, 79, 87, 41, 0,0]
+    data: [0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0,0,0]
   },
   {
     name: 'Neutral',
-    data: [23, 21, 200, 223, 214, 0,0]
+    data: [0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0,0,0]
   }, 
   {
     name: 'Effective',
-    data: [120, 210, 100, 100, 100, 0,0]
+    data: [0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0,0,0]
   },
   {
     name: 'Without',
-    data: [230, 10, 98, 155, 242, 0, 0]
+    data: [0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0,0,0]
   }
 ]
+
+
+const seriesWeek =  [
+  {
+    name: 'Ineffective',
+    data: [0, 0, 119, 0, 0, 2345, 0]
+  },
+  {
+    name: 'Neutral',
+    data: [0, 0, 0, 0, 345, 0,0]
+  }, 
+  {
+    name: 'Effective',
+    data: [0, 0, 244, 0, 1234, 0,0]
+  },
+  {
+    name: 'Without',
+    data: [0, 0, 0, 234, 0, 0, 0]
+  }
+]
+
   
   const optionsWeek = {
     series: seriesWeek,
@@ -152,39 +154,144 @@ const seriesWeek =  [
     },
     yaxis:{
       min: 0,
-      max: maxYVal,
-      tickAmount: tickAmount,
+      max: 28800,
+      tickAmount: 4,
       labels: {
-        formatter: (value) => { return minutesToHours(value) },
+        formatter: (value) => { return secondsToHours(value) },
       },
     },
   }
 
-  const optionsDay = {
-    series: series,
-    xaxis: {
-      categories:  categories.slice(8, 20)
-    },
-    yaxis:{
-      min: 0,
-      max: 60,
-      tickAmount: 6,
-      labels: {
-        formatter: (value) => { return value + 'm'  },
+  // const optionsDay = {
+  //   // series: series,
+  //   xaxis: {
+  //     categories:  categories.slice(8, 20)
+  //   },
+  //   yaxis:{
+  //     min: 0,
+  //     max: 60,
+  //     tickAmount: 6,
+  //     labels: {
+  //       formatter: (value) => { return value + 'm'  },
+  //     },
+  //   },
+  // }
+
+
+  const getSeries = (efficiency, timePeriod, beginInd, endInd) =>{
+
+    let effective, neutral, ineffective, without
+    if (timePeriod === 1 || timePeriod == 0){
+      effective = efficiency.EFFECTIVE.slice(beginInd, endInd)
+      neutral = efficiency.NEUTRAL.slice(beginInd,endInd)
+      ineffective = efficiency.INEFFECTIVE.slice(beginInd,endInd)
+      without = efficiency.WITHOUT.slice(beginInd,endInd)
+    }
+    else{
+      effective = efficiency.EFFECTIVE
+      neutral = efficiency.NEUTRAL
+      ineffective = efficiency.INEFFECTIVE
+      without = efficiency.WITHOUT
+    }
+
+    return [ 
+      {
+        name: 'Ineffective',
+        data: ineffective
       },
-    },
+      {
+        name: 'Neutral',
+        data: neutral
+      },
+      {
+        name: 'Effective',
+        data: effective
+      },
+      {
+        name: 'Without category',
+        data: without
+      }
+    ]
   }
+
+
+  const getOptions = (series, timePeriod) => {
+    console.log("TP", timePeriod)
+    if (timePeriod === 0 || timePeriod === 1){
+
+      const opt = {
+          series: series,
+          // chart:{
+          //   animations: {
+          //     enabled: true,
+          //     easing: 'easeinout',
+          //     speed: 300,
+          //     animateGradually: {
+          //         enabled: true,
+          //         delay: 1
+          //     },
+          //     dynamicAnimation: {
+          //         enabled: true,
+          //         speed: 450
+          //     }
+          //   }
+          // },
+          xaxis: {
+            categories:  categories.slice(8, 20)
+          },
+          yaxis:{
+            // min: 0,
+            max: 3600,
+            tickAmount: 6,
+            labels: {
+              formatter: (value) => { return secondsToHours(value)},
+            },
+          },
+        }
+      return opt
+    }
+    
+   const opt =  {
+        series: series,
+        // chart:{
+        //   animations: {
+        //     enabled: true,
+        //     easing: 'easeinout',
+        //     speed: 300,
+        //     animateGradually: {
+        //         enabled: true,
+        //         delay: 1
+        //     },
+        //     dynamicAnimation: {
+        //         enabled: true,
+        //         speed: 450
+        //     }
+        //   }
+        // },
+        xaxis: {
+          categories: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        },
+        yaxis:{
+          max: 28800,
+          tickAmount: 4,
+          labels: {
+            formatter: (value) => { return secondsToHours(value)},
+          },
+        },
+      }
+      return opt
+    }
 
 
   export default function EfficiencyByHoursChart(props){
-    const classes = styles()
 
+    const classes = styles()
     const [timePeriod, setTimePeriod] = React.useState(0)
+    const [date, setDate] = React.useState(new Date())
     const [beginInd, setBeginInd] = React.useState(8)
-    // const [endInd, setEndInd] = React.useState(20)
+   
 
     const handleLeftClick = event => {
-
       if (beginInd == 0) return
 
       let newBeginInd = beginInd
@@ -196,20 +303,7 @@ const seriesWeek =  [
       }
 
       const newOpt = {
-      series: [{
-          name: 'Effective',
-          data: dataA.slice(newBeginInd, newBeginInd + 12)
-        }, {
-          name: 'Neutral',
-          data: dataB.slice(newBeginInd, newBeginInd + 12)
-        }, {
-          name: 'Ineffective',
-          data: dataC.slice(newBeginInd, newBeginInd + 12)
-        },
-        {
-          name: 'Without category',
-          data: dataD.slice(newBeginInd, newBeginInd + 12)
-        }],
+      series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').efficiency.current, 1, newBeginInd, newBeginInd + 12),
         xaxis:{
           categories: categories.slice(newBeginInd, newBeginInd + 12)
         }
@@ -227,21 +321,7 @@ const seriesWeek =  [
         else if (beginInd == 8) newBeginInd = 12
 
         const newOptions = {
-          series: [{
-            name: 'Effective',
-            data: dataA.slice(newBeginInd, newBeginInd + 12)
-          }, {
-            name: 'Neutral',
-            data: dataB.slice(newBeginInd, newBeginInd + 12)
-          }, {
-            name: 'Ineffective',
-            data: dataC.slice(newBeginInd, newBeginInd +12)
-          },
-          {
-            name: 'Without category',
-            data: dataD.slice(newBeginInd, newBeginInd +12)
-          }
-        ],
+          series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').efficiency.current, 1, newBeginInd, newBeginInd + 12),
           xaxis:{
             categories: categories.slice(newBeginInd, newBeginInd + 12)
           }
@@ -252,25 +332,43 @@ const seriesWeek =  [
     
 
     React.useEffect(() => {
-      if (timePeriod != 0 && timePeriod == props.timePeriod){}
 
-      else if(props.timePeriod == 2){
-        ReactApexChart.exec("efficiency", 'updateOptions', optionsWeek, true)  
-        setTimePeriod(props.timePeriod)
-      }
+      // console.log("EFFECT", timePeriod, props.timePeriod, date, props.date)
+      if (timePeriod != 0 && timePeriod == props.timePeriod && date == props.date){return}
 
-      else if(props.timePeriod == 1){
-        ReactApexChart.exec("efficiency", 'updateOptions', optionsDay, true)
-        setTimePeriod(props.timePeriod)
+
+      // else if (timePeriod === 1){
+      //   ReactApexChart.exec("efficiency", 'updateOptions', getOptions(seriesDay, 1), true) 
+      // }
+      // else if (timePeriod === 2){
+      //   ReactApexChart.exec("efficiency", 'updateOptions', getOptions(seriesWeek, 2), true) 
+      // }
+      else{
+        setTimePeriod(props.timePeriod) 
+        setDate(props.date)
+
+        const newEfficiency = EfficiencyService.getEfficiencyFromSessionStorage('3').efficiency.current
+
+        let beginInd, endInd
+        if (props.timePeriod == 1 || props.timePeriod == 0) {
+          beginInd = 8
+          endInd = 20
+        }
+        else if (props.timePeriod == 2){
+          beginInd = 0 
+          endInd = 6
+        }
+
+        const ser = getSeries(newEfficiency, props.timePeriod, beginInd, endInd)
+        const newOptions = getOptions(ser, props.timePeriod)
+  
+        ReactApexChart.exec("efficiency", 'updateOptions', newOptions, true)       
       }
     });
 
-
-
     return(
       <div>
-
-          <Chart options={options} series={series} type="bar" height={370}  width={'100%'}/>
+          <Chart options={optionsDefault} series={getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').efficiency.current, timePeriod)} type="bar" height={370}  width={'100%'}/>
           {props.timePeriod == 1 ? (<div className={classes.bottomArrows}>
             <Button onClick={handleLeftClick}><KeyboardArrowLeftIcon/></Button>
             <Button onClick={handleRightClick}><KeyboardArrowRightIcon/></Button>

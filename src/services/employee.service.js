@@ -3,14 +3,11 @@ import axios from "axios";
 import AuthService from "./auth.service"
 
 
-const API_URL = "http://localhost:8080/user"
+const API_URL = "http://localhost:8090/user"
 
 
 class EmployeeService{
 
-
-
-    
     getAllManagersRest(){
         let user = AuthService.getCurrentUser()
         return axios.get(API_URL + "/getAllManagers",{headers: {Authorization: "Bearer "+ this.getToken()}})

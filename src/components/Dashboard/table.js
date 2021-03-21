@@ -192,14 +192,17 @@ export default function EnhancedTable(props) {
 
   const handleCheck = (event, name) =>{
     if (selectedMember === name){
-      setSelectedMember(null)
+      // setSubjectOfChange(2)
       setSubjectOfChange(2)
       setWriting('All team')
+      setSelectedMember(null)
+
     }
     else{
-      setSelectedMember(name)
       setSubjectOfChange(1)
       setWriting(name)
+      setSelectedMember(name)
+
     }
   }
 

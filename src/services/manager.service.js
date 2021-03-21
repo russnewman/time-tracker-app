@@ -3,7 +3,7 @@ import axios from "axios";
 import AuthService from "./auth.service"
 
 
-const API_URL = "http://localhost:8080/user"
+const API_URL = "http://localhost:8090/user"
 
 
 class Manager{
@@ -89,6 +89,20 @@ class Manager{
     getToken(){
         return  AuthService.getCurrentUser().userInfo.token
     }
+
+
+    getEmployeeInfoFromSessionStorage(employeeId){
+        
+        let user = JSON.parse(sessionStorage.getItem('user'))
+        for (let employee of user.employees){
+            // console.log("EM", employee)
+            if (employee.id == employeeId) {
+                // console.log('LLKL')
+                return employee
+            }
+        }
+    }
+
 }
 
 export default new Manager()

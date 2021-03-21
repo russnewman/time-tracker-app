@@ -199,7 +199,7 @@ export default function EmployeesComponent() {
     useEffect(()=>{
         ManagerService.getEmployeesRest()
         .then((response) =>{        
-            console.log("ASd",response.status)
+            // console.log("ASd",response.status)
             setRows(response)
         },
         error =>{
@@ -219,6 +219,7 @@ export default function EmployeesComponent() {
     },[])
 
     const handleSearch = e => {
+        // console.log("R", rows)
         let target = e.target;
         setFilterFn({
             fn: items => {

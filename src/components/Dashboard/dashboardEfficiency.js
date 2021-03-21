@@ -2,12 +2,21 @@ import React, { Fragment } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import EffectiveLineChart from './effectiveLineChart'
-import CustomDay from './date'
 
-import { Grid, Card, Container, Input, Paper, FormControl, Button,IconButton, Typography, Select, MenuItem } from '@material-ui/core';
-import TableMember from "./Employee/tableMember"
+import { Grid, Card, Container, Input, Paper, FormControl, Button, IconButton, Typography, Select, MenuItem } from '@material-ui/core';
 import Table from "./table"
 
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+
+
+import EfficiencyService from '../../services/efficiency.service'
+import DateService from '../../'
 import EfficiencyChart from './Employee/efficiencyChart'
 import EfficiencyByDayChart from './Employee/efficiencySumChart'
 import UsageChart from './Employee/usageChart'
@@ -111,15 +120,31 @@ export default function DashboardEfficiency(props){
     const [effectiveType, setEffectiveType] = React.useState(1);
     const [view, setView] = React.useState('analytics')
     const [flag, setFlag] = React.useState(false)
+    const [selectedDate, setSelectedDate] = React.useState(new Date());
 
 
-    // const s = 'All team'
+
     const handleTimeChange = (event) => {
-      setTimePeriod(event.target.value);
+      EfficiencyService.getEfficiencyAllTeam(selectedDate, event.target.value)
+      .then(response => {
+          setTimePeriod(event.target.value)
+      })
+      // setTimePeriod(event.target.value)
+
     };
+
+
     const handleSubjecChange = (event) => {
       setSubjectOfChange(event.target.value);
     }
+
+    const handleDateChange = (date) => {
+
+      EfficiencyService.getEfficiencyAllTeam(date, timePeriod)
+      .then(response => {
+          setSelectedDate(date);
+      })
+    };
 
     const handleViewChange = (event) => {
       if(view === 'analytics'){
@@ -168,7 +193,27 @@ export default function DashboardEfficiency(props){
                 </FormControl>
 
                 <FormControl MenuProps={{ disableScrollLock: true }} variant="outlined" className={classes.formControl}>
-                  <CustomDay MenuProps={{ disableScrollLock: true }} />
+                  {/* <CustomDay MenuProps={{ disableScrollLock: true }} /> */}
+
+
+                  <MuiPickersUtilsProvider disableScrollLock utils={DateFnsUtils}>
+                            <KeyboardDatePicker style={{width:'172px'}}
+                                disableScrollLock
+                                disableToolbar
+                                // variant="inline"
+                                inputVariant="outlined"
+                                  // margin="2px"
+                                  id="date-picker-dialog"
+                                  // label="Date"
+                                  format="MM/dd/yyyy"
+                                  value={selectedDate}
+                                  onChange={handleDateChange}
+                                  // KeyboardButtonProps={{
+                                  //   'aria-label': 'change date',
+                                  // }}
+                            />
+                  </MuiPickersUtilsProvider>
+
                 </FormControl>
             </div>
               
@@ -224,7 +269,7 @@ export default function DashboardEfficiency(props){
                   <UsageOfTeamChart timePeriod={timePeriod}/> 
               )}
               {flag && subjectOfChange === 1 && (chartSwitcher === 'Efficiency' ? 
-                  (<EfficiencyChart timePeriod={timePeriod}/>) : 
+                  (<EfficiencyChart timePeriod={timePeriod} date={selectedDate}/>) : 
                   (<UsageChart timePeriod={timePeriod}/>)
               )}
 
@@ -242,7 +287,7 @@ export default function DashboardEfficiency(props){
                   <EfficiencyOfTeamSumChart timePeriod={timePeriod}/> : 
                   <UsageOfTeamSumChart timePeriod={timePeriod}/>)}
               {flag && subjectOfChange === 1 && (chartSwitcher === 'Efficiency' ? 
-                  (<EfficiencyByDayChart timePeriod={timePeriod}/>) : 
+                  (<EfficiencyByDayChart timePeriod={timePeriod} date={selectedDate}/>) : 
                   (<UsageSumChart timePeriod={timePeriod}/>)
               )}
             </Card>
