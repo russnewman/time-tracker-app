@@ -7,7 +7,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import classnames from "classnames";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-
+import EfficiencyService from '../../services/efficiency.service';
+import DateService from '../../services/date.service';
 
 
 const useStyles =  makeStyles((theme) => ({
@@ -41,16 +42,6 @@ const useStyles =  makeStyles((theme) => ({
   }
 }));
 
-function minutesToHours(minutes){
-  const hours = Math.floor(minutes/60)
-  const min = minutes % 60
-  if (hours != 0){
-      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
-      return hours+'h'
-  }
-  return minutes%60+'m'
-}   
-
 
 export default function BigStat(props) {
   var { category, total, percentage} = props;
@@ -58,34 +49,34 @@ export default function BigStat(props) {
   var theme = useTheme();
 
 
+
   return (
 
-    
     <Card className={classes.card}>
         <div className={classes.title}>
             <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '600',}} variant="h6">{category}</Typography>
         </div>
         <div className={classes.totalValueContainer}>
           <div className={classes.totalValue}>
-            <Typography variant="h4" style={{fontFamily: 'Poppins, sans-serif', marginRight:'12px', fontWeight: '900'}}>
-              {minutesToHours(total.value)}
+            <Typography variant="h3" style={{fontFamily: 'Poppins, sans-serif', marginRight:'12px', fontWeight: '900'}}>
+              {DateService.secondsToHoursAndMinutes(total.value)}
             </Typography>
           </div>
-          {(category === 'Effective' || category === 'Neutral')&& 
+          {(category === 'Effective' || category === 'Neutral') && 
                 (total.percent.profit
                       ? 
-                <div>
+                (total.percent.value == 0 ? <div></div> : <div>
                   <ArrowUpwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
                   <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
                       {total.percent.value}%
                   </Typography>
-                </div> : 
-                <div>
+                </div>) : 
+                (total.percent.value == 0 ? <div></div> : <div>
                     <ArrowDownwardIcon style={{color: 'crimson'}}/>
                     <Typography style={{color:"crimson", display: 'inline-block'}}>
                         {total.percent.value}%
                       </Typography>
-                </div>)
+                </div>))
             }
             {/* {category === 'Neutral' && 
                 (total.percent.profit
@@ -106,18 +97,18 @@ export default function BigStat(props) {
             {(category === 'Ineffective' || category === 'Without') && 
                 (total.percent.profit
                       ? 
-                <div >
+                (total.percent.value === 0 ? <div></div> : <div >
                   <ArrowUpwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
                   <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
                       {total.percent.value}%
                   </Typography>
-                </div> : 
-                <div>
+                </div>) : 
+                (total.percent.value === 0 ? <div></div> :<div>
                     <ArrowDownwardIcon style={{color: '#00cc65'}}/>
                     <Typography style={{color:"#00cc65", display: 'inline-block'}}>
                         {total.percent.value}%
                       </Typography>
-                </div>)
+                </div>))
             }
         </div>
 
@@ -125,14 +116,14 @@ export default function BigStat(props) {
           <Typography className="text-black-50" style={{fontSize:'20 px', marginRight:'12px'}}>{percentage.value}%</Typography>
           <div style={{marginRight: '90px'}}>
             {(category === 'Effective' || category === 'Neutral') && (percentage.percent.profit ? 
-                    (<div>
+                    ( percentage.percent.value === 0 ? <div></div> : <div>
                       <ArrowUpwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
                       <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
                           {percentage.percent.value}%
                       </Typography>
                     </div>)
                      : 
-                    (<div>
+                    (percentage.percent.value === 0 ? <div></div> : <div>
                       <ArrowDownwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
                       <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
                         {percentage.percent.value}%
@@ -155,14 +146,14 @@ export default function BigStat(props) {
                     </div>))
             } */}
             {(category === 'Ineffective' || category === 'Without') && (percentage.percent.profit ? 
-                    (<div>
+                    (percentage.percent.value === 0 ? <div></div> : <div>
                       <ArrowUpwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
                       <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
                         {percentage.percent.value}%
                       </Typography>
                     </div>)
                      : 
-                    (<div>
+                    (percentage.percent.value === 0 ? <div></div> : <div>
                       <ArrowDownwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
                       <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
                         {percentage.percent.value}%

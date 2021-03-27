@@ -11,6 +11,11 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 // import Typography from '@material-ui/core/Typography';
 import Typography from '../../wrappers/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
+import AuthService from '../../services/auth.service'
+import EfficiencyService from '../../services/efficiency.service'
+import DateService from '../../services/date.service'
+
+
 
 
 
@@ -53,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function createData(
+  id,
   name, 
   position, 
   department, 
@@ -66,23 +72,8 @@ function createData(
   without, 
   withoutRate, 
   total) {
-  return { name, position, department, status, effective, effectiveRate, neutral, neutralRate, ineffective, ineffectiveRate, without, withoutRate, total};
+  return { id, name, position, department, status, effective, effectiveRate, neutral, neutralRate, ineffective, ineffectiveRate, without, withoutRate, total};
 }
-
-const rows = [
-  createData('Bobrov Artur','Senior Software Engineer','Development', true, '31m', '60%', '2h 30m', '32%','2h 40m', '38%', '1h 39m', '28%', '5h 51m'),
-  createData('Michaylov Dmitry','Ml engineer','Development', false, '21m', '10%', '4h 31m', '53%','1h 40m', '38%', '3h 20m', '39%', '4h 23m'),
-  createData('Lisa Davies','Business analyst','Analytics', true, '4h 2m', '40%', '1h 30m', '22%', '1h', '20%', '24m', '19%','7h 2m'),
-  createData('Mark Evans', 'Business analyst', 'Analytics', false,'1h', '2%', '2h', '32%','4h', '90%','2m', '1%', '9h 52m'),
-  createData('Novikova Anna','Junior software engineer','Development', false, '4h 20m', '18%', '0m', '0%','0m', '0%','54m', '18%', '4h 20m'),
-  createData('David Smith','Lead software engineer','Development', true, '31m', '90%', '2h 30m', '32%','2h 40m', '38%','20m', '9%', '5h 51m'),
-  createData('Kuznezova Veronika','Junior hr specialist', "HR", true, '9h', '1%', '1m', '99%','2h', '38%', '5h 52m', '79%', '15h 52m'),
-  createData('Prokhorov Andrew', 'Accounter', 'Bookkeeping', false, '1h 3m', '55%', '2h 30m', '29%','2h 43m', '28%','2h 34m', '39%', '16h 51m'),
-  createData('Popov Ilya', 'Manager', 'Inner Managament', true, '31m','30%', '2h 30m', '32%','2h 40m', '38%', '2h 51m', '39%','5h 51m'),
-  createData('Paul Taylor','Business analyst', 'Analytics', false, '4h 20m', '18%', '0m', '0%','0m', '0%', '2h 1m', '34%', '4h 20m'),
-  createData('Maria Jones', 'Researcher', 'Research', true, '21m', '14%', '4h 31m', '23%','1h 40m', '38%', '4h', '42%', '1h 23m'),
-  createData('Sorokin Alexandr','Ml engineer', 'Development', false, '21m', '10%', '4h 31m', '53%','1h 40m', '38%','2h 19m', '29%', '23m'),
-];
 
 function descendingComparator(a, b, orderBy) {
     a = a[orderBy]
@@ -174,12 +165,70 @@ function EnhancedTableHead(props) {
   );
 }
 
+
+
+// const computeEfficiency = (efficiencyList) => {
+
+//   //day.Compute total
+//   if (efficiencyList.EFFECTIVE.length == 24){
+//     return {
+//       'effective': efficiencyList.EFFECTIVE.reduce((a, b) => a + b),
+//       'neutral': efficiencyList.NEUTRAL.reduce((a, b) => a + b),
+//       'ineffective': efficiencyList.INEFFECTIVE.reduce((a, b) => a + b),
+//       'without': efficiencyList.WITHOUT.reduce((a, b) => a + b)
+//     }
+//   }
+//   //Compute average
+//   let numberOfWorkingDays = 5
+//   return {
+//     'effective': Math.floor(efficiencyList.EFFECTIVE.reduce((a, b) => (a + b)) / numberOfWorkingDays),
+//     'neutral':  Math.floor(efficiencyList.NEUTRAL.reduce((a, b) => (a + b)) / numberOfWorkingDays),
+//     'ineffective': Math.floor(efficiencyList.INEFFECTIVE.reduce((a, b) => (a + b)) / numberOfWorkingDays),
+//     'without': Math.floor(efficiencyList.WITHOUT.reduce((a, b) => (a + b)) / numberOfWorkingDays)
+//   }
+//   //Compute average
+// }
+
+// const getEfficiencyRate = (efficiency) =>{
+//   const total = efficiency.effective + efficiency.ineffective + efficiency.neutral + efficiency.without
+//   const denominator = total == 0 ? 1 : total  
+//   return {
+//     'effective': Math.round(efficiency.effective/denominator) * 100 + '%',
+//     'neutral': Math.round(efficiency.neutral/denominator)* 100 + '%',
+//     'ineffective': Math.round(efficiency.ineffective/denominator)* 100 + '%' ,
+//     'without': Math.round(efficiency.without/denominator)* 100 + '%',
+//     'total': total
+//   }
+// }
+
+const getRows = (employeeList) => {
+  let rows = []
+  employeeList.forEach(employee => {
+    const efficiencyList = EfficiencyService.getEfficiencyFromSessionStorage(employee.id).current
+    const efficiency = EfficiencyService.computeEfficiencyForPeriodOfTime(efficiencyList)
+
+    const rate = EfficiencyService.getEfficiencyRate(efficiency)
+    const res = createData(
+      employee.id, employee.fullName, employee.position, employee.department, true, 
+      DateService.secondsToHours(efficiency.effective), rate.effective + '%',
+      DateService.secondsToHours(efficiency.neutral), rate.neutral + '%', 
+      DateService.secondsToHours(efficiency.ineffective), rate.ineffective + '%', 
+      DateService.secondsToHours(efficiency.without), rate.without + '%',
+      DateService.secondsToHours(rate.total))
+    rows.push(res)
+  })
+  return rows
+}
+
 export default function EnhancedTable(props) {
 
 
-  const setSubjectOfChange = props.setSubjectOfChange;
+  // const setSubjectOfChange = props.setSubjectOfChange;
+  const setEmployeeIdOrAllTeam = props.setEmployeeIdOrAllTeam
   const setWriting = props.setWriting;
   const writing = props.writing;
+  // const timePeriod = props.timePeriod;
+  // const date = props.selectedDate;
 
 
   const classes = useStyles();
@@ -189,21 +238,35 @@ export default function EnhancedTable(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [selectedMember, setSelectedMember] = React.useState(writing);
 
+  ///////////
+  // console.log("LLL", getRows(AuthService.getCurrentUser().employees))
+  // const [rows, setRows] = React.useState(getRows(AuthService.getCurrentUser().employees))
+  const rows = getRows(AuthService.getCurrentUser().employees)
+  // console.log("RRR", rows)
+  // console.log("EEE", EfficiencyService.getEfficiencyFromSessionStorage(3).current)
 
-  const handleCheck = (event, name) =>{
+
+  // React.useEffect(()=>{
+  //   console.log('DSF')
+  //   setRows(getRows(AuthService.getCurrentUser().employees))
+  // }, [])
+
+
+  const handleCheck = (event, id,  name) =>{
+    console.time("CHECK")
     if (selectedMember === name){
       // setSubjectOfChange(2)
-      setSubjectOfChange(2)
+      setEmployeeIdOrAllTeam('all')
       setWriting('All team')
       setSelectedMember(null)
-
     }
     else{
-      setSubjectOfChange(1)
+      // setSubjectOfChange(1)
+      setEmployeeIdOrAllTeam(id)
       setWriting(name)
       setSelectedMember(name)
-
     }
+    console.timeEnd("CHECK")
   }
 
 
@@ -223,7 +286,7 @@ export default function EnhancedTable(props) {
     setPage(0);
   };
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  // const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
@@ -253,7 +316,7 @@ export default function EnhancedTable(props) {
                       classes={{ hover: classes.hover }}
                       className={classes.tableRow}
                       hover
-                      onClick={(event) => handleCheck(event, row.name)}
+                      onClick={(event) => handleCheck(event, row.id, row.name)}
                       role="checkbox"
                       tabIndex={-1}
                       key={row.name}
@@ -317,11 +380,11 @@ export default function EnhancedTable(props) {
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
+              {/* {emptyRows > 0 && (
                 <TableRow >
                   <TableCell colSpan={6}/>
                 </TableRow>
-              )}
+              )} */}
             </TableBody>
             
           </Table>

@@ -22,6 +22,45 @@ class DateService{
                 return 'week'
         }
     }
+
+    secondsToHours(seconds){
+        const hours = Math.floor(seconds/3600)
+        const minutes = Math.floor(seconds % 3600 / 60)
+        const sec = seconds % 3600 % 60
+      
+        if (hours != 0){
+            if (minutes != 0){
+              if (sec != 0) return  hours+ 'h' + ' ' + minutes + 'm' + ' ' + sec + 's'
+              return hours+ 'h' + ' ' + minutes + 'm'
+            } 
+            return hours+'h'
+        }
+        if (minutes != 0){
+          if (sec != 0) return minutes + 'm' + ' ' + sec + 's'
+          return  minutes + 'm'
+        }
+        if (sec !=0) return sec + 's'
+        return 0
+      }
+      
+      
+    secondsToHoursAndMinutes(seconds){
+        const hours = Math.floor(seconds/3600)
+        const minutes = Math.floor(seconds % 3600 / 60)
+        // const sec = seconds % 3600 % 60
+      
+        if (hours != 0){
+            if (minutes != 0){
+              return hours+ 'h' + ' ' + minutes + 'm'
+            } 
+            return hours+'h'
+        }
+        if (minutes != 0){
+          return  minutes + 'm'
+        }
+        return 0
+    }   
+      
 }
  
 

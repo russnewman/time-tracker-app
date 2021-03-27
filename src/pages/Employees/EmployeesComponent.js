@@ -199,7 +199,6 @@ export default function EmployeesComponent() {
     useEffect(()=>{
         ManagerService.getEmployeesRest()
         .then((response) =>{        
-            // console.log("ASd",response.status)
             setRows(response)
         },
         error =>{

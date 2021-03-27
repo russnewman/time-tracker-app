@@ -58,6 +58,8 @@ export default function SignIn(props){
             e.preventDefault()
             AuthService.login(email, password)
                 .then(()=>{
+                    console.log("LOG", JSON.parse(sessionStorage.getItem('efficiency')))
+                    console.log("LOG@", JSON.parse(sessionStorage.getItem('user')))
                     setRedirect("/dashboard")
                 },
                 error => {

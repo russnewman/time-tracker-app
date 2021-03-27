@@ -216,7 +216,6 @@ const seriesWeek =  [
 
 
   const getOptions = (series, timePeriod) => {
-    console.log("TP", timePeriod)
     if (timePeriod === 0 || timePeriod === 1){
 
       const opt = {
@@ -289,6 +288,8 @@ const seriesWeek =  [
     const [timePeriod, setTimePeriod] = React.useState(0)
     const [date, setDate] = React.useState(new Date())
     const [beginInd, setBeginInd] = React.useState(8)
+    const series = getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').current, timePeriod)
+    console.log("SERT",series)
    
 
     const handleLeftClick = event => {
@@ -303,7 +304,7 @@ const seriesWeek =  [
       }
 
       const newOpt = {
-      series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').efficiency.current, 1, newBeginInd, newBeginInd + 12),
+      series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').current, 1, newBeginInd, newBeginInd + 12),
         xaxis:{
           categories: categories.slice(newBeginInd, newBeginInd + 12)
         }
@@ -321,7 +322,7 @@ const seriesWeek =  [
         else if (beginInd == 8) newBeginInd = 12
 
         const newOptions = {
-          series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').efficiency.current, 1, newBeginInd, newBeginInd + 12),
+          series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').current, 1, newBeginInd, newBeginInd + 12),
           xaxis:{
             categories: categories.slice(newBeginInd, newBeginInd + 12)
           }
@@ -344,10 +345,12 @@ const seriesWeek =  [
       //   ReactApexChart.exec("efficiency", 'updateOptions', getOptions(seriesWeek, 2), true) 
       // }
       else{
-        setTimePeriod(props.timePeriod) 
-        setDate(props.date)
 
-        const newEfficiency = EfficiencyService.getEfficiencyFromSessionStorage('3').efficiency.current
+        //Почему тогда метод вызывается два раза и программа работает дольше
+        // setTimePeriod(props.timePeriod) 
+        // setDate(props.date)
+
+        const newEfficiency = EfficiencyService.getEfficiencyFromSessionStorage('3').current
 
         let beginInd, endInd
         if (props.timePeriod == 1 || props.timePeriod == 0) {
@@ -368,7 +371,7 @@ const seriesWeek =  [
 
     return(
       <div>
-          <Chart options={optionsDefault} series={getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').efficiency.current, timePeriod)} type="bar" height={370}  width={'100%'}/>
+          <Chart options={optionsDefault} series={series} type="bar" height={370}  width={'100%'}/>
           {props.timePeriod == 1 ? (<div className={classes.bottomArrows}>
             <Button onClick={handleLeftClick}><KeyboardArrowLeftIcon/></Button>
             <Button onClick={handleRightClick}><KeyboardArrowRightIcon/></Button>

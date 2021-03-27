@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import React, { Fragment } from 'react'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
 import EffectiveLineChart from './effectiveLineChart'
 
 import { Grid, Card, Container, Input, Paper, FormControl, Button, IconButton, Typography, Select, MenuItem } from '@material-ui/core';
@@ -32,7 +32,7 @@ import InsertChartOutlinedRoundedIcon from '@material-ui/icons/InsertChartOutlin
 import WebAssetIcon from '@material-ui/icons/WebAsset';
 
 import BigStat from "./BigStat";
-import Mock from "./Mock"
+import Mock from "./AllTeamService"
 
 const styles = makeStyles((theme) => ({
   paperSettings:{
@@ -116,6 +116,7 @@ export default function DashboardEfficiency(props){
     const classes = styles()
     const [timePeriod, setTimePeriod] = React.useState(1);
     const [subjectOfChange, setSubjectOfChange] = React.useState(2);
+    const [employeeIdOrArrTeam, setEmployeeIdOrAllTeam] = React.useState('all')
     const [writing, setWriting] = React.useState('All team')
     const [effectiveType, setEffectiveType] = React.useState(1);
     const [view, setView] = React.useState('analytics')
@@ -123,14 +124,11 @@ export default function DashboardEfficiency(props){
     const [selectedDate, setSelectedDate] = React.useState(new Date());
 
 
-
     const handleTimeChange = (event) => {
       EfficiencyService.getEfficiencyAllTeam(selectedDate, event.target.value)
       .then(response => {
           setTimePeriod(event.target.value)
       })
-      // setTimePeriod(event.target.value)
-
     };
 
 
@@ -139,7 +137,6 @@ export default function DashboardEfficiency(props){
     }
 
     const handleDateChange = (date) => {
-
       EfficiencyService.getEfficiencyAllTeam(date, timePeriod)
       .then(response => {
           setSelectedDate(date);
@@ -154,15 +151,22 @@ export default function DashboardEfficiency(props){
     }
 
     React.useEffect(() => {
-      setFlag(true);
-    })
+      EfficiencyService.getEfficiencyAllTeam(selectedDate, timePeriod)
+      .then(response => {
+          setFlag(true);
+      })
+    },[])
 
 
-    let mock
-    if (subjectOfChange === 1 && timePeriod === 1) mock = Mock.mockMemberDay
-    if (subjectOfChange === 2 && timePeriod === 1) mock = Mock.mockTeamDay
-    if (subjectOfChange === 1 && timePeriod === 2) mock = Mock.mockMemberWeek
-    if (subjectOfChange === 2 && timePeriod === 2) mock = Mock.mockTeamWeek
+    // console.log("MOCK", Mock.computeEfficiency('all'))
+    // console.log("IDDD",  employeeIdOrArrTeam)
+
+    let mock = Mock.computeEfficiency(employeeIdOrArrTeam)
+
+    // if (subjectOfChange === 1) mock = Mock.computeEfficiency(3)
+    // if (subjectOfChange === 2) mock = Mock.computeEfficiency(employeeIdOrArrTeam)
+    // if (subjectOfChange === 1 && timePeriod === 2) mock = Mock.mockMemberWeek
+    // if (subjectOfChange === 2 && timePeriod === 2) mock = Mock.mockTeamWeek
 
     return (
       <div className={classes.cont}>
@@ -226,8 +230,7 @@ export default function DashboardEfficiency(props){
       <div className = {classes.cont} style={{paddingLeft: '64px', paddingRight: '64px'}}>
 
         <Grid container spacing={2}>
-
-          
+    
           {mock.bigStat.map(stat => (
             <Grid item md={3} sm={6} xs={12} key={stat.category}>
               <BigStat {...stat}/>
@@ -238,9 +241,8 @@ export default function DashboardEfficiency(props){
 
         <Paper className={classes.paper}>
           {/* {subjectOfChange == 1 && <TableMember setSubjectOfChange={setSubjectOfChange}/>} */}
-          <Table setSubjectOfChange={setSubjectOfChange} setWriting={setWriting} writing={writing}/>
+          <Table setEmployeeIdOrAllTeam={setEmployeeIdOrAllTeam} setWriting={setWriting} writing={writing} selectedDate={selectedDate} timePeriod={timePeriod}/>
         </Paper>
-
 
         <Grid container spacing={4}>
           <Grid item xs={12} lg={8}>
@@ -264,11 +266,11 @@ export default function DashboardEfficiency(props){
                     </Typography>)}
 
               </div>
-              {flag && subjectOfChange === 2 && (chartSwitcher === 'Efficiency' ? 
+              {flag && employeeIdOrArrTeam === 'all' && (chartSwitcher === 'Efficiency' ? 
                   <EfficiencyOfTeamChart timePeriod={timePeriod}/> :
                   <UsageOfTeamChart timePeriod={timePeriod}/> 
               )}
-              {flag && subjectOfChange === 1 && (chartSwitcher === 'Efficiency' ? 
+              {flag && employeeIdOrArrTeam !== 'all' && (chartSwitcher === 'Efficiency' ? 
                   (<EfficiencyChart timePeriod={timePeriod} date={selectedDate}/>) : 
                   (<UsageChart timePeriod={timePeriod}/>)
               )}
@@ -283,10 +285,10 @@ export default function DashboardEfficiency(props){
                 {timePeriod === 3 && <Typography className={classes.typography} variant="h5">Mounth result</Typography>}
               </div>
 
-              {flag && subjectOfChange === 2 && (chartSwitcher === 'Efficiency' ? 
+              {flag && employeeIdOrArrTeam === 'all' && (chartSwitcher === 'Efficiency' ? 
                   <EfficiencyOfTeamSumChart timePeriod={timePeriod}/> : 
                   <UsageOfTeamSumChart timePeriod={timePeriod}/>)}
-              {flag && subjectOfChange === 1 && (chartSwitcher === 'Efficiency' ? 
+              {flag && employeeIdOrArrTeam !== 'all' && (chartSwitcher === 'Efficiency' ? 
                   (<EfficiencyByDayChart timePeriod={timePeriod} date={selectedDate}/>) : 
                   (<UsageSumChart timePeriod={timePeriod}/>)
               )}
@@ -334,5 +336,4 @@ export default function DashboardEfficiency(props){
         (<Sites subjectOfChange={subjectOfChange} timePeriod={timePeriod}/>)}
     </div>
     )
-
 }

@@ -6,7 +6,6 @@ import { FaRegClosedCaptioning } from 'react-icons/fa';
 import EfficiencyService from '../../../services/efficiency.service'
 
 
-// const series = [127,172,61, 76]
 
 function secondsToHours(seconds){
   const hours = Math.floor(seconds/3600)
@@ -110,25 +109,25 @@ const options = {
 
 const seriesWeek = [142,67,121, 100]
 
-// const optionsWeek = {
-//   series: seriesWeek,
-//   plotOptions: {
-//     pie: {
-//         donut: {
-//             labels: {
-//                 total: {
-//                     label: 'Average',
-//                     formatter: function (w) {
-//                       return minutesToHours(w.globals.seriesTotals.reduce((a, b) => {
-//                         return a + b
-//                       }, 0))
-//                     }
-//                   }
-//               }
-//           }
-//       }
-//     }
-// }
+const optionsWeek = {
+  series: seriesWeek,
+  plotOptions: {
+    pie: {
+        donut: {
+            labels: {
+                total: {
+                    label: 'Average',
+                    formatter: function (w) {
+                      return secondsToHours(w.globals.seriesTotals.reduce((a, b) => {
+                        return a + b
+                      }, 0))
+                    }
+                  }
+              }
+          }
+      }
+    }
+}
 
 // const optionsDay = {
 //   series:series,
@@ -180,13 +179,16 @@ const getOptions = (series, timePeriod) => {
     }
 }
 
+const updateChart = (opt) =>{
+  ReactApexChart.exec("efficiencySum", 'updateOptions', opt, true)  
+}
 
 
 const getSeries = (efficiency, timePeriod) =>{
 
   let effective, neutral, ineffective, without
-  
-  if(timePeriod == 1){
+
+  if(timePeriod == 1 || timePeriod == 0){
     effective = efficiency.EFFECTIVE.reduce((a, b) => a + b)
     neutral = efficiency.NEUTRAL.reduce((a, b) => a + b)
     ineffective = efficiency.INEFFECTIVE.reduce((a, b) => a + b)
@@ -194,7 +196,6 @@ const getSeries = (efficiency, timePeriod) =>{
   }
   else if (timePeriod == 2){
     // console.log("Efficiency", efficiency)
-
 
     const numberOfWorkingDays = 5
 
@@ -212,15 +213,24 @@ const getSeries = (efficiency, timePeriod) =>{
 
       const [timePeriod, setTimePeriod] = React.useState(0);
       const [date, setDate] = React.useState(new Date())
+      const series = getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').current, timePeriod)
+      console.log("SERIES", series)
       
+
+      // console.time("TIME")
       React.useEffect(() => {
     
         if (timePeriod != 0 && timePeriod == props.timePeriod && date == props.date){}
         else{
-          // setTimePeriod(props.timePeriod)
-          const ser = getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').efficiency.current, props.timePeriod)
-          const opt = getOptions(ser, props.timePeriod)
-          ReactApexChart.exec("efficiencySum", 'updateOptions', opt, true)  
+          setTimePeriod(props.timePeriod)
+          setDate(props.date)
+          const ser = getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').current, props.timePeriod)
+          const options = getOptions(ser, props.timePeriod)
+          ReactApexChart.exec("efficiencySum", 'updateOptions', options, true)
+          // updateChart(optionsWeek)
+
+
+          // ReactApexChart.exec("efficiencySum", 'updateOptions', opt, true)  
         }
 
         // else if(props.timePeriod == 2){
@@ -234,8 +244,10 @@ const getSeries = (efficiency, timePeriod) =>{
         //   setTimePeriod(props.timePeriod)
         // }
       });
+      // console.timeEnd("TIME")
       return (
-        <Chart options={options} series={getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').efficiency.current, timePeriod)} type="donut" width={'100%'} height={'80%'} />
+        // <div></div>
+        <Chart options={options} series={series} type="donut" width={'100%'} height={'80%'} />
       )
   }
   
