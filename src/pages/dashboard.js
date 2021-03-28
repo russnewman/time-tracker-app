@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import AuthService from '../services/auth.service'
 import { Redirect } from "react-router-dom";
 import DashboardEfficiency from '../components/Dashboard/dashboardEfficiency'
-import Sites from '../components/Dashboard/Sites'
+// import Sites from '../components/Dashboard/Sites'
 
 
 const Dashboard = () => {

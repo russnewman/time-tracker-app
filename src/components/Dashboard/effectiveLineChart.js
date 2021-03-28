@@ -17,18 +17,6 @@ const styles = makeStyles((theme) => ({
   }
 }))
 
-
-function minutesToHours(minutes){
-  const hours = Math.floor(minutes/60)
-  const min = minutes % 60
-  if (hours != 0){
-      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
-      return hours+'h'
-  }
-  return minutes%60+'m'
-}   
-
-
 const dataA = [43,23,34,25,53,12,34,13, 23, 20, 8, 13, 27,31,37,24,28,20,10,19,16,14,19,54]
 const dataB = [13,23,20,8,13,27,31,37,24,28,20,10,19,27,31,37,24,28,20,10,19,16,14,19,54]
 const dataC = [11,17,15,15,21,14,14,17,22,20,15,31,9, 13, 23, 20, 8, 13, 27,31,37,24,28,20,47]
@@ -59,8 +47,6 @@ const categories = [['00:00 - 01:00'],['01:00 - 2:00'], ['02:00 - 3:00'],['03:00
       height: 350,
       stacked: true,
       width: 50,
-      // colors :['#80ffdb'],
-      // foreColor: '#373d3f',
       animations: {
         enabled: true,
         easing: 'easeinout',

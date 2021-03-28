@@ -20,7 +20,7 @@ import Popup from "../../components/employees/Popup";
 import Controls from "../../components/employees/controls/Controls";
 import AuthService from "../../services/auth.service"
 import ManagerService from "../../services/manager.service";
-import SitesAllTime from "../../components/Dashboard/SitesAllTime"
+import SitesAllTime from "../../components/Dashboard/resourcesAllTime"
 
 import WebAssetIcon from '@material-ui/icons/WebAsset';
 

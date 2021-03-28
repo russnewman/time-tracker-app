@@ -286,12 +286,11 @@ const seriesWeek =  [
 
     const classes = styles()
     const [timePeriod, setTimePeriod] = React.useState(0)
-    const [date, setDate] = React.useState(new Date())
     const [beginInd, setBeginInd] = React.useState(8)
-    const series = getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').current, timePeriod)
-    console.log("SERT",series)
+    const employeeId = props.employeeId
+    console.log("ID",employeeId)
+    const series = getSeries(EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current, timePeriod)
    
-
     const handleLeftClick = event => {
       if (beginInd == 0) return
 
@@ -304,7 +303,7 @@ const seriesWeek =  [
       }
 
       const newOpt = {
-      series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').current, 1, newBeginInd, newBeginInd + 12),
+      series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current, 1, newBeginInd, newBeginInd + 12),
         xaxis:{
           categories: categories.slice(newBeginInd, newBeginInd + 12)
         }
@@ -314,7 +313,6 @@ const seriesWeek =  [
     }
 
     const handleRightClick = event => {
-
         if (beginInd == 12) return
 
         let newBeginInd = beginInd
@@ -322,7 +320,7 @@ const seriesWeek =  [
         else if (beginInd == 8) newBeginInd = 12
 
         const newOptions = {
-          series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').current, 1, newBeginInd, newBeginInd + 12),
+          series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current, 1, newBeginInd, newBeginInd + 12),
           xaxis:{
             categories: categories.slice(newBeginInd, newBeginInd + 12)
           }
@@ -333,25 +331,7 @@ const seriesWeek =  [
     
 
     React.useEffect(() => {
-
-      // console.log("EFFECT", timePeriod, props.timePeriod, date, props.date)
-      if (timePeriod != 0 && timePeriod == props.timePeriod && date == props.date){return}
-
-
-      // else if (timePeriod === 1){
-      //   ReactApexChart.exec("efficiency", 'updateOptions', getOptions(seriesDay, 1), true) 
-      // }
-      // else if (timePeriod === 2){
-      //   ReactApexChart.exec("efficiency", 'updateOptions', getOptions(seriesWeek, 2), true) 
-      // }
-      else{
-
-        //Почему тогда метод вызывается два раза и программа работает дольше
-        // setTimePeriod(props.timePeriod) 
-        // setDate(props.date)
-
-        const newEfficiency = EfficiencyService.getEfficiencyFromSessionStorage('3').current
-
+        const newEfficiency = EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current
         let beginInd, endInd
         if (props.timePeriod == 1 || props.timePeriod == 0) {
           beginInd = 8
@@ -366,7 +346,6 @@ const seriesWeek =  [
         const newOptions = getOptions(ser, props.timePeriod)
   
         ReactApexChart.exec("efficiency", 'updateOptions', newOptions, true)       
-      }
     });
 
     return(

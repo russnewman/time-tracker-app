@@ -2,17 +2,19 @@ import DateService from './date.service'
 import axios from "axios";
 import AuthService from "./auth.service"
 import ManagerService from "./manager.service"
-const API_URL = "http://localhost:8090/efficiency"
+const EFFICIENCY_URL = "http://localhost:8090/efficiency"
+const RESOURCES_URL = "http://localhost:8090/resources"
+
 
 
 class EfficiencyService{
     getEfficiencyAllTeam(date, periodOfTime){
 
-        let correctDate = DateService.toRightFormat(date)
-        let correctTimePeriod = DateService.timePeriodToString(periodOfTime)
-        let user = AuthService.getCurrentUser()
+        const correctDate = DateService.toRightFormat(date)
+        const correctTimePeriod = DateService.timePeriodToString(periodOfTime)
+        const user = AuthService.getCurrentUser()
 
-        return axios.get(API_URL + "/team", { 
+        return axios.get(EFFICIENCY_URL + "/team", { 
                             params:{
                                     userId: user.userInfo.id,
                                     date: correctDate,
@@ -30,6 +32,111 @@ class EfficiencyService{
         },
              (error) => {return this.buildErrorNotification(error)}
         )
+    }
+
+
+
+    getEfficiencyAllTeamAndResources(date, periodOfTime, employeeIdOrAllTeam){
+
+        const  user = AuthService.getCurrentUser()
+        const correctDate = DateService.toRightFormat(date)
+        const correctTimePeriod = DateService.timePeriodToString(periodOfTime)
+
+        const requestOne = axios.get(EFFICIENCY_URL + "/team", { 
+                                        params:{
+                                                userId: user.userInfo.id,
+                                                date: correctDate,
+                                                periodOfTime: correctTimePeriod
+                                            },
+                                        headers: {Authorization: "Bearer "+ this.getToken()}
+                                    })
+        let requestTwo;
+        if (employeeIdOrAllTeam !== 'all'){
+            requestTwo = axios.get(RESOURCES_URL + "/employee", { 
+                params:{
+                        employeeId: employeeIdOrAllTeam,
+                        date: correctDate,
+                        periodOfTime: correctTimePeriod
+                    },
+                headers: {Authorization: "Bearer "+ user.userInfo.token}
+            })
+        }
+        else{
+            requestTwo = axios.get(RESOURCES_URL + "/team", { 
+                params:{
+                        userId: user.userInfo.id,
+                        date: correctDate,
+                        periodOfTime: correctTimePeriod
+                    },
+                headers: {Authorization: "Bearer "+ user.userInfo.token}
+            })
+        }
+        
+
+        return axios.all([requestOne, requestTwo]).then(axios.spread((...responses) => {
+            const responseOne = responses[0]
+            const responseTwo = responses[1]
+
+            sessionStorage.setItem("efficiency", JSON.stringify(responseOne.data))
+            sessionStorage.setItem("resources", JSON.stringify(responseTwo.data))
+
+            console.log("Resp", responseTwo)
+            
+            return responseTwo.data
+
+
+            // use/access the results 
+          }, (error) => {return this.buildErrorNotification(error)}))
+    }
+
+
+    getResourcesAllTeam(date, periodOfTime){
+
+        const correctDate = DateService.toRightFormat(date)
+        const correctTimePeriod = DateService.timePeriodToString(periodOfTime)
+        const user = AuthService.getCurrentUser()
+
+        return axios.get(EFFICIENCY_URL + "/team", { 
+                            params:{
+                                    userId: user.userInfo.id,
+                                    date: correctDate,
+                                    periodOfTime: correctTimePeriod
+                                },
+                            headers: {Authorization: "Bearer "+ user.userInfo.token}
+                        })
+        .then((response) => {
+            sessionStorage.setItem("resources", JSON.stringify(response.data))
+            return response.data
+        },
+             (error) => {return this.buildErrorNotification(error)}
+        )
+    }
+
+
+    getResourcesForEmployee(employeeId, date, periodOfTime){
+
+        const correctDate = DateService.toRightFormat(date)
+        const correctTimePeriod = DateService.timePeriodToString(periodOfTime)
+
+        return axios.get(EFFICIENCY_URL + "/employee", { 
+            params:{
+                    userId: employeeId,
+                    date: correctDate,
+                    periodOfTime: correctTimePeriod
+                },
+            headers: {Authorization: "Bearer "+ this.getToken()}
+        })
+        .then((response) => {
+                sessionStorage.setItem("resources", JSON.stringify(response.data))
+                return response.data
+            },
+                (error) => {return this.buildErrorNotification(error)}
+            )
+    }
+
+
+    getResourcesFromSS(){
+        return JSON.parse(sessionStorage.getItem('resources'))
     }
 
 

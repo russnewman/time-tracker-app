@@ -4,143 +4,8 @@ import ReactApexChart from 'apexcharts'
 import { FaRegClosedCaptioning } from 'react-icons/fa';
 
 import EfficiencyService from '../../../services/efficiency.service'
+import DateService from '../../../services/date.service'
 
-
-
-function secondsToHours(seconds){
-  const hours = Math.floor(seconds/3600)
-  const minutes = Math.floor(seconds % 3600 / 60)
-  const sec = seconds % 3600 % 60
-
-  if (hours != 0){
-      if (minutes != 0){
-        if (sec != 0) return  hours+ 'h' + ' ' + minutes + 'm' + ' ' + sec + 's'
-        return hours+ 'h' + ' ' + minutes + 'm'
-      } 
-      return hours+'h'
-  }
-  if (minutes != 0){
-    if (sec != 0) return minutes + 'm' + ' ' + sec + 's'
-    return  minutes + 'm'
-  }
-  return sec + 's'
-}   
-
-
-const options = {
-  chart: {
-    type: 'donut',
-    id: 'efficiencySum'
-  },
-  labels: ['Ineffective', 'Neutral', 'Effective', 'Without category'],
-  fill: {
-    colors: ['#d90368', '#ffee32', '#00cc99', '#bcb8b1'],
-    opacity: 1
-    },
-  plotOptions: {
-        pie: {
-            donut: {
-                labels: {
-                    show: true,
-                    name: {
-                        show: true,
-                        fontSize: '25px',
-                        fontFamily: 'Roboto, sans-serif',
-                        fontWeight: 700,
-                        color: '#373d3f',
-                        formatter: function (val) {
-                            return val
-                        }
-                    },
-                    value: {
-                        show: true,
-                        fontSize: '16px',
-                        fontFamily: 'Roboto, sans-serif',
-                        fontWeight: 100,
-                        color: '#373d3f',
-                        offsetY: 16,
-                        formatter: function (val) {
-                            return secondsToHours(val)
-                        }
-                    },
-                    total: {
-                        show: true,
-                        showAlways: false,
-                        label: 'Total',
-                        fontSize: '22px',
-                        fontFamily: 'Roboto, sans-seri',
-                        fontWeight: 700,
-                        color: '#373d3f',
-                        formatter: function (w) {
-                          return secondsToHours(w.globals.seriesTotals.reduce((a, b) => {
-                            return a + b
-                          }, 0))
-                        }
-                      }
-                }
-            }
-        }
-    },
-
-    tooltip: {
-      enabled: false
-    },
-    dataLabels: {
-        enabled: true,
-        dropShadow: {
-            enabled: false
-        },
-        background: {
-            enabled: false
-        },
-        style: {
-            fontSize: '14px',
-            fontFamily: 'Roboto, sans-seri',
-            fontWeight: 100,
-            colors:['#020202', '#020202', '#020202', '#020202']
-        }
-      },
-    
-    legend: {
-      show: false
-    },
-}
-
-
-const seriesWeek = [142,67,121, 100]
-
-const optionsWeek = {
-  series: seriesWeek,
-  plotOptions: {
-    pie: {
-        donut: {
-            labels: {
-                total: {
-                    label: 'Average',
-                    formatter: function (w) {
-                      return secondsToHours(w.globals.seriesTotals.reduce((a, b) => {
-                        return a + b
-                      }, 0))
-                    }
-                  }
-              }
-          }
-      }
-    }
-}
-
-// const optionsDay = {
-//   series:series,
-//   plotOptions: {
-//     pie: {
-//         donut: {
-//             labels: {
-//                 total: {label: 'Total'}
-//             }
-//           }
-//       }
-//   }
-// }
 
 const getOptions = (series, timePeriod) => {
   if (timePeriod == 1 || timePeriod == 0){
@@ -167,7 +32,7 @@ const getOptions = (series, timePeriod) => {
                   total: {
                       label: 'Average',
                       formatter: function (w) {
-                        return secondsToHours(w.globals.seriesTotals.reduce((a, b) => {
+                        return DateService.secondsToHours(w.globals.seriesTotals.reduce((a, b) => {
                           return a + b
                         }, 0))
                       }
@@ -209,44 +74,96 @@ const getSeries = (efficiency, timePeriod) =>{
 }
 
 
-  export default function EfficiencySumChart(props){
-
-      const [timePeriod, setTimePeriod] = React.useState(0);
-      const [date, setDate] = React.useState(new Date())
-      const series = getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').current, timePeriod)
-      console.log("SERIES", series)
-      
-
-      // console.time("TIME")
-      React.useEffect(() => {
-    
-        if (timePeriod != 0 && timePeriod == props.timePeriod && date == props.date){}
-        else{
-          setTimePeriod(props.timePeriod)
-          setDate(props.date)
-          const ser = getSeries(EfficiencyService.getEfficiencyFromSessionStorage('3').current, props.timePeriod)
-          const options = getOptions(ser, props.timePeriod)
-          ReactApexChart.exec("efficiencySum", 'updateOptions', options, true)
-          // updateChart(optionsWeek)
-
-
-          // ReactApexChart.exec("efficiencySum", 'updateOptions', opt, true)  
+const series = [0,0,0,0]
+const options = {
+  chart: {
+    type: 'donut',
+    id: 'efficiencySum'
+  },
+  labels: ['Ineffective', 'Neutral', 'Effective', 'Without category'],
+  fill: {
+    colors: ['#d90368', '#ffee32', '#00cc99', '#bcb8b1'],
+    opacity: 1
+    },
+  plotOptions: {
+        pie: {
+            donut: {
+                labels: {
+                    show: true,
+                    name: {
+                        show: true,
+                        fontSize: '25px',
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 700,
+                        color: '#373d3f',
+                        formatter: function (val) {
+                            return val
+                        }
+                    },
+                    value: {
+                        show: true,
+                        fontSize: '16px',
+                        fontFamily: 'Roboto, sans-serif',
+                        fontWeight: 100,
+                        color: '#373d3f',
+                        offsetY: 16,
+                        formatter: function (val) {
+                            return DateService.secondsToHours(val)
+                        }
+                    },
+                    total: {
+                        show: true,
+                        showAlways: false,
+                        label: 'Total',
+                        fontSize: '22px',
+                        fontFamily: 'Roboto, sans-seri',
+                        fontWeight: 700,
+                        color: '#373d3f',
+                        formatter: function (w) {
+                          return DateService.secondsToHours(w.globals.seriesTotals.reduce((a, b) => {
+                            return a + b
+                          }, 0))
+                        }
+                      }
+                }
+            }
         }
+    },
 
-        // else if(props.timePeriod == 2){
-        //   ReactApexChart.exec("efficiencySum", 'updateOptions', optionsWeek, true) 
-        //   setTimePeriod(props.timePeriod)
-        // }
+    tooltip: {
+      enabled: false
+    },
+    dataLabels: {
+        enabled: true,
+        dropShadow: {
+            enabled: false
+        },
+        background: {
+            enabled: false
+        },
+        style: {
+            fontSize: '14px',
+            fontFamily: 'Roboto, sans-seri',
+            fontWeight: 100,
+            colors:['#020202', '#020202', '#020202', '#020202']
+        }
+      },
+    
+    legend: {
+      show: false
+    },
+}
 
-        // else if(props.timePeriod == 1){
 
-        //   ReactApexChart.exec("efficiencySum", 'updateOptions', optionsDay, true)  
-        //   setTimePeriod(props.timePeriod)
-        // }
+  export default function EfficiencySumChart(props){
+      const employeeId = props.employeeId
+
+      React.useEffect(() => {
+        const ser = getSeries(EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current, props.timePeriod)
+        const options = getOptions(ser, props.timePeriod)
+        ReactApexChart.exec("efficiencySum", 'updateOptions', options, true)
       });
-      // console.timeEnd("TIME")
       return (
-        // <div></div>
         <Chart options={options} series={series} type="donut" width={'100%'} height={'80%'} />
       )
   }

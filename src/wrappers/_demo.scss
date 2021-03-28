@@ -1,0 +1,32 @@
+.icon-demo-box {
+    padding: ($spacer * 2) 0 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  
+    .MuiCard-root {
+      margin: 0 ($spacer) ($spacer * 2);
+      padding: 0 !important;
+      width: 100px;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      transition: $transition-base;
+  
+      i,
+      span {
+        font-size: 2.5rem;
+      }
+  
+      &:hover {
+        transform: scale(1.8);
+        z-index: 9;
+        border-radius: 30px;
+        box-shadow: $modal-content-box-shadow-xs;
+      }
+    }
+  }

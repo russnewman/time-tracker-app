@@ -22,6 +22,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import ByHoursChart from './Employee/byHoursChart'
 import KeyboardOutlinedIcon from '@material-ui/icons/KeyboardOutlined';
+import ResourcesService from '../../services/resources.service'
+import DateService from '../../services/date.service'
+import resourcesService from '../../services/resources.service';
 
 
 // '#d90368', '#f5cc00', '#00cc99', '#bcb8b1' 
@@ -93,26 +96,26 @@ dialogAction: {
 }));
 
 
-function createDataMemberDay(resourse, duration, startTime, endTime, activity, type, keylog) {
+function createDataMemberDay(resource, duration, startTime, endTime, activity, type, keylog) {
   return { 
-    resourse: resourse, 
-    duration: minutesToHours(duration), 
-    startTime: startTime, 
-    endTime: endTime, 
+    resource: resource, 
+    duration: DateService.secondsToHours(duration), 
+    startTime: DateService.getTimeFromTimeStamp(startTime), 
+    endTime: DateService.getTimeFromTimeStamp(endTime), 
     activityRate: computeActivityRate(activity, duration),
-    activity: minutesToHours(activity),
+    activity: DateService.secondsToHours(activity),
     type: type, 
     keylog: keylog
     };
 }
 
-function createData(resourse, duration, activity, type) {
+function createData(resource, duration, activity, type) {
   return { 
-    resourse: resourse, 
-    duration: minutesToHours(duration), 
-    activityRate: computeActivityRate(activity, duration),
-    activity: minutesToHours(activity),
-    type: type
+      resource: resource, 
+      duration: DateService.secondsToHours(duration), 
+      activityRate: computeActivityRate(activity, duration),
+      activity: DateService.secondsToHours(activity),
+      type: type
     };
 }
 
@@ -122,19 +125,9 @@ function computeActivityRate(activeMinutes, duration){
     return Math.round(activeMinutes/duration * 100) + '%'
 }
 
-function minutesToHours(minutes){
-    const hours = Math.floor(minutes/60)
-    const min = minutes % 60
-    if (hours != 0){
-        if (min != 0) return  hours+ 'h ' + minutes%60 + 'm'
-        return hours+'h'
-    }
-    return minutes%60+'m'
-}   
-
 
 function processUrl(url){
-  if(url) return url.replace('https://','')
+  if(url) return url.replace('https://','').replace('http://', '')
   return
 }
 
@@ -149,87 +142,78 @@ const keylogs = [
   'вк'
 ]
 
-const itemsDayMember = [
-  createDataMemberDay('https://music.yandex.ru/home', 159, '11:31', '12:00', 130, 'neutral', keylogs[0]),
-  createDataMemberDay('https://spring.io/', 2, '12:11', '12:13', 1, 'effective'),
-  createDataMemberDay('https://www.google.com/', 22, '12:40', '13:02', 14,'neutral', keylogs[4]),
-  createDataMemberDay('https://spring.io/', 2, '13:11', '13:13', 1, 'effective'),
-  createDataMemberDay('https://www.youtube.com/', 22, '13:50', '13:51', 14,'ineffective', keylogs[3]),
-  createDataMemberDay('https://spring.io/', 2, '13:51', '14:13', 1, 'effective'),
-  createDataMemberDay('https://vk.com/feed', 22, '14:40', '14:49', 14,'ineffective', keylogs[1])
-];
 
-const itemsWeekMember = [
-  createData('https://music.yandex.ru/home', 559,  130, 'neutral'),
-  createData('https://spring.io/', 534,  1, 'effective'),
-  createData('https://www.youtube.com/', 22, 14,'ineffective'),
-  createData('https://www.w3.org/', 123, 100, 'effective'),
-  createData('https://ru.reactjs.org/', 14, 11, 'effective'),
-  createData('https://angular.io/', 99, 50, 'effective'),
-  createData('https://vk.com/feed', 156, 140, 'ineffective')
-];
+const getRows = (employeeIdOrAllTeam, resourcesDto)=>{
+  if (!resourcesDto || resourcesDto.length === 0) return []
 
+  let res = []
+  if (employeeIdOrAllTeam !== 'all'){
+    //day
+    if (resourcesDto[0].startTime){
+      for (let resource of resourcesDto){
+        const resourceLink = resource.protocolIdentifier +"://"+ resource.host
+        res.push(createDataMemberDay(resourceLink, resource.duration, resource.startTime, resource.endTime, 0, resource.category))
+      }
+    }
+    else{
+      for (let resource of resourcesDto){
+        const resourceLink = resource.protocolIdentifier +"://"+ resource.host
+        res.push(createData(resourceLink, resource.duration, 0, resource.category))
+      }
+    }
+  }
 
-const itemsDayTeam = [
-  createData('https://www.google.com/', 145, 130, 'neutral'),
-  createData('https://stackoverflow.com/', 559,  530, 'effective'),
-  createData('https://spring.io/', 534,  320, 'effective'),
-  createData('https://www.youtube.com/', 22, 14,'ineffective'),
-  createData('https://music.yandex.ru/', 123, 100, 'neutral'),
-  createData('https://ru.reactjs.org/', 14, 11, 'effective'),
-  createData('https://angular.io/', 99, 50, 'effective'),
-  createData('https://vuejs.org/', 340, 298, 'effective'),
-  createData('https://vk.com/feed', 156, 140, 'ineffective')
-]
+  else{
+    for (const [key, value] of Object.entries(resourcesDto)){
+      let totalDuration = 0
+      const category = value[0].category
+      const protocolIdentifier = value[0].protocolIdentifier
+      const resourceLink = protocolIdentifier +"://"+ key
 
 
-const itemsWeekTeam = [
-  createData('https://www.google.com/', 8845, 1130, 'neutral'),
-  createData('https://stackoverflow.com/', 1559,  1430, 'effective'),
-  createData('https://spring.io/', 4534,  1320, 'effective'),
-  createData('https://www.youtube.com/', 1222, 1214,'ineffective'),
-  createData('https://music.yandex.ru/', 2223, 1200, 'neutral'),
-  createData('https://ru.reactjs.org/', 124, 111, 'effective'),
-  createData('https://angular.io/', 2999, 1500, 'effective'),
-  createData('https://vuejs.org/', 340, 298, 'effective'),
-  createData('https://vk.com/feed', 990, 740, 'ineffective')
-]
+      value.forEach(resource => {
+        totalDuration += resource.duration
+      })
+      res.push(createData(resourceLink, totalDuration, 0, category))
+    }
+  }
 
+  return res
+}
 
 
 export default function AcccessibleTable(props) {
 
-  const subjectOfChange = props.subjectOfChange
+  const employeeIdOrAllTeam = props.employeeIdOrAllTeam
   const timePeriod = props.timePeriod
-  let items
+  const date = props.date
 
-  if (subjectOfChange === 1 && timePeriod === 1) items = itemsDayMember
-  else if (subjectOfChange === 1 && timePeriod === 2) items = itemsWeekMember
-  else if (subjectOfChange === 2 && timePeriod === 1) items = itemsDayTeam
-  else if (subjectOfChange === 2 && timePeriod === 2) items = itemsWeekTeam
+  const [rows, setRows] = React.useState(getRows(employeeIdOrAllTeam, ResourcesService.getResourcesFromSS()))
 
-  const [rows, setRows] = React.useState(items)
+
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [page, setPage] = React.useState(0);
 
-
-
   //////////////////////////////////////////
-  const [row, setRow] = React.useState('')
+  const [row, setRow] = React.useState({})
 
 
   const [open, setOpen] = React.useState(false);
   const [openKeylog, setOpenKeylog] = React.useState(false);
-  // const [resourseName, setResourseName] = React.useState("");
-  // const [type, setType] = React.useState("");
+  
   const [ind, setInd] = React.useState(0);
   const classes = useStyles();
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
 
-  React.useEffect(() => {
-    setRows(items);
-  }, [items])
+  // React.useEffect(() => {
+  //   ResourcesService.getResources(employeeIdOrAllTeam, date, timePeriod).then(
+  //     (response) => {
+  //       const items = getRows(employeeIdOrAllTeam, response)
+  //       setRows(items); 
+  //     }
+  //   )
+  // }, [])
 
 
   const handleChangePage = (event, newPage) => {
@@ -266,7 +250,7 @@ export default function AcccessibleTable(props) {
 
   return (
     <div>
-        {(subjectOfChange === 1 && timePeriod === 1) &&
+        {(employeeIdOrAllTeam !== 'all' && timePeriod === 1) &&
         <div style={{display: 'flex', justifyContent: 'center', paddingLeft: '64px', paddingRight: '64px'}}>
             <Paper className={classes.paper}>
               {/* <Typography>Hello</Typography> */}
@@ -275,7 +259,7 @@ export default function AcccessibleTable(props) {
         </div>
         }
         <div style={{display: 'flex', justifyContent: 'center', paddingLeft: '64px', paddingRight: '64px'}}>
-            <Paper className={timePeriod === 1 && subjectOfChange === 1 ? classes.paper : classes.paperSmall}>
+            <Paper className={timePeriod === 1 && employeeIdOrAllTeam !== 'all' ? classes.paper : classes.paperSmall}>
                 <TableContainer>
                 <Table  className={classes.table}
                         aria-labelledby="tableTitle"
@@ -288,14 +272,12 @@ export default function AcccessibleTable(props) {
                             <Typography className="font-weight-bold">Web resourse</Typography>
                             </TableCell>
                         <TableCell align="right"><Typography className="font-weight-bold">Duration</Typography></TableCell>
-                        {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right"><Typography className="font-weight-bold">Start time</Typography></TableCell>}
-                        {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right"><Typography className="font-weight-bold">End time</Typography></TableCell>}
+                        {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">Start time</Typography></TableCell>}
+                        {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">End time</Typography></TableCell>}
                         <TableCell align="right"><Typography className="font-weight-bold">Activity</Typography></TableCell>
-                        {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right"><Typography className="font-weight-bold">Keylogger</Typography></TableCell>}
+                        {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">Keylogger</Typography></TableCell>}
                     </TableRow>
                     </TableHead>
-
-
 
                     <TableBody>
                     {(rowsPerPage > 0
@@ -309,26 +291,26 @@ export default function AcccessibleTable(props) {
                                     <CreateIcon style={{fontSize:'14px'}}/>
                                 </IconButton>
 
-                                {row.type === 'effective' && <a style={{color:'#00cc99'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
-                                {row.type === 'neutral' && <a style={{color:'#f5cc00'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
-                                {row.type === 'ineffective' && <a style={{color:'#d90368'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
-                                {row.type === 'without' && <a style={{color:'#bcb8b1'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
-
+                                {row.type === 'effective' && <a style={{color:'#00cc99'}} href={row.resource}>{processUrl(row.resource)}</a>}
+                                {row.type === 'neutral' && <a style={{color:'#f5cc00'}} href={row.resource}>{processUrl(row.resource)}</a>}
+                                {row.type === 'ineffective' && <a style={{color:'#d90368'}} href={row.resource}>{processUrl(row.resource)}</a>}
+                                {row.type === 'without' && <a style={{color:'#bcb8b1'}} href={row.resource}>{processUrl(row.resource)}</a>}
+                                {/* #bcb8b1 */}
                             </div>                                                         
                         </TableCell>
                         <TableCell align="right">
 
                             {row.duration}
                             </TableCell>
-                        {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right">{row.startTime}</TableCell>}
-                        {timePeriod === 1 && subjectOfChange === 1 && <TableCell align="right">{row.endTime}</TableCell>}
+                        {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right">{row.startTime}</TableCell>}
+                        {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right">{row.endTime}</TableCell>}
                           <TableCell align="right">
                             <Typography style={{display: 'inline-block', fontWeight:'500'}} >{row.activityRate}</Typography>
                             <Typography className="text-black-50" style={{fontSize:'11px'}} >{row.activity}</Typography>
                           {/* {row.activity} */}
                           </TableCell>
 
-                          {timePeriod === 1 && subjectOfChange === 1 && 
+                          {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && 
                             <TableCell align="right">
                               {row.keylog && 
                                 <IconButton onClick={()=>{openKeylogDialog(row)}}>
@@ -341,11 +323,11 @@ export default function AcccessibleTable(props) {
                         </TableRow>
 
                     ))}
-                {emptyRows > 0 && (
+                {/* {emptyRows > 0 && (
                 <TableRow >
                   <TableCell colSpan={6}/>
                 </TableRow>
-              )}
+              )} */}
                 </TableBody>
                 </Table>
                 </TableContainer>
@@ -360,8 +342,8 @@ export default function AcccessibleTable(props) {
                     />
                 </Paper>
 
-               <ChangeResourseType rows={rows} ind={ind} subjectOfChange={subjectOfChange} open={open} onClose={handleClose}/> 
-               {(subjectOfChange === 1 && timePeriod === 1) && <KeyloggerDialog row={row} open={openKeylog} onClose={handleCloseKeylog}/>}
+               <ChangeResourseType rows={rows} ind={ind} employeeIdOrAllTeam={employeeIdOrAllTeam} open={open} onClose={handleClose}/> 
+               {(employeeIdOrAllTeam !== 'all' && timePeriod === 1) && <KeyloggerDialog row={row} open={openKeylog} onClose={handleCloseKeylog}/>}
 
        </div> 
     </div>
@@ -376,11 +358,14 @@ function ChangeResourseType(props) {
   let ind = props.ind
   const onClose = props.onClose
   const open = props.open
-  const subjectOfChange = props.subjectOfChange
+  const employeeIdOrAllTeam = props.employeeIdOrAllTeam
 
-  let row = rows[ind]
+  let row = rows.length > 0 ? rows[ind] : {
+    resource: "",
+    type: ""
+  } 
   // let row = props.row
-  const resourseName = row.resourse
+  const resourceName = row.resource
 
   const [type, setType] = React.useState(row.type)
   const [selectValue, setSelectValue] = React.useState('employee')
@@ -398,7 +383,7 @@ function ChangeResourseType(props) {
 
   const handleSave = () =>{
     handleClose()
-    rows.map(item => {if (item.resourse === row.resourse) item.type = type})
+    rows.map(item => {if (item.resource === row.resource) item.type = type})
   }
 
   const handleChange = (event) => {
@@ -410,11 +395,11 @@ function ChangeResourseType(props) {
     
   <div>
     <Dialog onClose={handleClose} fullWidth maxWidth='sm' aria-labelledby="simple-dialog-title" open={open} className={classes.dialog}>
-      <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h5 style={{fontWeight: '700'}}>{processUrl(resourseName)}</h5></DialogTitle>
+      <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h5 style={{fontWeight: '700'}}>{processUrl(resourceName)}</h5></DialogTitle>
       <DialogContent className={classes.dialogContent}>
 
             <Container style={{ display: 'flex', flexDirection:'row', justifyContent: 'center'}}>
-                {subjectOfChange == 1 && 
+                {employeeIdOrAllTeam !== 'all' && 
                 <div style={{width: '56px', marginRight: '96px', marginTop:'6px'}}>
                   <Select
                         value={selectValue}
@@ -461,7 +446,6 @@ function KeyloggerDialog(props){
   const onClose = props.onClose
   const open = props.open
   const row = props.row
-  console.log('Row', row)
   // const resourse = props.resourse
   // const startTime = props.startTime
   // const EndTime = props.endTime

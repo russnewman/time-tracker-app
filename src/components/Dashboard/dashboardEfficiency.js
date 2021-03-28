@@ -17,6 +17,7 @@ import {
 
 import EfficiencyService from '../../services/efficiency.service'
 import DateService from '../../'
+import ResourcesService from '../../services/resources.service'
 import EfficiencyChart from './Employee/efficiencyChart'
 import EfficiencyByDayChart from './Employee/efficiencySumChart'
 import UsageChart from './Employee/usageChart'
@@ -26,13 +27,13 @@ import EfficiencyOfTeamChart from './Team/efficiencyOfTeamChart'
 import EfficiencyOfTeamSumChart from './Team/efficiencyOfTeamSumChart'
 import UsageOfTeamChart from './Team/usageOfTeamChart'
 import UsageOfTeamSumChart from './Team/usageOfTeamSumChart'
-import Sites from './Sites'
+import Sites from './resources'
 
 import InsertChartOutlinedRoundedIcon from '@material-ui/icons/InsertChartOutlinedRounded';
 import WebAssetIcon from '@material-ui/icons/WebAsset';
 
 import BigStat from "./BigStat";
-import Mock from "./AllTeamService"
+import Mock from "./BigStatService"
 
 const styles = makeStyles((theme) => ({
   paperSettings:{
@@ -125,31 +126,39 @@ export default function DashboardEfficiency(props){
 
 
     const handleTimeChange = (event) => {
-      EfficiencyService.getEfficiencyAllTeam(selectedDate, event.target.value)
+      EfficiencyService.getEfficiencyAllTeamAndResources(selectedDate, event.target.value, employeeIdOrArrTeam)
       .then(response => {
           setTimePeriod(event.target.value)
       })
     };
 
 
-    const handleSubjecChange = (event) => {
-      setSubjectOfChange(event.target.value);
-    }
+    // const handleSubjecChange = (event) => {
+    //   setSubjectOfChange(event.target.value);
+    // }
 
     const handleDateChange = (date) => {
-      EfficiencyService.getEfficiencyAllTeam(date, timePeriod)
+      EfficiencyService.getEfficiencyAllTeamAndResources(date, timePeriod, employeeIdOrArrTeam)
       .then(response => {
           setSelectedDate(date);
       })
     };
 
+    //TODO Change this
     const handleViewChange = (event) => {
-      if(view === 'analytics'){
-        setView('sites')
-      }
-      else setView('analytics')
+        ResourcesService.getResources(employeeIdOrArrTeam, selectedDate, timePeriod).then(
+          (response) => {
+            if(view === 'analytics'){
+              setView('sites')
+            }
+            else{
+              setView('analytics')
+            }
+          }
+        )
     }
 
+    //TODO Change this
     React.useEffect(() => {
       EfficiencyService.getEfficiencyAllTeam(selectedDate, timePeriod)
       .then(response => {
@@ -158,15 +167,7 @@ export default function DashboardEfficiency(props){
     },[])
 
 
-    // console.log("MOCK", Mock.computeEfficiency('all'))
-    // console.log("IDDD",  employeeIdOrArrTeam)
-
     let mock = Mock.computeEfficiency(employeeIdOrArrTeam)
-
-    // if (subjectOfChange === 1) mock = Mock.computeEfficiency(3)
-    // if (subjectOfChange === 2) mock = Mock.computeEfficiency(employeeIdOrArrTeam)
-    // if (subjectOfChange === 1 && timePeriod === 2) mock = Mock.mockMemberWeek
-    // if (subjectOfChange === 2 && timePeriod === 2) mock = Mock.mockTeamWeek
 
     return (
       <div className={classes.cont}>
@@ -271,7 +272,7 @@ export default function DashboardEfficiency(props){
                   <UsageOfTeamChart timePeriod={timePeriod}/> 
               )}
               {flag && employeeIdOrArrTeam !== 'all' && (chartSwitcher === 'Efficiency' ? 
-                  (<EfficiencyChart timePeriod={timePeriod} date={selectedDate}/>) : 
+                  (<EfficiencyChart timePeriod={timePeriod} employeeId={employeeIdOrArrTeam}/>) : 
                   (<UsageChart timePeriod={timePeriod}/>)
               )}
 
@@ -289,7 +290,7 @@ export default function DashboardEfficiency(props){
                   <EfficiencyOfTeamSumChart timePeriod={timePeriod}/> : 
                   <UsageOfTeamSumChart timePeriod={timePeriod}/>)}
               {flag && employeeIdOrArrTeam !== 'all' && (chartSwitcher === 'Efficiency' ? 
-                  (<EfficiencyByDayChart timePeriod={timePeriod} date={selectedDate}/>) : 
+                  (<EfficiencyByDayChart timePeriod={timePeriod} employeeId={employeeIdOrArrTeam}/>) : 
                   (<UsageSumChart timePeriod={timePeriod}/>)
               )}
             </Card>
@@ -333,7 +334,7 @@ export default function DashboardEfficiency(props){
         </Grid>
         </div>)
         :
-        (<Sites subjectOfChange={subjectOfChange} timePeriod={timePeriod}/>)}
+        (<Sites employeeIdOrAllTeam={employeeIdOrArrTeam} timePeriod={timePeriod} date={selectedDate}/>)}
     </div>
     )
 }

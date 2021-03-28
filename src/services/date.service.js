@@ -59,7 +59,17 @@ class DateService{
           return  minutes + 'm'
         }
         return 0
-    }   
+    }
+    
+    getTimeFromTimeStamp(timeStamp){
+      return timeStamp.substring(11, timeStamp.length - 4)
+    }
+
+    //TODO Change this
+    stringToDate(date){
+      console.log("DateService", date)
+      return Date.parse(date) + 3*60*60*1000
+    }
       
 }
  

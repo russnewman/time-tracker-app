@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment  } from "react";
 import { Grid, Select, MenuItem, Input, Typography, Card } from "@material-ui/core";
 import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
@@ -9,6 +9,10 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import EfficiencyService from '../../services/efficiency.service';
 import DateService from '../../services/date.service';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import CardContent from '@material-ui/core/CardContent';
+import CardActionArea from '@material-ui/core/CardActionArea';
+
 
 
 const useStyles =  makeStyles((theme) => ({
@@ -39,7 +43,21 @@ const useStyles =  makeStyles((theme) => ({
   bottomStatsContainer:{
     display: "flex",
     justifyContent: "space-between",
-  }
+  },
+  cardAction: {
+    borderRadius: "20px",
+    width: '118%',
+    marginLeft: "-25px",
+    marginRight: "-20px",
+    display: 'block',
+    textAlign: 'initial'
+  },
+  actionArea: {
+    "&:hover $focusHighlight": {
+      opacity: 0
+    }
+  },
+  focusHighlight: {}
 }));
 
 
@@ -52,7 +70,25 @@ export default function BigStat(props) {
 
   return (
 
-    <Card className={classes.card}>
+//     <ButtonBase
+//     className={classes.cardAction}
+//     onClick={event => {}}
+// > 
+<Fragment>
+
+<div className="icon-demo-box">
+
+    <Card className="p-2 text-primary">
+      {/* <CardActionArea
+        classes={{
+          root: classes.actionArea,
+          focusHighlight: classes.focusHighlight
+        }}
+      > */}
+
+     
+      {/* <CardContent> */}
+
         <div className={classes.title}>
             <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '600',}} variant="h6">{category}</Typography>
         </div>
@@ -163,6 +199,13 @@ export default function BigStat(props) {
             
           </div>
         </div>
+        {/* </CardContent>
+        </CardActionArea> */}
+
       </Card>
+      </div>
+          </Fragment>
+
+
   );
 }

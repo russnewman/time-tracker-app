@@ -1,12 +1,9 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, Button } from '@material-ui/core';
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 
-import ReactApexChart from 'apexcharts';
-
+import ResourcesService from '../../../services/resources.service'
+import DateService from '../../../services/date.service'
 
 
 const styles = makeStyles((theme) => ({
@@ -19,9 +16,9 @@ const styles = makeStyles((theme) => ({
 }))
 
 
-function createData(resourse, type, startTime, endTime){
+function createData(resource, type, startTime, endTime){
   return {
-    resourse: resourse,
+    resource: resource,
     type: type,
     startTime: startTime,
     endTime: endTime
@@ -29,51 +26,62 @@ function createData(resourse, type, startTime, endTime){
 }
 
 
-const resourses = [
-  createData("music.yandex.ru/home", 'neutral', new Date(2021, 2, 25, 3, 10), new Date(2021, 2, 25, 3, 23)),
-  createData('spring.io/', 'effective', new Date(2021, 2, 25, 12, 10), new Date(2021, 2, 25, 12, 17)),
-  createData('www.youtube.com/', 'ineffective', new Date(2021, 2, 25, 12, 17), new Date(2021, 2, 25, 12, 20)),
-  createData('spring.io/', 'effective', new Date(2021, 2, 25, 12, 25), new Date(2021, 2, 25, 12, 31)),
-  createData('ru.reactjs.org/', 'effective', new Date(2021, 2, 25, 12, 40), new Date(2021, 2, 25, 13, 53)),
-  createData('vk.com/feed', 'ineffective', new Date(2021, 2, 25, 14, 10), new Date(2021, 2, 25, 16, 23)),
-  createData('https://www.google.com/', 'neutral', new Date(2021, 2, 25, 16, 23), new Date(2021, 2, 25, 16, 25))
-]
+// const resourses = [
+//   createData("music.yandex.ru/home", 'neutral', new Date(2021, 2, 25, 3, 10), new Date(2021, 2, 25, 3, 23)),
+//   createData('spring.io/', 'effective', new Date(2021, 2, 25, 12, 10), new Date(2021, 2, 25, 12, 17)),
+//   createData('www.youtube.com/', 'ineffective', new Date(2021, 2, 25, 12, 17), new Date(2021, 2, 25, 12, 20)),
+//   createData('spring.io/', 'effective', new Date(2021, 2, 25, 12, 25), new Date(2021, 2, 25, 12, 31)),
+//   createData('ru.reactjs.org/', 'effective', new Date(2021, 2, 25, 12, 40), new Date(2021, 2, 25, 13, 53)),
+//   createData('vk.com/feed', 'ineffective', new Date(2021, 2, 25, 14, 10), new Date(2021, 2, 25, 16, 23)),
+//   createData('https://www.google.com/', 'neutral', new Date(2021, 2, 25, 16, 23), new Date(2021, 2, 25, 16, 25))
+// ]
 
-const resultSeries = () => {
+const getSeries = () => {
+
+  const resourcesDto = ResourcesService.getResourcesFromSS()
   let res = []
-  for (let ind = 0; ind < resourses.length; ind++){
-    const data = resourses[ind]
 
+  for (let resource of resourcesDto){
+    // const resourceLink = +resource.host
+
+    const now=new Date();
+    const localtime=now.toString();
+    const utctime=now.toGMTString();
+
+    console.log("U",utctime)
+    console.log("L", localtime - utctime)
+
+    const category = resource.category
+    const startTime = new Date(DateService.stringToDate(resource.startTime))
+    const endTime = new Date(DateService.stringToDate(resource.endTime))
 
     // '#d90368', '#f5cc00', '#00cc99', '#bcb8b1'
     let color = ""
-    if (data.type === 'effective') color = '#00cc99'
-    else if(data.type === 'neutral') color = '#f5cc00'
-    else if(data.type === 'ineffective') color = '#d90368'
+    if (category === 'effective') color = '#00cc99'
+    else if(category === 'neutral') color = '#f5cc00'
+    else if(category === 'ineffective') color = '#d90368'
     else color = '#bcb8b1'
 
     res.push(
       {
-        name: data.resourse,
+        name: resource.host,
         data: [
           {
             x: 'T',
             y: [
-              data.startTime.getTime(),
-              data.endTime.getTime()
+              startTime.getTime(),
+              endTime.getTime()
             ],
             fillColor: color
           }
         ]
       }
     )
-
   }
   return res
 }
 
 
-const series = resultSeries()
 
  const options = {
     chart: {
@@ -139,10 +147,16 @@ const series = resultSeries()
   }
 
   export default function ByHoursChart(props){
-    
-    return(
-      <div style={{paddingTop: '16px'}}>
-          <Chart options={options} series={series} type="rangeBar" height={150} width={'100%'}/>
-      </div>
-    )
+
+    const series = getSeries()
+    console.log("Ser", series)
+
+    if (series.length > 0) {
+      return(
+        <div style={{paddingTop: '16px'}}>
+            <Chart options={options} series={series} type="rangeBar" height={150} width={'100%'}/>
+        </div>
+      )
+    }
+    else return (<div></div>)
   }
