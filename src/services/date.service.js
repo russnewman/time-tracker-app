@@ -67,7 +67,7 @@ class DateService{
 
     //TODO Change this
     stringToDate(date){
-      console.log("DateService", date)
+      // console.log("DateService", date)
       return Date.parse(date) + 3*60*60*1000
     }
       

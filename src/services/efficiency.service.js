@@ -1,7 +1,6 @@
 import DateService from './date.service'
 import axios from "axios";
 import AuthService from "./auth.service"
-import ManagerService from "./manager.service"
 const EFFICIENCY_URL = "http://localhost:8090/efficiency"
 const RESOURCES_URL = "http://localhost:8090/resources"
 

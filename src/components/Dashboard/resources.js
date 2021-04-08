@@ -25,7 +25,7 @@ import KeyboardOutlinedIcon from '@material-ui/icons/KeyboardOutlined';
 import ResourcesService from '../../services/resources.service'
 import DateService from '../../services/date.service'
 import resourcesService from '../../services/resources.service';
-
+import Notification from "../employees/Notification";
 
 // '#d90368', '#f5cc00', '#00cc99', '#bcb8b1' 
 
@@ -166,12 +166,15 @@ const getRows = (employeeIdOrAllTeam, resourcesDto)=>{
   else{
     for (const [key, value] of Object.entries(resourcesDto)){
       let totalDuration = 0
-      const category = value[0].category
+      let category = value[0].category
       const protocolIdentifier = value[0].protocolIdentifier
       const resourceLink = protocolIdentifier +"://"+ key
 
 
       value.forEach(resource => {
+        if (category != "mix" && resource.category != category){
+          category = "mix"
+        }
         totalDuration += resource.duration
       })
       res.push(createData(resourceLink, totalDuration, 0, category))
@@ -186,34 +189,25 @@ export default function AcccessibleTable(props) {
 
   const employeeIdOrAllTeam = props.employeeIdOrAllTeam
   const timePeriod = props.timePeriod
-  const date = props.date
-
-  const [rows, setRows] = React.useState(getRows(employeeIdOrAllTeam, ResourcesService.getResourcesFromSS()))
+  // const date = props.date
+  const rows = getRows(employeeIdOrAllTeam, ResourcesService.getResourcesFromSS())
 
 
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [page, setPage] = React.useState(0);
 
-  //////////////////////////////////////////
   const [row, setRow] = React.useState({})
 
 
   const [open, setOpen] = React.useState(false);
   const [openKeylog, setOpenKeylog] = React.useState(false);
+  const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' })
+
   
   const [ind, setInd] = React.useState(0);
+  const [host, setHost] = React.useState("");
   const classes = useStyles();
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
-
-  // React.useEffect(() => {
-  //   ResourcesService.getResources(employeeIdOrAllTeam, date, timePeriod).then(
-  //     (response) => {
-  //       const items = getRows(employeeIdOrAllTeam, response)
-  //       setRows(items); 
-  //     }
-  //   )
-  // }, [])
+  // const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
 
   const handleChangePage = (event, newPage) => {
@@ -232,7 +226,9 @@ export default function AcccessibleTable(props) {
   }
 
   const openDialog = (row, ind) => {
+    console.log(row)
     setInd(ind)
+    setHost(processUrl(row.resource))
     // setResourseName(row.resourse)
     // setType(row.type)
     setOpen(true)
@@ -243,17 +239,16 @@ export default function AcccessibleTable(props) {
     setOpenKeylog(true)
   }
 
-  const updateRows = (rows, ind, newType) => {
-      let row = rows[ind]
-      row.type = newType
-  }
+  // const updateRows = (rows, ind, newType) => {
+  //     let row = rows[ind]
+  //     row.type = newType
+  // }
 
   return (
     <div>
         {(employeeIdOrAllTeam !== 'all' && timePeriod === 1) &&
         <div style={{display: 'flex', justifyContent: 'center', paddingLeft: '64px', paddingRight: '64px'}}>
             <Paper className={classes.paper}>
-              {/* <Typography>Hello</Typography> */}
                   <ByHoursChart/>
             </Paper>
         </div>
@@ -295,6 +290,8 @@ export default function AcccessibleTable(props) {
                                 {row.type === 'neutral' && <a style={{color:'#f5cc00'}} href={row.resource}>{processUrl(row.resource)}</a>}
                                 {row.type === 'ineffective' && <a style={{color:'#d90368'}} href={row.resource}>{processUrl(row.resource)}</a>}
                                 {row.type === 'without' && <a style={{color:'#bcb8b1'}} href={row.resource}>{processUrl(row.resource)}</a>}
+                                {row.type === 'mix' && <a style={{color:'#000080'}} href={row.resource}>{processUrl(row.resource)}</a>}
+
                                 {/* #bcb8b1 */}
                             </div>                                                         
                         </TableCell>
@@ -323,11 +320,6 @@ export default function AcccessibleTable(props) {
                         </TableRow>
 
                     ))}
-                {/* {emptyRows > 0 && (
-                <TableRow >
-                  <TableCell colSpan={6}/>
-                </TableRow>
-              )} */}
                 </TableBody>
                 </Table>
                 </TableContainer>
@@ -342,54 +334,107 @@ export default function AcccessibleTable(props) {
                     />
                 </Paper>
 
-               <ChangeResourseType rows={rows} ind={ind} employeeIdOrAllTeam={employeeIdOrAllTeam} open={open} onClose={handleClose}/> 
+               <ChangeResourseType rows={rows} host={host} ind={ind} employeeIdOrAllTeam={employeeIdOrAllTeam} open={open} onClose={handleClose}/> 
                {(employeeIdOrAllTeam !== 'all' && timePeriod === 1) && <KeyloggerDialog row={row} open={openKeylog} onClose={handleCloseKeylog}/>}
-
+               <Notification
+                    notify={notify}
+                    setNotify={setNotify}
+                />
        </div> 
     </div>
   );
 }
 
-
-
 function ChangeResourseType(props) {
   const classes = useStyles()
-  let rows = props.rows
   let ind = props.ind
+  let host = props.host
   const onClose = props.onClose
   const open = props.open
   const employeeIdOrAllTeam = props.employeeIdOrAllTeam
+  const resources = ResourcesService.getResourcesFromSS()
 
-  let row = rows.length > 0 ? rows[ind] : {
-    resource: "",
-    type: ""
-  } 
-  // let row = props.row
-  const resourceName = row.resource
+  let resource
+  if (employeeIdOrAllTeam === "all"){
 
-  const [type, setType] = React.useState(row.type)
+    let category = ""
+    for (let [key, value] of Object.entries(resources)){
+      if (key === host){
+        category = value[0].category
+        value.forEach(res => {
+          if (category != res.category){
+            category = "mix"
+          }
+        })
+        break;
+      }
+    }
+
+    resource = {
+      host: host,
+      category: category
+    }
+  }
+
+  else{
+    resource = resources.length > 0 ? resources[ind] : {
+      host: "",
+      category: ""
+    } 
+  }
+  // console.log("RESOURCEEEEE", resource)
+
+  const resourceName = resource.host
+
+  const [category, setCategory] = React.useState(resource.category)
   const [selectValue, setSelectValue] = React.useState('employee')
-
-  React.useEffect(() => {
-    setType(row.type);
-  }, [row.type])
-
+  const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' })
 
   const handleClose = () => {
     onClose();
-    setType(row.type)
+    setCategory(resource.category)
     setSelectValue('team')
   };
 
   const handleSave = () =>{
-    handleClose()
-    rows.map(item => {if (item.resource === row.resource) item.type = type})
+    // console.log("TARGET", event)
+    if (category == "effective" || category == "ineffective" || category == "neutral"){
+      handleClose()
+
+      if (employeeIdOrAllTeam != "all"){
+        resources.map(item => {
+          if (item.host === resource.host) item.category = category
+          console.log("ITEM", item)
+        })
+      }
+      else{
+        for (let [key, value] of Object.entries(resources)){
+          if (key === resource.host){
+            value.forEach(res => {
+              res.category = category
+            })
+            break;
+          }
+        }
+      }
+      
+      // console.log("RESOURCE", resource)
+      ResourcesService.updateResourcesInSS(resources)
+      ResourcesService.updateResource(employeeIdOrAllTeam, selectValue, resource.host, category)
+    }
+    
+    // .then((response) => {
+    //   setNotify(response)})
   }
 
   const handleChange = (event) => {
-    setType(event.target.value);
+    setCategory(event.target.value);
   };
 
+
+  React.useEffect(() => {
+    setCategory(resource.category);
+  }, [resource.category])
 
   return (
     
@@ -416,7 +461,7 @@ function ChangeResourseType(props) {
                   </Select>
                 </div>
               }
-                <RadioGroup  row aria-label="position" value={type} onChange={handleChange}>
+                <RadioGroup  row aria-label="position" value={category} onChange={handleChange}>
                   <FormControlLabel value="effective" control={<ERadio/>} label="Effective" />
                   <FormControlLabel value="neutral" control={<NRadio/>} label="Neutral" />
                   <FormControlLabel value="ineffective" control={<Radio/>} label="Ineffective" />
@@ -434,6 +479,10 @@ function ChangeResourseType(props) {
             </div>
       </DialogContent>
     </Dialog>
+    <Notification
+                    notify={notify}
+                    setNotify={setNotify}
+      />
     </div>
     );
   }

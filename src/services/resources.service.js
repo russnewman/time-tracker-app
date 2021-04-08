@@ -6,28 +6,6 @@ const API_URL = "http://localhost:8090/resources"
 
 
 class ResourcesService{
-    // getResourcesAllTeam(date, periodOfTime){
-
-    //     const correctDate = DateService.toRightFormat(date)
-    //     const correctTimePeriod = DateService.timePeriodToString(periodOfTime)
-        // const user = AuthService.getCurrentUser()
-
-        // return axios.get(API_URL + "/team", { 
-        //                     params:{
-        //                             userId: user.userInfo.id,
-        //                             date: correctDate,
-        //                             periodOfTime: correctTimePeriod
-        //                         },
-        //                     headers: {Authorization: "Bearer "+ user.userInfo.token}
-        //                 })
-    //     .then((response) => {
-    //         sessionStorage.setItem("resources", JSON.stringify(response.data))
-    //         return response.data
-    //     },
-    //          (error) => {return this.buildErrorNotification(error)}
-    //     )
-    // }
-
 
     getResources(employeeIdOrAllTeam, date, periodOfTime){
 
@@ -65,8 +43,109 @@ class ResourcesService{
     }
 
 
+    updateResource(employeeIdOrAllTeam, selectValue, host, category){
+        let request;
+        if (employeeIdOrAllTeam != 'all' && selectValue == "employee"){
+            request = axios.put(API_URL + '/employee', {
+
+                url: "",
+                host: host,
+                category: category
+                    
+                }, {
+                    params: {
+                        employeeId: employeeIdOrAllTeam,
+                    },
+                    headers: {Authorization: "Bearer "+ this.getToken()}
+                })
+        }
+        else{
+            request = axios.put(API_URL + '/team', {
+                    url: "",
+                    host: host,
+                    category: category              
+                }, {
+                    params: {
+                        managerId: AuthService.getCurrentUser().userInfo.id,
+                    },
+                    headers: {Authorization: "Bearer "+ this.getToken()}
+                })
+        }
+
+        
+        return request.then((response) => {
+            // return this.buildNotification('SUCCESS')
+        },
+            (error) => {return this.buildErrorNotification(error)}
+        )
+
+    }
+
+
+
+    addResource(employeeIdOrAllTeam, selectValue, url, category){
+        let request;
+        if (employeeIdOrAllTeam != 'all' && selectValue == "employee"){
+            request = axios.post(API_URL + '/employee', {
+
+                url: url,
+                host: "",
+                category: category
+                    
+                }, {
+                    params: {
+                        employeeId: employeeIdOrAllTeam,
+                    },
+                    headers: {Authorization: "Bearer "+ this.getToken()}
+                })
+        }
+        else{
+            request = axios.post(API_URL + '/team', {
+                    url: url,
+                    host: "",
+                    category: category              
+                }, {
+                    params: {
+                        managerId: AuthService.getCurrentUser().userInfo.id,
+                    },
+                    headers: {Authorization: "Bearer "+ this.getToken()}
+                })
+        }
+
+        
+        return request.then((response) => {
+            // return this.buildNotification('SUCCESS')
+        },
+            (error) => {return this.buildErrorNotification(error)}
+        )
+
+    }
+
+
+    getResourcesWithCategoryForEmployee(employeeId){
+        const request = axios.get(API_URL + "/employee/withCategory", { 
+            params:{
+                    employeeId: employeeId
+                },
+            headers: {Authorization: "Bearer "+ this.getToken()}
+        })
+
+        return request.then((response) => {
+            // sessionStorage.setItem("resources", JSON.stringify(response.data))
+            return response.data
+        },
+            (error) => {return this.buildErrorNotification(error)}
+        )
+        
+    }
+
+
     getResourcesFromSS(){
         return JSON.parse(sessionStorage.getItem('resources'))
+    }
+
+    updateResourcesInSS(resources){
+        sessionStorage.setItem("resources", JSON.stringify(resources))
     }
 
 
@@ -81,6 +160,14 @@ class ResourcesService{
             isOpen: true,
             message: errMessage,
             type: "error"
+        }
+    }
+
+    buildNotification(response){
+        return {
+            isOpen: true,
+            message: response,
+            type: "success"
         }
     }
         

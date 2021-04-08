@@ -78,7 +78,7 @@ export default function BigStat(props) {
 
 <div className="icon-demo-box">
 
-    <Card className="p-2 text-primary">
+    <Card className={classes.card}>
       {/* <CardActionArea
         classes={{
           root: classes.actionArea,

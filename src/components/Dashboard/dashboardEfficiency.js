@@ -146,16 +146,18 @@ export default function DashboardEfficiency(props){
 
     //TODO Change this
     const handleViewChange = (event) => {
+      if (view === 'analytics'){
         ResourcesService.getResources(employeeIdOrArrTeam, selectedDate, timePeriod).then(
           (response) => {
-            if(view === 'analytics'){
-              setView('sites')
-            }
-            else{
-              setView('analytics')
-            }
-          }
-        )
+            setView('sites')
+          })
+      }
+      else {
+        EfficiencyService.getEfficiencyAllTeam(selectedDate, timePeriod).then(
+          (response) => {
+            setView('analytics')
+          })
+      }
     }
 
     //TODO Change this

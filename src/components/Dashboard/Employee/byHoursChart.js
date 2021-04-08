@@ -16,25 +16,25 @@ const styles = makeStyles((theme) => ({
 }))
 
 
-function createData(resource, type, startTime, endTime){
-  return {
-    resource: resource,
-    type: type,
-    startTime: startTime,
-    endTime: endTime
-  }
-}
+// function createData(resource, type, startTime, endTime){
+//   return {
+//     resource: resource,
+//     type: type,
+//     startTime: startTime,
+//     endTime: endTime
+//   }
+// }
 
 
-// const resourses = [
-//   createData("music.yandex.ru/home", 'neutral', new Date(2021, 2, 25, 3, 10), new Date(2021, 2, 25, 3, 23)),
-//   createData('spring.io/', 'effective', new Date(2021, 2, 25, 12, 10), new Date(2021, 2, 25, 12, 17)),
-//   createData('www.youtube.com/', 'ineffective', new Date(2021, 2, 25, 12, 17), new Date(2021, 2, 25, 12, 20)),
-//   createData('spring.io/', 'effective', new Date(2021, 2, 25, 12, 25), new Date(2021, 2, 25, 12, 31)),
-//   createData('ru.reactjs.org/', 'effective', new Date(2021, 2, 25, 12, 40), new Date(2021, 2, 25, 13, 53)),
-//   createData('vk.com/feed', 'ineffective', new Date(2021, 2, 25, 14, 10), new Date(2021, 2, 25, 16, 23)),
-//   createData('https://www.google.com/', 'neutral', new Date(2021, 2, 25, 16, 23), new Date(2021, 2, 25, 16, 25))
-// ]
+// // const resourses = [
+// //   createData("music.yandex.ru/home", 'neutral', new Date(2021, 2, 25, 3, 10), new Date(2021, 2, 25, 3, 23)),
+// //   createData('spring.io/', 'effective', new Date(2021, 2, 25, 12, 10), new Date(2021, 2, 25, 12, 17)),
+// //   createData('www.youtube.com/', 'ineffective', new Date(2021, 2, 25, 12, 17), new Date(2021, 2, 25, 12, 20)),
+// //   createData('spring.io/', 'effective', new Date(2021, 2, 25, 12, 25), new Date(2021, 2, 25, 12, 31)),
+// //   createData('ru.reactjs.org/', 'effective', new Date(2021, 2, 25, 12, 40), new Date(2021, 2, 25, 13, 53)),
+// //   createData('vk.com/feed', 'ineffective', new Date(2021, 2, 25, 14, 10), new Date(2021, 2, 25, 16, 23)),
+// //   createData('https://www.google.com/', 'neutral', new Date(2021, 2, 25, 16, 23), new Date(2021, 2, 25, 16, 25))
+// // ]
 
 const getSeries = () => {
 
@@ -48,8 +48,8 @@ const getSeries = () => {
     const localtime=now.toString();
     const utctime=now.toGMTString();
 
-    console.log("U",utctime)
-    console.log("L", localtime - utctime)
+    // console.log("U",utctime)
+    // console.log("L", localtime - utctime)
 
     const category = resource.category
     const startTime = new Date(DateService.stringToDate(resource.startTime))
@@ -149,7 +149,7 @@ const getSeries = () => {
   export default function ByHoursChart(props){
 
     const series = getSeries()
-    console.log("Ser", series)
+    console.log("Serrrrrr", series)
 
     if (series.length > 0) {
       return(

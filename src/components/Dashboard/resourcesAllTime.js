@@ -24,6 +24,8 @@ import Dialog from '@material-ui/core/Dialog';
 import { arrayIncludes } from '@material-ui/pickers/_helpers/utils';
 import AddIcon from '@material-ui/icons/Add';
 import { FormatColorResetRounded } from '@material-ui/icons';
+import ResourcesService from '../../services/resources.service'
+import Notification from "../employees/Notification"
 
 
 // '#d90368', '#f5cc00', '#00cc99', '#bcb8b1' 
@@ -108,41 +110,35 @@ function createData(resourse, type) {
 
 
 function processUrl(url){
-    return url.replace('https://','')
+    return url.replace('https://','').replace('http://')
+}
+
+function extractResourceName(url){
+  let str = processUrl(url)
+  if (str.indexOf("/") > 0){
+    return str.substring(0, str.indexOf("/"))
+  }
+  return str
 }
 
 function onlyEffective(rows){
-    return rows.filter(row => row.type === 'effective')
+    return rows.filter(row => row.category === 'effective')
 }
 function onlyNeutral(rows){
-    return rows.filter(row => row.type === 'neutral')
+    return rows.filter(row => row.category === 'neutral')
 }
 
 function onlyIneffective(rows){
-    return rows.filter(row => row.type === 'ineffective')
+    return rows.filter(row => row.category === 'ineffective')
 }
 
-
-const items = [
-    createData(processUrl('https://stackoverflow.com'), 'effective'),
-    createData(processUrl('https://spring.io/'), 'effective'),
-    createData(processUrl('https://www.google.com/'), 'neutral'),
-    createData(processUrl('https://music.yandex.ru/'), 'neutral'),
-    createData(processUrl('https://vk.com/feed'), 'ineffective'),
-    createData(processUrl('https://www.youtube.com/'), 'ineffective')
-]
-
-
 export default function AcccessibleTable(props) {
-
 
     const employee = props.employee
     const closeMainDialog = props.onMainDialogClose
 
-
     const classes = useStyles();
-
-    const [rows, setRows] = React.useState(items)
+    const [rows, setRows] = React.useState([])
 
     const [rowsPerPageEffective, setRowsPerPageEffective] = React.useState(5);
     const [pageEffective, setPageEffective] = React.useState(0);
@@ -155,8 +151,12 @@ export default function AcccessibleTable(props) {
 
 
     React.useEffect(() => {
-        setRows(items);
-      }, [items])
+      ResourcesService.getResourcesWithCategoryForEmployee(employee.id).then(
+        response => {
+          setRows(response);
+        }
+      )
+      }, [])
 
     
     const [openChangeDialog, setOpenChangeDialog] = React.useState(false);
@@ -166,7 +166,7 @@ export default function AcccessibleTable(props) {
     //   setOpenAddDialog(props.openAddDialog);
     // }, [props.openAddDialog])
 
-    const [resourseName, setResourseName] = React.useState("")
+    const [hostName, setHostName] = React.useState("")
 
 
   const handleChangePageEffective = (event, newPage) =>setPageEffective(newPage);
@@ -195,22 +195,9 @@ export default function AcccessibleTable(props) {
       setOpenAddDialog(false)
   }
 
-  const openChangeTypeDialog = (resourseName) => {
-    setResourseName(resourseName)
+  const openChangeTypeDialog = (hostName) => {
+    setHostName(hostName)
     setOpenChangeDialog(true)
-  }
-
-//   const openAddDialog = () => {
-//       setOpenAddDialog(true)
-//   }
-
-  const updateRows = (rows, ind, newType) => {
-      let row = rows[ind]
-      row.type = newType
-  }
-
-  const handleAddClick = (event) =>{
-
   }
 
   return (
@@ -230,7 +217,7 @@ export default function AcccessibleTable(props) {
           {/* <IconButton size="small" color = "secondary" onClick={()=>setOpenAddDialog(true)} >
               <AddIcon style={{fontSize: '30px'}}/>
           </IconButton> */}
-          <IconButton size="small" color = "secondary" onClick={()=>{closeMainDialog()}} >
+          <IconButton size="small" color = "secondary" onClick={()=>{closeMainDialog()}}>
             <CloseIcon />
           </IconButton>
         </div>
@@ -256,7 +243,7 @@ export default function AcccessibleTable(props) {
                         <TableHead>
                             <TableRow>
                                 <TableCell style={{paddingLeft:'60px', justifyContent: 'space-between', display: 'flex'}}>
-                                        <Typography className="font-weight-bold">Effective resourses</Typography>
+                                        <Typography className="font-weight-bold">Effective resources</Typography>
 
                                 </TableCell>
                             </TableRow>
@@ -269,13 +256,10 @@ export default function AcccessibleTable(props) {
                             <TableRow key={row.name}>
                                 <TableCell>
                                     <div>
-                                        <IconButton className={classes.editIcon} style={{marginRight:'8px'}} onClick={()=>{openChangeTypeDialog(row.resourse)}}>
+                                        <IconButton className={classes.editIcon} style={{marginRight:'8px'}} onClick={()=>{openChangeTypeDialog(row.host)}}>
                                             <CreateIcon style={{fontSize:'14px'}}/>
                                         </IconButton>
-                                        {row.type === 'effective' && <a style={{color:'#00cc99'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
-                                        {/* {row.type === 'neutral' && <a style={{color:'#f5cc00'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
-                                        {row.type === 'ineffective' && <a style={{color:'#d90368'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
-                                        {row.type === 'without' && <a style={{color:'#bcb8b1'}} href={row.resourse}>{processUrl(row.resourse)}</a>} */}
+                                        {row.category === 'effective' && <a style={{color:'#00cc99'}} href={'//' + row.host}>{processUrl(row.host)}</a>}
 
                                     </div>                                                         
                                 </TableCell>
@@ -308,7 +292,7 @@ export default function AcccessibleTable(props) {
                         <TableHead>
                             <TableRow>
                                 <TableCell style={{paddingLeft:'60px'}}>
-                                        <Typography className="font-weight-bold">Neutral resourses</Typography>
+                                        <Typography className="font-weight-bold">Neutral resources</Typography>
                                 </TableCell>
                             </TableRow>
                         </TableHead>
@@ -320,11 +304,11 @@ export default function AcccessibleTable(props) {
                             <TableRow key={row.name}>
                                 <TableCell>
                                     <div>
-                                        <IconButton className={classes.editIcon} style={{marginRight:'8px'}} onClick={()=>{openChangeTypeDialog(row.resourse)}}>
+                                        <IconButton className={classes.editIcon} style={{marginRight:'8px'}} onClick={()=>{openChangeTypeDialog(row.host)}}>
                                             <CreateIcon style={{fontSize:'14px'}}/>
                                         </IconButton>
                                         {/* {row.type === 'effective' && <a style={{color:'#00e572'}} href={row.resourse}>{processUrl(row.resourse)}</a>} */}
-                                        {row.type === 'neutral' && <a style={{color:'#f5cc00'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
+                                        {row.category === 'neutral' && <a style={{color:'#f5cc00'}} href={'//' + row.host}>{processUrl(row.host)}</a>}
                                         {/* {row.type === 'ineffective' && <a style={{color:'crimson'}} href={row.resourse}>{processUrl(row.resourse)}</a>} */}
                                     </div>                                                         
                                 </TableCell>
@@ -355,7 +339,7 @@ export default function AcccessibleTable(props) {
                         <TableHead>
                             <TableRow>
                                 <TableCell style={{paddingLeft:'60px'}}>
-                                        <Typography className="font-weight-bold">Ineffective resourses</Typography>
+                                        <Typography className="font-weight-bold">Ineffective resources</Typography>
                                 </TableCell>
                             </TableRow>
                         </TableHead>
@@ -367,13 +351,13 @@ export default function AcccessibleTable(props) {
                             <TableRow key={row.name}>
                                 <TableCell>
                                     <div>
-                                        <IconButton className={classes.editIcon} style={{marginRight:'8px'}} onClick={()=>{openChangeTypeDialog(row.resourse)}}>
+                                        <IconButton className={classes.editIcon} style={{marginRight:'8px'}} onClick={()=>{openChangeTypeDialog(row.host)}}>
                                             <CreateIcon style={{fontSize:'14px'}}/>
                                         </IconButton>
                                         
                                         {/* {row.type === 'effective' && <a style={{color:'#00e572'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
                                         {row.type === 'neutral' && <a style={{color:'steelblue'}} href={row.resourse}>{processUrl(row.resourse)}</a>} */}
-                                        {row.type === 'ineffective' && <a style={{color:'#d90368'}} href={row.resourse}>{processUrl(row.resourse)}</a>}
+                                        {row.category === 'ineffective' && <a style={{color:'#d90368'}} href={'//' + row.host}>{processUrl(row.host)}</a>}
                                     </div>                                                         
                                 </TableCell>
                             </TableRow>
@@ -401,8 +385,8 @@ export default function AcccessibleTable(props) {
             </Grid>
         </Grid>
         
-        <ChangeResourseType rows={rows} resourseName={resourseName} open={openChangeDialog} onClose={handleCloseChangeDialog}/>
-        <AddResourse rows={rows} open={openAddDialog} onClose={handleCloseAddDialog}></AddResourse> 
+        <ChangeResourseType employeeId={employee.id} rows={rows} hostName={hostName} open={openChangeDialog} onClose={handleCloseChangeDialog}/>
+        <AddResourse employeeId={employee.id} rows={rows} open={openAddDialog} onClose={handleCloseAddDialog}></AddResourse> 
     </Container>
     </div>
   );
@@ -412,44 +396,52 @@ export default function AcccessibleTable(props) {
 
 function ChangeResourseType(props) {
   const classes = useStyles()
+
+  const employeeId = props.employeeId
   let rows = props.rows
-  let resourseName = props.resourseName
+  let hostName = props.hostName
   const onClose = props.onClose
   const open = props.open
   // const subjectOfChange = props.subjectOfChange
 
 
-  const tmp =  rows.find(row => row.resourse === resourseName)
+  const tmp =  rows.find(row => row.host === hostName)
   const row = tmp ? tmp : ""
 
-  const [type, setType] = React.useState(row)
+  const [category, setCategory] = React.useState(row)
   const [selectValue, setSelectValue] = React.useState('employee')
+  const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' })
+
 
   React.useEffect(() => {
-    setType(row.type);
-  }, [row.type])
+    setCategory(row.category);
+  }, [row.category])
 
 
   const handleClose = () => {
     onClose();
-    setType(row.type)
+    setCategory(row.category)
     setSelectValue('team')
   };
 
   const handleSave = () =>{
     handleClose()
-    rows.map(item => {if (item.resourse === row.resourse) item.type = type})
+    rows.map(item => {if (item.host === row.host) item.category = category})
+    ResourcesService.updateResource(employeeId, selectValue, row.host, category)
+    .catch((response) => {
+      console.log("RESPONSE", response)
+      setNotify(response)})
   }
 
   const handleChange = (event) => {
-    setType(event.target.value);
+    setCategory(event.target.value);
   };
 
 
   return (
     <div>
     <Dialog onClose={handleClose} fullWidth maxWidth='sm' aria-labelledby="simple-dialog-title" open={open} className={classes.dialog}>
-      <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h5 style={{fontWeight: '600'}}>{processUrl(resourseName)}</h5></DialogTitle>
+      <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h5 style={{fontWeight: '600'}}>{processUrl(hostName)}</h5></DialogTitle>
       <DialogContent className={classes.dialogContent}>
 
             <Container style={{ display: 'flex', flexDirection:'row', justifyContent: 'center'}}>
@@ -470,7 +462,7 @@ function ChangeResourseType(props) {
                   </Select>
                 </div>
               
-                <RadioGroup  row aria-label="position" value={type} onChange={handleChange}>
+                <RadioGroup  row aria-label="position" value={category} onChange={handleChange}>
                   <FormControlLabel value="effective" control={<ERadio/>} label="Effective" />
                   <FormControlLabel value="neutral" control={<NRadio/>} label="Neutral" />
                   <FormControlLabel value="ineffective" control={<Radio/>} label="Ineffective" />
@@ -488,61 +480,65 @@ function ChangeResourseType(props) {
             </div>
       </DialogContent>
     </Dialog>
+    <Notification
+                    notify={notify}
+                    setNotify={setNotify}
+                />
     </div>
     );
   }
 
 
-
-
   function AddResourse(props) {
     const classes = useStyles()
 
+    const employeeId = props.employeeId
     const onClose = props.onClose
     const open = props.open
     let rows = props.rows
 
-    const [type, setType] = React.useState("")
-    const [newResourse, setNewResourse] = React.useState("")
+    const [category, setCategory] = React.useState("")
+    const [newUrl, setNewUrl] = React.useState("")
 
     
     const handleClose = () => {
         onClose()
-        setType("")
+        setCategory("")
     };
   
     const handleSave = () =>{
-        if (type === 'effective' || type === 'neutral' || type === 'ineffective'){
+        if (category === 'effective' || category === 'neutral' || category === 'ineffective' && newUrl != ""){
             rows.push(
                 {
-                    resourse: newResourse,
-                    type: type
+                    host: extractResourceName(newUrl),
+                    category: category
                 }
             )
+            ResourcesService.addResource(employeeId, "employee", newUrl, category)
         }
         onClose()
-        setType("")
+        setCategory("")
     }
   
-    const handleTypeChange = (event) => setType(event.target.value)
-    const handleResourseChange = (event) => setNewResourse(event.target.value)
+    const handleTypeChange = (event) => setCategory(event.target.value)
+    const handleUrlChange = (event) => setNewUrl(event.target.value)
     
   
     return (
       <div>
       <Dialog onClose={handleClose} fullWidth maxWidth='sm' aria-labelledby="simple-dialog-title" open={open} className={classes.dialog}>
-        <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h5 style={{fontWeight: '600'}}>Add resourse</h5></DialogTitle>
+        <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h5 style={{fontWeight: '600'}}>Add resource</h5></DialogTitle>
         <DialogContent className={classes.dialogContent}>
   
 
             <Container style={{ display: 'flex', flexDirection:'row', justifyContent: 'center', marginBottom: '24px'}}>
-                <TextField id="outlined-basic" label="Web resourse" style={{width: '330px'}} onChange={handleResourseChange}/>
+                <TextField id="outlined-basic" label="Web resourse" style={{width: '330px'}} onChange={handleUrlChange}/>
             </Container>
 
               <Container style={{ display: 'flex', flexDirection:'row', justifyContent: 'center'}}>
                   
 
-                  <RadioGroup  row aria-label="position" value={type} onChange={handleTypeChange}>
+                  <RadioGroup  row aria-label="position" value={category} onChange={handleTypeChange}>
                     <FormControlLabel value="effective" control={<ERadio/>} label="Effective" />
                     <FormControlLabel value="neutral" control={<NRadio/>} label="Neutral" />
                     <FormControlLabel value="ineffective" control={<Radio/>} label="Ineffective" />
