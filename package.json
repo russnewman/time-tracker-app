@@ -28,6 +28,7 @@
     "react-scripts": "4.0.1",
     "reactstrap": "^8.8.1",
     "recharts": "^2.0.4",
+    "recompose": "^0.30.0",
     "styled-components": "^5.2.1",
     "web-vitals": "^0.2.4"
   },

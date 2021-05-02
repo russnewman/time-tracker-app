@@ -11,7 +11,10 @@ import TablePagination from '@material-ui/core/TablePagination';
 import { Container, Input, Paper, Typography, Select, DialogActions, Button, DialogContent, MenuItem } from '@material-ui/core';
 import CreateIcon from '@material-ui/icons/Create';
 import IconButton from '@material-ui/core/IconButton';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 import DialogContentText from '@material-ui/core/DialogContentText';
+// import Typography from '../../wrappers/Typography';
+
 
 
 import Radio from '@material-ui/core/Radio';
@@ -24,7 +27,6 @@ import ByHoursChart from './Employee/byHoursChart'
 import KeyboardOutlinedIcon from '@material-ui/icons/KeyboardOutlined';
 import ResourcesService from '../../services/resources.service'
 import DateService from '../../services/date.service'
-import resourcesService from '../../services/resources.service';
 import Notification from "../employees/Notification";
 
 // '#d90368', '#f5cc00', '#00cc99', '#bcb8b1' 
@@ -68,6 +70,17 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
     boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
     borderRadius: "20px",
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    top: 20,
+    width: 1,
   },
   editIcon: {
     fontSize:'10px'      
@@ -143,6 +156,8 @@ const keylogs = [
 ]
 
 
+
+
 const getRows = (employeeIdOrAllTeam, resourcesDto)=>{
   if (!resourcesDto || resourcesDto.length === 0) return []
 
@@ -185,6 +200,214 @@ const getRows = (employeeIdOrAllTeam, resourcesDto)=>{
 }
 
 
+function parseDurationValue(duration, symb){
+  let res
+  if (symb === 'h'){
+    return duration.indexOf(symb) == -1 ? 0 : duration.substring(0, duration.indexOf('h'))
+  }
+  const mInd = duration.indexOf(symb)
+  if (mInd != -1){
+    if (mInd - 2 >=0 && duration[mInd - 2] != ' '){
+      res = duration.substring(mInd -2, mInd)
+    }
+    else res = duration.substring(mInd - 1, mInd)
+  }
+  return res
+}
+
+function descendingComparator(a, b, orderBy) {
+  a = a[orderBy]
+  b = b[orderBy]
+  
+  if (typeof a === 'string' && (a.indexOf('h') != -1 || a.indexOf('m') != -1 || a.indexOf('s') != -1) && (a.indexOf('.') === -1)){
+
+    const hoursA = parseInt(parseDurationValue(a, 'h'))
+    const minutesA = parseInt(parseDurationValue(a, 'm'))
+    const secondsA = parseInt(parseDurationValue(a, 's'))
+
+    const hoursB = parseInt(parseDurationValue(b, 'h'))
+    const minutesB = parseInt(parseDurationValue(b, 'm'))
+    const secondsB = parseInt(parseDurationValue(b, 's'))
+
+
+    if (hoursB < hoursA) return -1        
+    if (hoursB > hoursA) return 1
+    else{
+        if (minutesB < minutesA) return -1
+        if (minutesB > minutesA) return 1
+        else{
+          if (secondsB < secondsA) return -1
+          if (secondsB > secondsA) return 1
+          return 0
+        }
+    }
+  }
+  else if (typeof a === 'string' && (a.length === 8) && (a.indexOf('.') === -1)){
+
+    const aFirstColonInd = a.indexOf(':')
+    const aSecondColonInd = a.indexOf(':', aFirstColonInd + 1)
+
+    const bFirstColonInd = b.indexOf(':')
+    const bSecondColonInd = b.indexOf(':', bFirstColonInd + 1)
+
+    
+    const hoursA = parseInt(a.substring(0, aFirstColonInd))
+    const minutesA = parseInt(a.substring(aFirstColonInd + 1, aSecondColonInd))
+    const secondsA = parseInt(a.substring(aSecondColonInd))
+
+    const hoursB = parseInt(b.substring(0, bFirstColonInd))
+    const minutesB = parseInt(b.substring(bFirstColonInd + 1, bSecondColonInd))
+    const secondsB = parseInt(b.substring(bSecondColonInd))
+
+
+    if (hoursB < hoursA) return -1        
+    if (hoursB > hoursA) return 1
+    else{
+        if (minutesB < minutesA) return -1
+        if (minutesB > minutesA) return 1
+        else{
+          if (secondsB < secondsA) return -1
+          if (secondsB > secondsA) return 1
+          return 0
+        }
+    }
+  }
+  else if (typeof a === 'string'){
+    if (processUrl(b) < processUrl(a)) return -1;
+    if (processUrl(b) > processUrl(a)) return 1;
+    return 0;
+  }
+  if (b < a) return -1;
+  if (b > a) return 1;
+  return 0;
+}
+
+function getComparator(order, orderBy) {
+return order === 'desc'
+  ? (a, b) => descendingComparator(a, b, orderBy)
+  : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) {
+        return order};
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
+
+
+function EnhancedTableHead(props) {
+  const { classes, order, orderBy, numSelected, isOnePersonAndDay, onRequestSort } = props;
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
+  return (
+    <TableHead>
+      <TableRow>
+                      <TableCell style={{paddingLeft:'60px'}} 
+                              key='resource'
+                              sortDirection={orderBy === 'resource' ? order : false}>
+                              <TableSortLabel
+                                active={orderBy === 'resource'}
+                                direction={orderBy === 'resource' ? order : 'asc'}
+                                onClick={createSortHandler('resource')}
+                              >
+                                <Typography className="font-weight-bold">Web resourse</Typography>
+                                {orderBy === 'resource' ? (
+                                    <span className={classes.visuallyHidden}>
+                                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </span>
+                                  ) : null}
+                              </TableSortLabel>
+                      </TableCell>
+
+                      <TableCell align="right"
+                                  key='duration'
+                                  sortDirection={orderBy === 'duration' ? order : false}>
+                              <TableSortLabel
+                                active={orderBy === 'duration'}
+                                direction={orderBy === 'duration' ? order : 'asc'}
+                                onClick={createSortHandler('duration')}
+                              >
+                                <Typography className="font-weight-bold">Duration</Typography>
+                                {orderBy === 'duration' ? (
+                                    <span className={classes.visuallyHidden}>
+                                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </span>
+                                  ) : null}
+                              </TableSortLabel>
+                      </TableCell>
+
+
+                      {isOnePersonAndDay && <TableCell align="right"
+                                  key='start'
+                                  sortDirection={orderBy === 'start' ? order : false}>
+                              <TableSortLabel
+                                active={orderBy === 'startTime'}
+                                direction={orderBy === 'startTime' ? order : 'asc'}
+                                onClick={createSortHandler('startTime')}
+                              >
+                                <Typography className="font-weight-bold">Start time</Typography>
+                                {orderBy === 'startTime' ? (
+                                    <span className={classes.visuallyHidden}>
+                                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </span>
+                                  ) : null}
+                              </TableSortLabel>
+                      </TableCell>}
+
+
+                      {isOnePersonAndDay && <TableCell align="right"
+                                  key='endTime'
+                                  sortDirection={orderBy === 'endTime' ? order : false}>
+                              <TableSortLabel
+                                active={orderBy === 'endTime'}
+                                direction={orderBy === 'endTime' ? order : 'asc'}
+                                onClick={createSortHandler('endTime')}
+                              >
+                                <Typography className="font-weight-bold">End time</Typography>
+                                {orderBy === 'endTime' ? (
+                                    <span className={classes.visuallyHidden}>
+                                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </span>
+                                  ) : null}
+                              </TableSortLabel>
+                      </TableCell>}
+
+
+                      <TableCell align="right"
+                                  key='activity'
+                                  sortDirection={orderBy === 'end' ? order : false}>
+                              <TableSortLabel
+                                active={orderBy === 'activity'}
+                                direction={orderBy === 'activity' ? order : 'asc'}
+                                onClick={createSortHandler('activity')}
+                              >
+                                <Typography className="font-weight-bold">Activity</Typography>
+                                {orderBy === 'activity' ? (
+                                    <span className={classes.visuallyHidden}>
+                                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </span>
+                                  ) : null}
+                              </TableSortLabel>
+                      </TableCell>
+
+
+                          {/* {isOnePersonAndDay && <TableCell align="right"><Typography className="font-weight-bold">Start time</Typography></TableCell>} */}
+                          {/* {isOnePersonAndDay && <TableCell align="right"><Typography className="font-weight-bold">End time</Typography></TableCell>} */}
+                          {/* <TableCell align="right"><Typography className="font-weight-bold">Activity</Typography></TableCell> */}
+                          {isOnePersonAndDay && <TableCell align="right"><Typography className="font-weight-bold">Keylogger</Typography></TableCell>}
+      </TableRow>
+    </TableHead>
+  );
+}
+
+
+
 export default function AcccessibleTable(props) {
 
   const employeeIdOrAllTeam = props.employeeIdOrAllTeam
@@ -195,7 +418,8 @@ export default function AcccessibleTable(props) {
 
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [page, setPage] = React.useState(0);
-
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('startTime');
   const [row, setRow] = React.useState({})
 
 
@@ -208,6 +432,13 @@ export default function AcccessibleTable(props) {
   const [host, setHost] = React.useState("");
   const classes = useStyles();
   // const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
 
 
   const handleChangePage = (event, newPage) => {
@@ -226,11 +457,8 @@ export default function AcccessibleTable(props) {
   }
 
   const openDialog = (row, ind) => {
-    console.log(row)
     setInd(ind)
     setHost(processUrl(row.resource))
-    // setResourseName(row.resourse)
-    // setType(row.type)
     setOpen(true)
   }
 
@@ -238,11 +466,6 @@ export default function AcccessibleTable(props) {
     setRow(row)
     setOpenKeylog(true)
   }
-
-  // const updateRows = (rows, ind, newType) => {
-  //     let row = rows[ind]
-  //     row.type = newType
-  // }
 
   return (
     <div>
@@ -259,29 +482,36 @@ export default function AcccessibleTable(props) {
                 <Table  className={classes.table}
                         aria-labelledby="tableTitle"
                         aria-label="enhanced table">
-                    <TableHead>
-                    <TableRow>
-                        {/* <TableCell padding="checkbox">
-                        </TableCell> */}
-                        <TableCell style={{paddingLeft:'60px'}}>
-                            <Typography className="font-weight-bold">Web resourse</Typography>
-                            </TableCell>
-                        <TableCell align="right"><Typography className="font-weight-bold">Duration</Typography></TableCell>
-                        {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">Start time</Typography></TableCell>}
-                        {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">End time</Typography></TableCell>}
-                        <TableCell align="right"><Typography className="font-weight-bold">Activity</Typography></TableCell>
-                        {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">Keylogger</Typography></TableCell>}
-                    </TableRow>
-                    </TableHead>
+                      {/* <TableHead>
+                      <TableRow>
+                          <TableCell style={{paddingLeft:'60px'}}>
+                              <Typography className="font-weight-bold">Web resourse</Typography>
+                              </TableCell>
+                          <TableCell align="right"><Typography className="font-weight-bold">Duration</Typography></TableCell>
+                          {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">Start time</Typography></TableCell>}
+                          {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">End time</Typography></TableCell>}
+                          <TableCell align="right"><Typography className="font-weight-bold">Activity</Typography></TableCell>
+                          {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">Keylogger</Typography></TableCell>}
+                      </TableRow>
+                      </TableHead> */}
+
+                    <EnhancedTableHead
+                                  classes={classes}
+                                  order={order}
+                                  orderBy={orderBy}
+                                  onRequestSort={handleRequestSort}
+                                  isOnePersonAndDay={timePeriod === 1 && employeeIdOrAllTeam !== 'all'}
+                                  // rowCount={rows.length}
+                                />
 
                     <TableBody>
-                    {(rowsPerPage > 0
-                          ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                          : rows
-                        ).map((row, index) => (
-                        <TableRow key={row.name}>
+                    {stableSort(rows, getComparator(order, orderBy))
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+                        <TableRow key={row.resource}>
                         <TableCell>
                             <div>
+                            {/* <Typography className="font-weight-bold"/>Hello<Typography/> */}
+
                                 <IconButton className={classes.editIcon} style={{marginRight:'8px'}} onClick={()=>{openDialog(row, index)}}>
                                     <CreateIcon style={{fontSize:'14px'}}/>
                                 </IconButton>
@@ -382,7 +612,6 @@ function ChangeResourseType(props) {
       category: ""
     } 
   }
-  // console.log("RESOURCEEEEE", resource)
 
   const resourceName = resource.host
 
@@ -397,7 +626,6 @@ function ChangeResourseType(props) {
   };
 
   const handleSave = () =>{
-    // console.log("TARGET", event)
     if (category == "effective" || category == "ineffective" || category == "neutral"){
       handleClose()
 

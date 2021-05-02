@@ -2,6 +2,7 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import ReactApexChart from 'apexcharts'
 import { FaRegClosedCaptioning } from 'react-icons/fa';
+import pure from 'recompose/pure'
 
 import EfficiencyService from '../../../services/efficiency.service'
 import DateService from '../../../services/date.service'
@@ -80,9 +81,9 @@ const options = {
     type: 'donut',
     id: 'efficiencySum'
   },
-  labels: ['Ineffective', 'Neutral', 'Effective', 'Without category'],
+  labels: ['Effective', 'Neutral', 'Ineffective' , 'Without category'],
   fill: {
-    colors: ['#d90368', '#ffee32', '#00cc99', '#bcb8b1'],
+    colors: ['#00cc99', '#ffee32', '#d90368', '#bcb8b1'],
     opacity: 1
     },
   plotOptions: {
@@ -155,7 +156,7 @@ const options = {
 }
 
 
-  export default function EfficiencySumChart(props){
+  function EfficiencySumChart(props){
       const employeeId = props.employeeId
 
       React.useEffect(() => {
@@ -167,5 +168,7 @@ const options = {
         <Chart options={options} series={series} type="donut" width={'100%'} height={'80%'} />
       )
   }
+
+  export default pure(EfficiencySumChart)
   
   

@@ -62,7 +62,7 @@ class DateService{
     }
     
     getTimeFromTimeStamp(timeStamp){
-      return timeStamp.substring(11, timeStamp.length - 4)
+      return timeStamp.substring(11, timeStamp.length - 4) + ''
     }
 
     //TODO Change this

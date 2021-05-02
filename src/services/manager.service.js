@@ -95,9 +95,7 @@ class Manager{
         
         let user = JSON.parse(sessionStorage.getItem('user'))
         for (let employee of user.employees){
-            // console.log("EM", employee)
             if (employee.id == employeeId) {
-                // console.log('LLKL')
                 return employee
             }
         }

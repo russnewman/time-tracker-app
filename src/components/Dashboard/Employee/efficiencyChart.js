@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Card, Button } from '@material-ui/core';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-
+import pure from 'recompose/pure'
 import ReactApexChart from 'apexcharts';
 
 import EfficiencyService from '../../../services/efficiency.service'
@@ -282,7 +282,7 @@ const seriesWeek =  [
     }
 
 
-  export default function EfficiencyByHoursChart(props){
+   function EfficiencyByHoursChart(props){
 
     const classes = styles()
     const [timePeriod, setTimePeriod] = React.useState(0)
@@ -358,3 +358,6 @@ const seriesWeek =  [
       </div>
     )
   }
+
+
+  export default pure(EfficiencyByHoursChart)

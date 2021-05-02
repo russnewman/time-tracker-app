@@ -116,8 +116,8 @@ export default function DashboardEfficiency(props){
     const [chartSwitcher, setChartSwitcher] = React.useState('Efficiency')
     const classes = styles()
     const [timePeriod, setTimePeriod] = React.useState(1);
-    const [subjectOfChange, setSubjectOfChange] = React.useState(2);
-    const [employeeIdOrArrTeam, setEmployeeIdOrAllTeam] = React.useState('all')
+    // const [subjectOfChange, setSubjectOfChange] = React.useState(2);
+    const [employeeIdOrAllTeam, setEmployeeIdOrAllTeam] = React.useState('all')
     const [writing, setWriting] = React.useState('All team')
     const [effectiveType, setEffectiveType] = React.useState(1);
     const [view, setView] = React.useState('analytics')
@@ -126,7 +126,7 @@ export default function DashboardEfficiency(props){
 
 
     const handleTimeChange = (event) => {
-      EfficiencyService.getEfficiencyAllTeamAndResources(selectedDate, event.target.value, employeeIdOrArrTeam)
+      EfficiencyService.getEfficiencyAllTeamAndResources(selectedDate, event.target.value, employeeIdOrAllTeam)
       .then(response => {
           setTimePeriod(event.target.value)
       })
@@ -138,7 +138,7 @@ export default function DashboardEfficiency(props){
     // }
 
     const handleDateChange = (date) => {
-      EfficiencyService.getEfficiencyAllTeamAndResources(date, timePeriod, employeeIdOrArrTeam)
+      EfficiencyService.getEfficiencyAllTeamAndResources(date, timePeriod, employeeIdOrAllTeam)
       .then(response => {
           setSelectedDate(date);
       })
@@ -147,7 +147,7 @@ export default function DashboardEfficiency(props){
     //TODO Change this
     const handleViewChange = (event) => {
       if (view === 'analytics'){
-        ResourcesService.getResources(employeeIdOrArrTeam, selectedDate, timePeriod).then(
+        ResourcesService.getResources(employeeIdOrAllTeam, selectedDate, timePeriod).then(
           (response) => {
             setView('sites')
           })
@@ -169,7 +169,7 @@ export default function DashboardEfficiency(props){
     },[])
 
 
-    let mock = Mock.computeEfficiency(employeeIdOrArrTeam)
+    let mock = Mock.computeEfficiency(employeeIdOrAllTeam)
 
     return (
       <div className={classes.cont}>
@@ -269,12 +269,12 @@ export default function DashboardEfficiency(props){
                     </Typography>)}
 
               </div>
-              {flag && employeeIdOrArrTeam === 'all' && (chartSwitcher === 'Efficiency' ? 
+              {flag && employeeIdOrAllTeam === 'all' && (chartSwitcher === 'Efficiency' ? 
                   <EfficiencyOfTeamChart timePeriod={timePeriod}/> :
                   <UsageOfTeamChart timePeriod={timePeriod}/> 
               )}
-              {flag && employeeIdOrArrTeam !== 'all' && (chartSwitcher === 'Efficiency' ? 
-                  (<EfficiencyChart timePeriod={timePeriod} employeeId={employeeIdOrArrTeam}/>) : 
+              {flag && employeeIdOrAllTeam !== 'all' && (chartSwitcher === 'Efficiency' ? 
+                  (<EfficiencyChart timePeriod={timePeriod}  date={selectedDate} employeeId={employeeIdOrAllTeam}/>) : 
                   (<UsageChart timePeriod={timePeriod}/>)
               )}
 
@@ -288,18 +288,18 @@ export default function DashboardEfficiency(props){
                 {timePeriod === 3 && <Typography className={classes.typography} variant="h5">Mounth result</Typography>}
               </div>
 
-              {flag && employeeIdOrArrTeam === 'all' && (chartSwitcher === 'Efficiency' ? 
+              {flag && employeeIdOrAllTeam === 'all' && (chartSwitcher === 'Efficiency' ? 
                   <EfficiencyOfTeamSumChart timePeriod={timePeriod}/> : 
                   <UsageOfTeamSumChart timePeriod={timePeriod}/>)}
-              {flag && employeeIdOrArrTeam !== 'all' && (chartSwitcher === 'Efficiency' ? 
-                  (<EfficiencyByDayChart timePeriod={timePeriod} employeeId={employeeIdOrArrTeam}/>) : 
+              {flag && employeeIdOrAllTeam !== 'all' && (chartSwitcher === 'Efficiency' ? 
+                  (<EfficiencyByDayChart timePeriod={timePeriod} date={selectedDate} employeeId={employeeIdOrAllTeam}/>) : 
                   (<UsageSumChart timePeriod={timePeriod}/>)
               )}
             </Card>
           </Grid>
         </Grid> 
 
-        <Grid container spacing={4}>
+        {employeeIdOrAllTeam !== "all" && <Grid container spacing={4}>
           <Grid item xs={12} lg={12}>
             <Card className={classes.card}>
             <div className={classes.dateAndSwitcher}>
@@ -320,10 +320,10 @@ export default function DashboardEfficiency(props){
                 </Select>
                 
               </div>
-              <EffectiveLineChart effectiveType={effectiveType} timePeriod={timePeriod}/>
+              {employeeIdOrAllTeam !== "all" && <EffectiveLineChart employeeId={employeeIdOrAllTeam} effectiveType={effectiveType} timePeriod={timePeriod}/>}
             </Card>
           </Grid>
-        </Grid>
+        </Grid>}
 
 
         
@@ -336,7 +336,7 @@ export default function DashboardEfficiency(props){
         </Grid>
         </div>)
         :
-        (<Sites employeeIdOrAllTeam={employeeIdOrArrTeam} timePeriod={timePeriod} date={selectedDate}/>)}
+        (<Sites employeeIdOrAllTeam={employeeIdOrAllTeam} timePeriod={timePeriod} date={selectedDate}/>)}
     </div>
     )
 }

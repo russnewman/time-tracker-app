@@ -121,7 +121,6 @@ export default function ProfileInfo(props) {
             setUserInfo(response)
         },
         error =>{
-            console.log("ERROR", error.response)
             let errMessage = ""
             if (error.response){
                 if(error.response.status == 500) errMessage = "Server error"

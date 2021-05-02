@@ -73,13 +73,30 @@ class ResourcesService{
         }
 
         
-        return request.then((response) => {
-            // return this.buildNotification('SUCCESS')
-        },
-            (error) => {return this.buildErrorNotification(error)}
-        )
 
+        
+        // return request.catch(
+        //                     (error) => {
+                                
+        //                         console.log("ERROR", error)
+        //                         return this.buildErrorNotification(error)}
+        //         )
+
+        return request
+
+            // return this.buildNotification('SUCCESS')
+        
+        // console.log("HEREEEEEEEEEEEEEE")
+        // return request.then((response) => 
+        //     {   console.log("RESP", response)
+        //         return this.buildNotification(response)},
+        //     (error) => {
+        //         console.log("ERROR", error)
+        //         return this.buildErrorNotification(error)}
+        // )
     }
+
+    
 
 
 
@@ -111,14 +128,8 @@ class ResourcesService{
                     headers: {Authorization: "Bearer "+ this.getToken()}
                 })
         }
-
         
-        return request.then((response) => {
-            // return this.buildNotification('SUCCESS')
-        },
-            (error) => {return this.buildErrorNotification(error)}
-        )
-
+        return request
     }
 
 
@@ -129,14 +140,7 @@ class ResourcesService{
                 },
             headers: {Authorization: "Bearer "+ this.getToken()}
         })
-
-        return request.then((response) => {
-            // sessionStorage.setItem("resources", JSON.stringify(response.data))
-            return response.data
-        },
-            (error) => {return this.buildErrorNotification(error)}
-        )
-        
+        return request
     }
 
 
@@ -149,13 +153,13 @@ class ResourcesService{
     }
 
 
-    buildErrorNotification(error){
+    buildErrorNotification(error, message){
         let errMessage = ""
         if (error.response){
             if(error.response.status == 500) errMessage = "Server error"
             else errMessage = error.response.data
         }
-        else errMessage = "Server is not available"
+        else errMessage = "Server is not available. " + message
         return {
             isOpen: true,
             message: errMessage,

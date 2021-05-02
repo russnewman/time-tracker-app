@@ -122,6 +122,7 @@ function extractResourceName(url){
 }
 
 function onlyEffective(rows){
+    console.log("ROWSSS", rows)
     return rows.filter(row => row.category === 'effective')
 }
 function onlyNeutral(rows){
@@ -149,13 +150,19 @@ export default function AcccessibleTable(props) {
     const [rowsPerPageIneffective, setRowsPerPageIneffective] = React.useState(5);
     const [pageIneffective, setPageIneffective] = React.useState(0);
 
+    const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' })
+
+
 
     React.useEffect(() => {
       ResourcesService.getResourcesWithCategoryForEmployee(employee.id).then(
         response => {
-          setRows(response);
+          setRows(response.data);
         }
       )
+      .catch(error => {
+        setNotify(ResourcesService.buildErrorNotification(error, ""))
+      })
       }, [])
 
     
@@ -387,6 +394,10 @@ export default function AcccessibleTable(props) {
         
         <ChangeResourseType employeeId={employee.id} rows={rows} hostName={hostName} open={openChangeDialog} onClose={handleCloseChangeDialog}/>
         <AddResourse employeeId={employee.id} rows={rows} open={openAddDialog} onClose={handleCloseAddDialog}></AddResourse> 
+        <Notification
+                    notify={notify}
+                    setNotify={setNotify}
+                />
     </Container>
     </div>
   );
@@ -427,12 +438,13 @@ function ChangeResourseType(props) {
   const handleSave = () =>{
     handleClose()
     rows.map(item => {if (item.host === row.host) item.category = category})
+    console.log("{QWPE{")
     ResourcesService.updateResource(employeeId, selectValue, row.host, category)
-    .catch((response) => {
-      console.log("RESPONSE", response)
-      setNotify(response)})
+    .catch(error => {
+      const message = "Data will not be saved."
+        setNotify(ResourcesService.buildErrorNotification(error, message))
+    })
   }
-
   const handleChange = (event) => {
     setCategory(event.target.value);
   };
@@ -499,6 +511,9 @@ function ChangeResourseType(props) {
 
     const [category, setCategory] = React.useState("")
     const [newUrl, setNewUrl] = React.useState("")
+    
+    const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' })
+
 
     
     const handleClose = () => {
@@ -515,6 +530,10 @@ function ChangeResourseType(props) {
                 }
             )
             ResourcesService.addResource(employeeId, "employee", newUrl, category)
+            .catch(error => {
+              const message = "Data will not be saved."
+                setNotify(ResourcesService.buildErrorNotification(error, message))
+            })
         }
         onClose()
         setCategory("")
@@ -554,6 +573,10 @@ function ChangeResourseType(props) {
               </div>
         </DialogContent>
       </Dialog>
+      <Notification
+                    notify={notify}
+                    setNotify={setNotify}
+                />
       </div>
       );
     }

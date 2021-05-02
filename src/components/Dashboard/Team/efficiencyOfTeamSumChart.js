@@ -12,9 +12,9 @@ const options = {
     type: 'donut',
     id: 'efficiencyOfEmployeesSum'
   },
-  labels: ['Ineffective', 'Neutral', 'Effective', 'Without'],
+  labels: ['Effective', 'Neutral', 'Ineffective', 'Without'],
   fill: {
-    colors: ['#d90368', '#ffee32', '#00cc99', '#bcb8b1'],  
+    colors: ['#00cc99', '#ffee32', '#d90368', '#bcb8b1'],  
     opacity: 1
     },
   plotOptions: {
