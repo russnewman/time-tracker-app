@@ -14,6 +14,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import AuthService from '../../services/auth.service'
 import EfficiencyService from '../../services/efficiency.service'
 import DateService from '../../services/date.service'
+import StarBorderRoundedIcon from '@material-ui/icons/StarBorderRounded';
+import StarRoundedIcon from '@material-ui/icons/StarRounded';
 
 
 
@@ -241,7 +243,9 @@ export default function EnhancedTable(props) {
   ///////////
   // console.log("LLL", getRows(AuthService.getCurrentUser().employees))
   // const [rows, setRows] = React.useState(getRows(AuthService.getCurrentUser().employees))
-  const rows = getRows(AuthService.getCurrentUser().employees)
+  let tmp = AuthService.getCurrentUser().employees.slice()
+  tmp.push(AuthService.getCurrentUser().userInfo)
+  const rows = getRows(tmp)
   // console.log("RRR", rows)
   // console.log("EEE", EfficiencyService.getEfficiencyFromSessionStorage(3).current)
 
@@ -328,9 +332,10 @@ export default function EnhancedTable(props) {
                           checked={isItemSelected}
                         />
                       </TableCell>
-
+ 
                       <TableCell component="th" id={labelId} scope="row" padding="none">
-                        <Typography value={row.name} style={{fontSize: "16px"}}/>
+                        <Typography value={row.name} style={{fontSize: "16px", display: 'inline-block'}}/>
+                        {AuthService.getCurrentUser().userInfo.id === row.id && <StarRoundedIcon style={{marginTop:"-4px", marginLeft:"8px"}}/>}
                         <span className="text-black-50">
                             <Typography style={{fontSize:'11px'}} value={row.position}/>
                         </span>

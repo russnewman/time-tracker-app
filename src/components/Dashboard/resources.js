@@ -166,6 +166,7 @@ const getRows = (employeeIdOrAllTeam, resourcesDto)=>{
     //day
     if (resourcesDto[0].startTime){
       for (let resource of resourcesDto){
+        console.log(resource)
         const resourceLink = resource.protocolIdentifier +"://"+ resource.host
         res.push(createDataMemberDay(resourceLink, resource.duration, resource.startTime, resource.endTime, 0, resource.category))
       }
@@ -218,7 +219,7 @@ function parseDurationValue(duration, symb){
 function descendingComparator(a, b, orderBy) {
   a = a[orderBy]
   b = b[orderBy]
-  
+
   if (typeof a === 'string' && (a.indexOf('h') != -1 || a.indexOf('m') != -1 || a.indexOf('s') != -1) && (a.indexOf('.') === -1)){
 
     const hoursA = parseInt(parseDurationValue(a, 'h'))
@@ -396,11 +397,7 @@ function EnhancedTableHead(props) {
                               </TableSortLabel>
                       </TableCell>
 
-
-                          {/* {isOnePersonAndDay && <TableCell align="right"><Typography className="font-weight-bold">Start time</Typography></TableCell>} */}
-                          {/* {isOnePersonAndDay && <TableCell align="right"><Typography className="font-weight-bold">End time</Typography></TableCell>} */}
-                          {/* <TableCell align="right"><Typography className="font-weight-bold">Activity</Typography></TableCell> */}
-                          {isOnePersonAndDay && <TableCell align="right"><Typography className="font-weight-bold">Keylogger</Typography></TableCell>}
+                      {isOnePersonAndDay && <TableCell align="right"><Typography className="font-weight-bold">Keylogger</Typography></TableCell>}
       </TableRow>
     </TableHead>
   );
@@ -414,6 +411,7 @@ export default function AcccessibleTable(props) {
   const timePeriod = props.timePeriod
   // const date = props.date
   const rows = getRows(employeeIdOrAllTeam, ResourcesService.getResourcesFromSS())
+  console.log(rows)
 
 
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -421,6 +419,8 @@ export default function AcccessibleTable(props) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('startTime');
   const [row, setRow] = React.useState({})
+  const [render, setRender] = React.useState("render1")
+  
 
 
   const [open, setOpen] = React.useState(false);
@@ -428,7 +428,6 @@ export default function AcccessibleTable(props) {
   const [notify, setNotify] = React.useState({ isOpen: false, message: '', type: '' })
 
   
-  const [ind, setInd] = React.useState(0);
   const [host, setHost] = React.useState("");
   const classes = useStyles();
   // const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -457,7 +456,6 @@ export default function AcccessibleTable(props) {
   }
 
   const openDialog = (row, ind) => {
-    setInd(ind)
     setHost(processUrl(row.resource))
     setOpen(true)
   }
@@ -467,12 +465,14 @@ export default function AcccessibleTable(props) {
     setOpenKeylog(true)
   }
 
+  console.log("RERENDERIG")
+
   return (
     <div>
         {(employeeIdOrAllTeam !== 'all' && timePeriod === 1) &&
         <div style={{display: 'flex', justifyContent: 'center', paddingLeft: '64px', paddingRight: '64px'}}>
             <Paper className={classes.paper}>
-                  <ByHoursChart/>
+                  <ByHoursChart render={render} setRender={setRender}/>
             </Paper>
         </div>
         }
@@ -482,19 +482,6 @@ export default function AcccessibleTable(props) {
                 <Table  className={classes.table}
                         aria-labelledby="tableTitle"
                         aria-label="enhanced table">
-                      {/* <TableHead>
-                      <TableRow>
-                          <TableCell style={{paddingLeft:'60px'}}>
-                              <Typography className="font-weight-bold">Web resourse</Typography>
-                              </TableCell>
-                          <TableCell align="right"><Typography className="font-weight-bold">Duration</Typography></TableCell>
-                          {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">Start time</Typography></TableCell>}
-                          {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">End time</Typography></TableCell>}
-                          <TableCell align="right"><Typography className="font-weight-bold">Activity</Typography></TableCell>
-                          {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right"><Typography className="font-weight-bold">Keylogger</Typography></TableCell>}
-                      </TableRow>
-                      </TableHead> */}
-
                     <EnhancedTableHead
                                   classes={classes}
                                   order={order}
@@ -525,10 +512,11 @@ export default function AcccessibleTable(props) {
                                 {/* #bcb8b1 */}
                             </div>                                                         
                         </TableCell>
+                        
                         <TableCell align="right">
-
                             {row.duration}
                             </TableCell>
+
                         {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right">{row.startTime}</TableCell>}
                         {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right">{row.endTime}</TableCell>}
                           <TableCell align="right">
@@ -564,7 +552,7 @@ export default function AcccessibleTable(props) {
                     />
                 </Paper>
 
-               <ChangeResourseType rows={rows} host={host} ind={ind} employeeIdOrAllTeam={employeeIdOrAllTeam} open={open} onClose={handleClose}/> 
+               <ChangeResourseType host={host} employeeIdOrAllTeam={employeeIdOrAllTeam} open={open} onClose={handleClose}/> 
                {(employeeIdOrAllTeam !== 'all' && timePeriod === 1) && <KeyloggerDialog row={row} open={openKeylog} onClose={handleCloseKeylog}/>}
                <Notification
                     notify={notify}
@@ -577,14 +565,16 @@ export default function AcccessibleTable(props) {
 
 function ChangeResourseType(props) {
   const classes = useStyles()
-  let ind = props.ind
   let host = props.host
   const onClose = props.onClose
   const open = props.open
   const employeeIdOrAllTeam = props.employeeIdOrAllTeam
   const resources = ResourcesService.getResourcesFromSS()
 
-  let resource
+  let resource = {
+    host: "",
+    category: ""
+  }
   if (employeeIdOrAllTeam === "all"){
 
     let category = ""
@@ -599,18 +589,20 @@ function ChangeResourseType(props) {
         break;
       }
     }
-
     resource = {
       host: host,
       category: category
     }
   }
-
   else{
-    resource = resources.length > 0 ? resources[ind] : {
-      host: "",
-      category: ""
-    } 
+    for (let res of resources){
+      if (res.host == host){
+        resource = {
+          host: res.host,
+          category: res.category
+        }
+      }
+    }
   }
 
   const resourceName = resource.host
@@ -632,7 +624,6 @@ function ChangeResourseType(props) {
       if (employeeIdOrAllTeam != "all"){
         resources.map(item => {
           if (item.host === resource.host) item.category = category
-          console.log("ITEM", item)
         })
       }
       else{
@@ -645,14 +636,9 @@ function ChangeResourseType(props) {
           }
         }
       }
-      
-      // console.log("RESOURCE", resource)
       ResourcesService.updateResourcesInSS(resources)
       ResourcesService.updateResource(employeeIdOrAllTeam, selectValue, resource.host, category)
     }
-    
-    // .then((response) => {
-    //   setNotify(response)})
   }
 
   const handleChange = (event) => {

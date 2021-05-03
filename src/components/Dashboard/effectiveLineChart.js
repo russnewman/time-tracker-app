@@ -8,9 +8,6 @@ import EfficiencyService from '../../services/efficiency.service'
 import DateService from '../../services/date.service'
 
 import ReactApexChart from 'apexcharts';
-import { Category } from '@material-ui/icons';
-
-
 
 const styles = makeStyles((theme) => ({
   bottomArrows:{
@@ -20,7 +17,6 @@ const styles = makeStyles((theme) => ({
   }
 }))
 
-
 const computeMaxValueAndTickAmount = (data, timePeriod) => {
 
   if (timePeriod === 1){
@@ -29,8 +25,6 @@ const computeMaxValueAndTickAmount = (data, timePeriod) => {
       tickAmount: 6
     }
   }
-
-  console.log("DAta", data)
 
   const maxValues = [21600, 28800, 36000, 43200, 50400, 57600, 64800, 72000, 79200, 86400]
   const tickAmounts = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -57,10 +51,6 @@ const computeMaxValueAndTickAmount = (data, timePeriod) => {
 
 
 }
-
-// const dataA = [43,23,34,25,53,12,34,13, 23, 20, 8, 13, 27,31,37,24,28,20,10,19,16,14,19,54]
-// const dataB = [13,23,20,8,13,27,31,37,24,28,20,10,19,27,31,37,24,28,20,10,19,16,14,19,54]
-// const dataC = [11,17,15,15,21,14,14,17,22,20,15,31,9, 13, 23, 20, 8, 13, 27,31,37,24,28,20,47]
 const categoriesDay = [['00:00 - 01:00'],['01:00 - 2:00'], ['02:00 - 3:00'],['03:00 - 04:00'],['04:00 - 5:00'],['05:00 - 6:00'],['06:00 - 7:00'],
 ['07:00 - 8:00'],['08:00 - 9:00'],['09:00 - 10:00'], ['10:00 - 11.00'], ['11:00 - 12:00'], ['12:00 - 13:00'],
 ['13:00 - 14:00'], ['14:00 - 15:00'],['15.00 - 16:00'],['16.00 - 17:00'],['17.00 - 18:00'],
@@ -175,9 +165,7 @@ const optionsInit = {
     }
 
     const options = {
-      // chart: {
-      //   id: effectiveType,
-      // },
+
       xaxis: {categories: categories},
       yaxis:{
         min: 0,
@@ -237,16 +225,6 @@ export default function EffectiveLineChart(props){
     const classes = styles()
 
     const series = getSeries(props.employeeId, props.effectiveType, props.timePeriod)
-
-
-    // const [options, setOptions] = React.useState(getOptions(props.effectiveType, props.timePeriod, series[0].data))
-    // const [options, setOptions] = React.useState(getOptions(props.effectiveType, props.timePeriod, series[0].data))
-    // const options = []
-
-
-    // const employeeIdOrAllTeam = props.employeeIdOrAllTeam
-    // const [timePeriod, setTimePeriod] = React.useState(0);
-    // const [effectiveType, setEffectiveType] = React.useState(0)
     const [beginInd, setBeginInd] = React.useState(8)
 
     const handleLeftClick = event => {
@@ -317,56 +295,8 @@ export default function EffectiveLineChart(props){
       ReactApexChart.exec("lineChart", 'updateOptions', opt, true)
     },[props.effectiveType, props.timePeriod])
 
-
-    // React.useEffect(() => {
-
-    //   let optionsEffective;
-    //   let optionsNeutral;
-    //   let optionsIneffective;
-    //   let optionsMix;
-    
-    //   if (timePeriod != 0 && timePeriod == props.timePeriod && effectiveType == props.effectiveType){return}
-
-    //   if(props.timePeriod == 2){
-    //     optionsEffective = optionsEffectiveWeek
-    //     ///!!!
-    //     optionsNeutral = optionsNeutralDay
-    //     optionsIneffective = optionsIneffectiveDay
-    //     optionsMix = optionsMixDay
-    //     setTimePeriod(props.timePeriod)
-    //   }
-
-    //   else if(props.timePeriod == 1){
-    //     optionsEffective = optionsEffectiveDay
-    //     ///!!!
-    //     optionsNeutral = optionsNeutralDay
-    //     optionsIneffective = optionsIneffectiveDay
-    //     optionsMix = optionsMixDay
-
-    //     setTimePeriod(props.timePeriod)
-    //   }
-
-    //   if(props.effectiveType == 1){
-    //     ReactApexChart.exec("effective", 'updateOptions', optionsEffective, true)  
-    //     setEffectiveType(1)
-    //   }
-    //   else if(props.effectiveType == 2){
-    //     ReactApexChart.exec("effective", 'updateOptions', optionsNeutral, true)  
-    //     setEffectiveType(2)
-    //   }
-    //   else if(props.effectiveType == 3){
-    //     ReactApexChart.exec('effective', 'updateOptions', optionsIneffective, true)
-    //     setEffectiveType(3)  
-    //   }
-    //   // else if(props.effectiveType == 4){
-    //   //   ReactApexChart.exec('effective', 'updateOptions', optionsMix, true)
-    //   //   setEffectiveType(4)  
-    //   // }
-         
-    // });
     return(
       <div>
-          {/* {effectiveType === 4 ? <Chart options={opt}></Chart>} */}
           <Chart options={optionsInit} series={series} type="area" height={370}  width={1390}/>
           {props.timePeriod == 1 ? (<div className={classes.bottomArrows}>
           <Button onClick={handleLeftClick}><KeyboardArrowLeftIcon/></Button>

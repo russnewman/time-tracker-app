@@ -1,3 +1,4 @@
+//BUG
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { makeStyles } from '@material-ui/core/styles';
@@ -42,7 +43,7 @@ const dataNeutralWeek = [100,212,20,80,130,270,310,107,14,78,101,100]
 const dataIneffectiveWeek = [20,120,150,154,76,45,13,67,72,50,61,21]
 const dataWithoutWeek = [132,11,13,53,46,97,120,53,62,78,23,109]
 
-
+//FIX
 const maxYVal = 28800
 const tickAmount = 4
 
@@ -74,7 +75,9 @@ const tickAmount = 4
 
   const getEmployeesInfo = () =>{
     let res = []
-    const employeeList = AuthService.getCurrentUser().employees
+    let tmp = AuthService.getCurrentUser().employees.slice()
+    tmp.push(AuthService.getCurrentUser().userInfo)
+    let employeeList = tmp
     employeeList.forEach(employee => {
       res.push({
         "id": employee.id,

@@ -62,7 +62,9 @@ class DateService{
     }
     
     getTimeFromTimeStamp(timeStamp){
-      return timeStamp.substring(11, timeStamp.length - 4) + ''
+
+      const indT = timeStamp.indexOf("T")
+      return timeStamp.substring(indT+1, indT+9) + ''
     }
 
     //TODO Change this

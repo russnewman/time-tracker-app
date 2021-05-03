@@ -106,77 +106,6 @@ const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:
   }
 
 
-  
-const seriesDay =  [
-  {
-    name: 'Ineffective',
-    data: [0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0,0,0]
-  },
-  {
-    name: 'Neutral',
-    data: [0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0,0,0]
-  }, 
-  {
-    name: 'Effective',
-    data: [0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0,0,0]
-  },
-  {
-    name: 'Without',
-    data: [0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0,0,0,0]
-  }
-]
-
-
-const seriesWeek =  [
-  {
-    name: 'Ineffective',
-    data: [0, 0, 119, 0, 0, 2345, 0]
-  },
-  {
-    name: 'Neutral',
-    data: [0, 0, 0, 0, 345, 0,0]
-  }, 
-  {
-    name: 'Effective',
-    data: [0, 0, 244, 0, 1234, 0,0]
-  },
-  {
-    name: 'Without',
-    data: [0, 0, 0, 234, 0, 0, 0]
-  }
-]
-
-  
-  const optionsWeek = {
-    series: seriesWeek,
-    xaxis: {
-      categories: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-    },
-    yaxis:{
-      min: 0,
-      max: 28800,
-      tickAmount: 4,
-      labels: {
-        formatter: (value) => { return secondsToHours(value) },
-      },
-    },
-  }
-
-  // const optionsDay = {
-  //   // series: series,
-  //   xaxis: {
-  //     categories:  categories.slice(8, 20)
-  //   },
-  //   yaxis:{
-  //     min: 0,
-  //     max: 60,
-  //     tickAmount: 6,
-  //     labels: {
-  //       formatter: (value) => { return value + 'm'  },
-  //     },
-  //   },
-  // }
-
 
   const getSeries = (efficiency, timePeriod, beginInd, endInd) =>{
 
@@ -220,21 +149,6 @@ const seriesWeek =  [
 
       const opt = {
           series: series,
-          // chart:{
-          //   animations: {
-          //     enabled: true,
-          //     easing: 'easeinout',
-          //     speed: 300,
-          //     animateGradually: {
-          //         enabled: true,
-          //         delay: 1
-          //     },
-          //     dynamicAnimation: {
-          //         enabled: true,
-          //         speed: 450
-          //     }
-          //   }
-          // },
           xaxis: {
             categories:  categories.slice(8, 20)
           },
@@ -252,21 +166,6 @@ const seriesWeek =  [
     
    const opt =  {
         series: series,
-        // chart:{
-        //   animations: {
-        //     enabled: true,
-        //     easing: 'easeinout',
-        //     speed: 300,
-        //     animateGradually: {
-        //         enabled: true,
-        //         delay: 1
-        //     },
-        //     dynamicAnimation: {
-        //         enabled: true,
-        //         speed: 450
-        //     }
-        //   }
-        // },
         xaxis: {
           categories: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
         },
