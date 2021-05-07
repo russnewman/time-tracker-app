@@ -68,3 +68,17 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### docker
+
+```
+docker build . -t time-tracker-app-frontend
+docker run \
+    --network host
+    -v "$(pwd)/src:/time-tracker-app-frontend/src" \
+    -v "$(pwd)/public:/time-tracker-app-frontend/public" \
+    --name time-tracker-frontend \
+    time-tracker-app-frontend \
+    npm start
+```
