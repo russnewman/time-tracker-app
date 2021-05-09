@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     },
     dialogTitle: {
         textAlign: 'center',
-        backgroundColor: '#060b26',
+        backgroundColor: '#38023b',
         color: 'white'
     },
     dialogContent: {
@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: "whie",
         marginTop: '20px',
 
-        color: "#060b26",
+        color: "#38023b",
         justify:"center",
         // '&:hover': {
         //     backgroundColor: "#00b0ff",

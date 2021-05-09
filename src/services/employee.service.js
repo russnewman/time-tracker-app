@@ -3,7 +3,7 @@ import axios from "axios";
 import AuthService from "./auth.service"
 
 
-const API_URL = "http://localhost:8090/user"
+const API_URL = "http://localhost:8080/user"
 
 
 class EmployeeService{

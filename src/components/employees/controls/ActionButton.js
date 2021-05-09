@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     primary: {
         backgroundColor: '#cdced3',
         '& .MuiButton-label': {
-            color: '#060b26',
+            color: '#38023b',
         }
     },
 }))

@@ -45,7 +45,7 @@ const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:
   
   const optionsDefault = {
     chart: {
-      id: 'efficiency',
+      id: 'efficiencyEmployee',
       type: 'bar',
       height: 350,
       stacked: true,
@@ -187,10 +187,10 @@ const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:
     const [timePeriod, setTimePeriod] = React.useState(0)
     const [beginInd, setBeginInd] = React.useState(8)
     const employeeId = props.employeeId
-    console.log("ID",employeeId)
     const series = getSeries(EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current, timePeriod)
    
     const handleLeftClick = event => {
+      console.log("BEGIN", beginInd)
       if (beginInd == 0) return
 
       let newBeginInd = beginInd
@@ -200,23 +200,30 @@ const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:
       else if (beginInd == 12){
         newBeginInd = 8
       }
-
+      console.log("NEWBEGIN", newBeginInd)
       const newOpt = {
       series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current, 1, newBeginInd, newBeginInd + 12),
         xaxis:{
           categories: categories.slice(newBeginInd, newBeginInd + 12)
         }
       }
+
+      console.log("OPT", newOpt)
+
+
       setBeginInd(newBeginInd)
-      ReactApexChart.exec("efficiency", 'updateOptions', newOpt, true)
+      ReactApexChart.exec("efficiencyEmployee", 'updateOptions', newOpt, true)
     }
 
     const handleRightClick = event => {
+        console.log("BEGIN", beginInd)
         if (beginInd == 12) return
 
         let newBeginInd = beginInd
         if (beginInd == 0) newBeginInd = 8
         else if (beginInd == 8) newBeginInd = 12
+
+        console.log("NEWBEGIN", newBeginInd)
 
         const newOptions = {
           series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current, 1, newBeginInd, newBeginInd + 12),
@@ -224,12 +231,15 @@ const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:
             categories: categories.slice(newBeginInd, newBeginInd + 12)
           }
         }
+        console.log("OPT", newOptions)
+
         setBeginInd(newBeginInd)
-        ReactApexChart.exec("efficiency", 'updateOptions', newOptions, true)
+        ReactApexChart.exec("efficiencyEmployee", 'updateOptions', newOptions, true)
     }
     
 
     React.useEffect(() => {
+        console.log("HERE")
         const newEfficiency = EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current
         let beginInd, endInd
         if (props.timePeriod == 1 || props.timePeriod == 0) {
@@ -244,8 +254,8 @@ const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:
         const ser = getSeries(newEfficiency, props.timePeriod, beginInd, endInd)
         const newOptions = getOptions(ser, props.timePeriod)
   
-        ReactApexChart.exec("efficiency", 'updateOptions', newOptions, true)       
-    });
+        ReactApexChart.exec("efficiencyEmployee", 'updateOptions', newOptions, true)       
+    }, [props.timePeriod, props.date]);
 
     return(
       <div>

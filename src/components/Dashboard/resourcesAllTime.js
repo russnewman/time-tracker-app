@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     // borderRadius: "20px",
   },
   appBar:{
-    background: '#060b26',
+    background: '#38023b',
     position: 'relative',
     marginBottom: theme.spacing(3)
   },
@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
   dialogTitle: {
     textAlign: 'center',
     fontWeight: '900',
-    backgroundColor: '#060b26',
+    backgroundColor: '#38023b',
     color: 'white'
   },
   dialogContent: {

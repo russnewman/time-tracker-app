@@ -10,6 +10,7 @@ import { SubdirectoryArrowLeftRounded } from "@material-ui/icons";
 import AuthService from "../services/auth.service"
 import Controls from "./employees/controls/Controls";
 import Notification from "./employees/Notification";
+import EfficiencyService from "../services/efficiency.service"
 
 
 
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     },
     signUpButton:{
         width: '100%',
-        backgroundColor: '#060b26', 
+        backgroundColor: '#38023b', 
         color: 'white',
         '&:hover': {
             backgroundColor: "#000361",
@@ -124,9 +125,15 @@ export default function SignUp(props) {
                 position,
                 role
             )
-            .then((response)=>{
+            .then((response1)=>{
+                console.log(response1)
+                EfficiencyService.getEfficiencyAllTeam(new Date(), 1)
+                .then(response2 => {
+                    console.log(response2)
                     if (role === 'employee') setRedirect("/leaders")
                     else setRedirect("/dashboard")
+                })
+
                     // console.log(response)
 
                 },
@@ -254,7 +261,7 @@ export default function SignUp(props) {
                     <Grid container justify="flex-end">
                         <Grid item>
                         <Link to={"/sign-in"} variant="body2">
-                            <Typography variant="caption" style={{color: '#060b26'}}>
+                            <Typography variant="caption" style={{color: '#38023b'}}>
                                 Already have an account? Sign in
                             </Typography>
                         </Link>

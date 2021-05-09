@@ -10,6 +10,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import Dialog from '@material-ui/core/Dialog';
+import StarRoundedIcon from '@material-ui/icons/StarRounded';
 
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
@@ -297,18 +298,20 @@ return(
                             <TableCell padding="checkbox">
                             </TableCell>
                             <TableCell component="th" id={labelId} scope="row" padding="none">
-                                {row.fullName}
+                                <Typography style={{display: 'inline-block'}}>{row.fullName}</Typography>
+                                {AuthService.getCurrentUser().userInfo.id === row.id && <StarRoundedIcon style={{marginTop:"-4px", marginLeft:"8px"}}/>}
+
                             </TableCell>
                             <TableCell>{row.email}</TableCell>
                             <TableCell>{row.department}</TableCell>
                             <TableCell>{row.position}</TableCell>
                             <TableCell>
 
-                                                <Controls.ActionButton
+                                                {AuthService.getCurrentUser().userInfo.id !== row.id && <Controls.ActionButton
                                                     color="primary"
                                                     onClick={() => { openInPopup(row)}}>
                                                     <InfoOutlinedIcon fontSize="small" />
-                                                </Controls.ActionButton>
+                                                </Controls.ActionButton>}
 
                                                 <Controls.ActionButton
                                                     color="primary"
@@ -317,7 +320,7 @@ return(
                                                     <WebAssetIcon fontSize="small" />
                                                 </Controls.ActionButton>
 
-                                                <Controls.ActionButton
+                                                {AuthService.getCurrentUser().userInfo.id !== row.id && <Controls.ActionButton
                                             color="secondary"
                                             onClick={() => {
                                                 setConfirmDialog({
@@ -327,7 +330,8 @@ return(
                                                 })
                                             }}>
                                             <CloseIcon fontSize="small" />
-                                        </Controls.ActionButton>
+                                        </Controls.ActionButton>}
+                                          
                                 </TableCell>
                             </TableRow>
                         );

@@ -29,7 +29,7 @@ const styles = makeStyles((theme) => ({
     buuttonSignIn: {
         width: '100%',
         margin: theme.spacing(2),
-        backgroundColor: '#060b26', 
+        backgroundColor: '#38023b', 
         color: 'white',
         '&:hover': {
             backgroundColor: "#000361",
@@ -146,7 +146,7 @@ export default function SignIn(props){
                                 </Link>
                         </Grid> */}
                         <Grid item>
-                            <Link to={"/sign-up"} variant="body2" style={{color: '#060b26'}}>
+                            <Link to={"/sign-up"} variant="body2" style={{color: '#38023b'}}>
 
                                     <Typography variant="caption" >
                                         Don't have an account? Sign up.

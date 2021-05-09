@@ -5,8 +5,30 @@ import DateService from '../../services/date.service'
 class AllTeamService{
 
   getPercent(num1, num2){
-    const value = num2 == 0 ? 0 : Math.floor(Math.abs(num1 - num2)/num2) * 100
-    const profit = num1 > num2
+    let value = 0
+    let profit = false
+
+
+    // if (num2 === 0 && num1 === 0){
+    //   return {
+    //     value : -1,
+    //     profit: false
+    //   }
+    // }
+    // else if (num1 === 0){
+    //   return {
+    //     value : 0,
+    //     profit: true
+    //   }
+    // }
+    // else if (num2 === 0){
+    //   return {
+    //     value : 0,
+    //     profit: false
+    //   }
+    // }
+    value = Math.floor(Math.abs(num1 - num2)/num2) * 100
+    profit = num1 > num2
     return {
       value : value,
       profit: profit
@@ -86,23 +108,24 @@ class AllTeamService{
 
     let counter = 0
     let numOfWorkingDays = 1;
-    for (const [key, value] of Object.entries(efficiencyForAllTeam)){
-      // console.log("VALUE", value.current.EFFECTIVE.reduce((a,b) => a + b))
-        if (counter == 0) {
-          if (value.current.EFFECTIVE.length == 24) numOfWorkingDays = 1
-          else if (value.current.EFFECTIVE.length == 7) numOfWorkingDays = 5
-        }
-        effectiveCurrentTotal += value.current.EFFECTIVE.reduce((a,b) => a + b)
-        neutralCurrentTotal += value.current.NEUTRAL.reduce((a,b) => a + b)
-        ineffectiveCurrentTotal += value.current.INEFFECTIVE.reduce((a,b) => a + b)
-        withoutCurrentTotal += value.current.WITHOUT.reduce((a,b) => a + b)
+    if (efficiencyForAllTeam){
+      for (const [key, value] of Object.entries(efficiencyForAllTeam)){
+          if (counter == 0) {
+            if (value.current.EFFECTIVE.length == 24) numOfWorkingDays = 1
+            else if (value.current.EFFECTIVE.length == 7) numOfWorkingDays = 5
+          }
+          effectiveCurrentTotal += value.current.EFFECTIVE.reduce((a,b) => a + b)
+          neutralCurrentTotal += value.current.NEUTRAL.reduce((a,b) => a + b)
+          ineffectiveCurrentTotal += value.current.INEFFECTIVE.reduce((a,b) => a + b)
+          withoutCurrentTotal += value.current.WITHOUT.reduce((a,b) => a + b)
 
-        effectivePreviousTotal += value.previous.EFFECTIVE.reduce((a,b) => a + b)
-        neutralPreviousTotal += value.previous.NEUTRAL.reduce((a,b) => a + b)
-        ineffectivePreviousTotal += value.previous.INEFFECTIVE.reduce((a,b) => a + b)
-        withoutPreviousTotal += value.previous.WITHOUT.reduce((a,b) => a + b)
+          effectivePreviousTotal += value.previous.EFFECTIVE.reduce((a,b) => a + b)
+          neutralPreviousTotal += value.previous.NEUTRAL.reduce((a,b) => a + b)
+          ineffectivePreviousTotal += value.previous.INEFFECTIVE.reduce((a,b) => a + b)
+          withoutPreviousTotal += value.previous.WITHOUT.reduce((a,b) => a + b)
 
-        counter++
+          counter++
+      }
     }
 
     let effectiveCurrent = 0

@@ -10,13 +10,12 @@ import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
-
+import locale from 'date-fns/locale/en-US'
 
 import EfficiencyService from '../../services/efficiency.service'
-import DateService from '../../'
+import DateService from '../../services/date.service'
 import ResourcesService from '../../services/resources.service'
 import EfficiencyChart from './Employee/efficiencyChart'
 import EfficiencyByDayChart from './Employee/efficiencySumChart'
@@ -35,11 +34,16 @@ import WebAssetIcon from '@material-ui/icons/WebAsset';
 import BigStat from "./BigStat";
 import Mock from "./BigStatService"
 
+if (locale && locale.options) {
+  locale.options.weekStartsOn = 1
+}
+
 const styles = makeStyles((theme) => ({
   paperSettings:{
     boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
     borderRadius: "25px",
-    paddingLeft: theme.spacing(2)
+    paddingLeft: theme.spacing(2),
+    // backgroundColor: "#ffedd8"
   },
   paper: {
     width: '100%',
@@ -47,11 +51,13 @@ const styles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
     boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
     borderRadius: "25px",
+    // backgroundColor: "#ffedd8"
   },
   card:{
     boxShadow: "0px 5px 12px rgba(10, 1, 50, 0.3)",
     borderRadius: "25px",
-    height: '455px'
+    height: '455px',
+    // backgroundColor: "#ffedd8"
   },
   dateAndSwitcher:{
     display: 'flex',
@@ -73,11 +79,13 @@ const styles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(3),
     paddingTop: theme.spacing(),
     paddingBottom: theme.spacing(4),
+    // backgroundColor: "#ffedd8"
   },
   appbar:{
     marginBottom: theme.spacing(2),
     backgroundColor: '#ffffff',
     position: 'sticky',
+    // backgroundColor: "#ffedd8",
     // overflowX: 'hidden',
     width: '100%',
     // overflowX: 'hidden',
@@ -95,6 +103,8 @@ const styles = makeStyles((theme) => ({
     minWidth: 150,
   },
   appbarContent: {
+    color: "black",
+    // backgroundColor: "#ffedd8",
     // paddingRight: '15px', 
     display: 'flex',
     justifyContent: 'space-between'
@@ -140,6 +150,7 @@ export default function DashboardEfficiency(props){
     const handleDateChange = (date) => {
       EfficiencyService.getEfficiencyAllTeamAndResources(date, timePeriod, employeeIdOrAllTeam)
       .then(response => {
+          console.log("DATE", date)
           setSelectedDate(date);
       })
     };
@@ -203,7 +214,7 @@ export default function DashboardEfficiency(props){
                   {/* <CustomDay MenuProps={{ disableScrollLock: true }} /> */}
 
 
-                  <MuiPickersUtilsProvider disableScrollLock utils={DateFnsUtils}>
+                  <MuiPickersUtilsProvider disableScrollLock utils={DateFnsUtils} locale={locale}>
                             <KeyboardDatePicker style={{width:'172px'}}
                                 disableScrollLock
                                 disableToolbar
@@ -212,7 +223,7 @@ export default function DashboardEfficiency(props){
                                   // margin="2px"
                                   id="date-picker-dialog"
                                   // label="Date"
-                                  format="MM/dd/yyyy"
+                                  format="dd.MM.yyyy"
                                   value={selectedDate}
                                   onChange={handleDateChange}
                                   // KeyboardButtonProps={{
@@ -264,8 +275,8 @@ export default function DashboardEfficiency(props){
                   <MenuItem value="Efficiency">Efficiency</MenuItem>
                   <MenuItem value="Usage">Using</MenuItem>
                 </Select>
-                  {timePeriod == 1 ? (<Typography className={classes.typography}>1 Mar 2021
-                    </Typography>): (<Typography className={classes.typography}> 1 Mar 2021 - 7 Mar 2021
+                  {timePeriod == 1 ? (<Typography className={classes.typography}>{DateService.getPeriodOfDateString(timePeriod,selectedDate)}
+                    </Typography>): (<Typography className={classes.typography}>{DateService.getPeriodOfDateString(timePeriod,selectedDate)}
                     </Typography>)}
 
               </div>

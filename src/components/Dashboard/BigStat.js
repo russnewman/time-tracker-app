@@ -26,6 +26,7 @@ const useStyles =  makeStyles((theme) => ({
     paddingBottom: theme.spacing(3),
     paddingRight: theme.spacing(3),
     paddingLeft: theme.spacing(3),
+    // backgroundColor: "#ffedd8"
   },
   title:{
     paddingTop: theme.spacing(2),
@@ -101,49 +102,33 @@ export default function BigStat(props) {
           {(category === 'Effective' || category === 'Neutral') && 
                 (total.percent.profit
                       ? 
-                (total.percent.value == 0 ? <div></div> : <div>
+                (isNaN(total.percent.value) ? <div></div> : <div>
                   <ArrowUpwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
-                  <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
+                  {isFinite(total.percent.value) && <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
                       {total.percent.value}%
-                  </Typography>
+                  </Typography>}
                 </div>) : 
-                (total.percent.value == 0 ? <div></div> : <div>
+                (isNaN(total.percent.value) ? <div></div> : <div>
                     <ArrowDownwardIcon style={{color: 'crimson'}}/>
-                    <Typography style={{color:"crimson", display: 'inline-block'}}>
+                    {isFinite(total.percent.value) && <Typography style={{color:"crimson", display: 'inline-block'}}>
                         {total.percent.value}%
-                      </Typography>
+                      </Typography>}
                 </div>))
             }
-            {/* {category === 'Neutral' && 
-                (total.percent.profit
-                      ? 
-                <div style={{marginRight: '90px'}}>
-                  <ArrowUpwardIcon style={{marginTop: '-8px'}}/>
-                  <Typography style={{ display: 'inline-block', fontSize: '14px'}}>
-                      {total.percent.value}%
-                  </Typography>
-                </div> : 
-                <div>
-                    <ArrowDownwardIcon/>
-                    <Typography style={{display: 'inline-block'}}>
-                        {total.percent.value}%
-                      </Typography>
-                </div>)
-            } */}
             {(category === 'Ineffective' || category === 'Without') && 
                 (total.percent.profit
                       ? 
-                (total.percent.value === 0 ? <div></div> : <div >
+                (isNaN(total.percent.value) ? <div></div> : <div >
                   <ArrowUpwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
-                  <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
+                  {isFinite(total.percent.value) && <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
                       {total.percent.value}%
-                  </Typography>
+                  </Typography>}
                 </div>) : 
-                (total.percent.value === 0 ? <div></div> :<div>
+                (isNaN(total.percent.value) ? <div></div> :<div>
                     <ArrowDownwardIcon style={{color: '#00cc65'}}/>
-                    <Typography style={{color:"#00cc65", display: 'inline-block'}}>
+                    {isFinite(total.percent.value) && <Typography style={{color:"#00cc65", display: 'inline-block'}}>
                         {total.percent.value}%
-                      </Typography>
+                      </Typography>}
                 </div>))
             }
         </div>
@@ -152,55 +137,38 @@ export default function BigStat(props) {
           <Typography className="text-black-50" style={{fontSize:'20 px', marginRight:'12px'}}>{percentage.value}%</Typography>
           <div style={{marginRight: '90px'}}>
             {(category === 'Effective' || category === 'Neutral') && (percentage.percent.profit ? 
-                    ( percentage.percent.value === 0 ? <div></div> : <div>
+                    ( isNaN(total.percent.value) ? <div></div> : <div>
                       <ArrowUpwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
-                      <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
+                      {isFinite(total.percent.value) &&<Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
                           {percentage.percent.value}%
-                      </Typography>
+                      </Typography>}
                     </div>)
                      : 
-                    (percentage.percent.value === 0 ? <div></div> : <div>
+                    (isNaN(total.percent.value) ? <div></div> : <div>
                       <ArrowDownwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
-                      <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
+                      {isFinite(total.percent.value) &&<Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
                         {percentage.percent.value}%
-                      </Typography>
+                      </Typography>}
                     </div>))
             }
-            {/* {category === 'Neutral' && (percentage.percent.profit ? 
-                    (<div>
-                      <ArrowUpwardIcon style={{marginTop: '-8px'}}/>
-                      <Typography style={{display: 'inline-block', fontSize: '14px'}}>
-                        {percentage.percent.value}%
-                      </Typography>
-                    </div>)
-                     : 
-                    (<div>
-                      <ArrowDownwardIcon style={{ marginTop: '-8px'}}/>
-                      <Typography style={{display: 'inline-block', fontSize: '14px'}}>
-                        {percentage.percent.value}%
-                      </Typography>
-                    </div>))
-            } */}
             {(category === 'Ineffective' || category === 'Without') && (percentage.percent.profit ? 
-                    (percentage.percent.value === 0 ? <div></div> : <div>
+                    (isNaN(total.percent.value) ? <div></div> : <div>
                       <ArrowUpwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
-                      <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
+                      {isFinite(total.percent.value) &&<Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
                         {percentage.percent.value}%
-                      </Typography>
+                      </Typography>}
                     </div>)
                      : 
-                    (percentage.percent.value === 0 ? <div></div> : <div>
+                    (isNaN(total.percent.value)? <div></div> : <div>
                       <ArrowDownwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
-                      <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
+                      {isFinite(total.percent.value) &&<Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
                         {percentage.percent.value}%
-                      </Typography>
+                      </Typography>}
                     </div>))
             }
             
           </div>
         </div>
-        {/* </CardContent>
-        </CardActionArea> */}
 
       </Card>
       </div>

@@ -17,29 +17,11 @@ import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 
 const useStyles = makeStyles((theme) => ({
   navbar:{
-    // position: 'relative',
-    // top: '0px',
-    // left: '0px',
-    // position: 'fixed',
-    // top: '0px',
-    // width: '100%',
     marginBottom: '-1px'
   },
   navMenu:{
-    // display: 'flex',
-    // justifyContent: 'space-between',
     marginLeft: '56px'
   },
-  // signOut:{
-  //   marginRight: '62px',
-  //   // marginTop: '12px',
-  //   display: 'flex',
-  //   alignItems: 'center',
-  //   height: '40px',
-  //   background: '#00a6fb',
-  //   color: 'black'
-  // }
-
   exitIcon: {
     fontSize: '32px',
     '&:hover': {
@@ -64,21 +46,21 @@ const Navbar = () => {
           {/* <div> */}
           {user.userRole === 'LEADER' && 
             <NavLink to='/dashboard' activeStyle>
-              Dashboard
+             <Typography style={{fontWeight: '300'}}>Dashboard</Typography>
             </NavLink>}
 
 
             {user.userRole === "LEADER" ?
                 (<NavLink to='/employees' activeStyle>
-                  Employees
+                  <Typography style={{fontWeight: '300'}}>Employees</Typography>
                 </NavLink>)
                 :
                 (<NavLink to='/leaders' activeStyle>
-                  Managers
+                  <Typography style={{fontWeight: '300'}}>Managers</Typography>
                 </NavLink>)
             }
             <NavLink to='/profile' activeStyle>
-              Profile
+            <Typography style={{fontWeight: '300'}}>Profile</Typography>
             </NavLink>
           {/* </div> */}
         </NavMenu>
@@ -87,10 +69,9 @@ const Navbar = () => {
 
               </Link>
             </Button> */}
-
           <div>
             <Typography variant='h6' style={{color: 'white', display: 'inline-block', marginRight: '24px', fontWeight:'500', marginTop: '15px'}}>{user.email}</Typography>
-            <IconButton component={ Link } to="/sign-in" variant="contained" style={{display: 'inline-block', color: 'white', marginRight: '48px'}}>
+            <IconButton component={ Link } to="/sign-in" variant="contained" onClick={handleLogOut} style={{display: 'inline-block', color: 'white', marginRight: '48px'}}>
                 <ExitToAppOutlinedIcon className={classes.exitIcon}/>
             </IconButton>
           </div>

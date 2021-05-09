@@ -2,7 +2,7 @@ import DateService from './date.service'
 import axios from "axios";
 import AuthService from "./auth.service"
 import ManagerService from "./manager.service"
-const API_URL = "http://localhost:8090/resources"
+const API_URL = "http://localhost:8080/resources"
 
 
 class ResourcesService{
@@ -35,6 +35,7 @@ class ResourcesService{
             })
         }
         return request.then((response) => {
+                console.log(response.data)
                 sessionStorage.setItem("resources", JSON.stringify(response.data))
                 return response.data
             },

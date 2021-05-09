@@ -64,7 +64,7 @@ function createData(
   name, 
   position, 
   department, 
-  status, 
+  // status, 
   effective, 
   effectiveRate, 
   neutral, 
@@ -74,7 +74,7 @@ function createData(
   without, 
   withoutRate, 
   total) {
-  return { id, name, position, department, status, effective, effectiveRate, neutral, neutralRate, ineffective, ineffectiveRate, without, withoutRate, total};
+  return { id, name, position, department, effective, effectiveRate, neutral, neutralRate, ineffective, ineffectiveRate, without, withoutRate, total};
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -122,7 +122,7 @@ const headCells = [
   { id: 'name', alignRight: false, disablePadding: true, label: 'Members' },
   // { id: 'position', alignRight: false, disablePadding: true, label: 'Position' },
   { id: 'department', alignRight: true, disablePadding: false, label: 'Department' },
-  { id: 'status', alignRight: true, disablePadding: false, label: 'Status' },
+  // { id: 'status', alignRight: true, disablePadding: false, label: 'Status' },
   { id: 'effectiveRate', alignRight: true, disablePadding: false, label: 'Effective' },
   { id: 'neutralRate', alignRight: true, disablePadding: false, label: 'Neutral' },
   { id: 'ineffectiveRate', alignRight: true, disablePadding: false, label: 'Ineffective' },
@@ -169,40 +169,6 @@ function EnhancedTableHead(props) {
 
 
 
-// const computeEfficiency = (efficiencyList) => {
-
-//   //day.Compute total
-//   if (efficiencyList.EFFECTIVE.length == 24){
-//     return {
-//       'effective': efficiencyList.EFFECTIVE.reduce((a, b) => a + b),
-//       'neutral': efficiencyList.NEUTRAL.reduce((a, b) => a + b),
-//       'ineffective': efficiencyList.INEFFECTIVE.reduce((a, b) => a + b),
-//       'without': efficiencyList.WITHOUT.reduce((a, b) => a + b)
-//     }
-//   }
-//   //Compute average
-//   let numberOfWorkingDays = 5
-//   return {
-//     'effective': Math.floor(efficiencyList.EFFECTIVE.reduce((a, b) => (a + b)) / numberOfWorkingDays),
-//     'neutral':  Math.floor(efficiencyList.NEUTRAL.reduce((a, b) => (a + b)) / numberOfWorkingDays),
-//     'ineffective': Math.floor(efficiencyList.INEFFECTIVE.reduce((a, b) => (a + b)) / numberOfWorkingDays),
-//     'without': Math.floor(efficiencyList.WITHOUT.reduce((a, b) => (a + b)) / numberOfWorkingDays)
-//   }
-//   //Compute average
-// }
-
-// const getEfficiencyRate = (efficiency) =>{
-//   const total = efficiency.effective + efficiency.ineffective + efficiency.neutral + efficiency.without
-//   const denominator = total == 0 ? 1 : total  
-//   return {
-//     'effective': Math.round(efficiency.effective/denominator) * 100 + '%',
-//     'neutral': Math.round(efficiency.neutral/denominator)* 100 + '%',
-//     'ineffective': Math.round(efficiency.ineffective/denominator)* 100 + '%' ,
-//     'without': Math.round(efficiency.without/denominator)* 100 + '%',
-//     'total': total
-//   }
-// }
-
 const getRows = (employeeList) => {
   let rows = []
   employeeList.forEach(employee => {
@@ -211,7 +177,7 @@ const getRows = (employeeList) => {
 
     const rate = EfficiencyService.getEfficiencyRate(efficiency)
     const res = createData(
-      employee.id, employee.fullName, employee.position, employee.department, true, 
+      employee.id, employee.fullName, employee.position, employee.department,
       DateService.secondsToHours(efficiency.effective), rate.effective + '%',
       DateService.secondsToHours(efficiency.neutral), rate.neutral + '%', 
       DateService.secondsToHours(efficiency.ineffective), rate.ineffective + '%', 
@@ -244,7 +210,7 @@ export default function EnhancedTable(props) {
   // console.log("LLL", getRows(AuthService.getCurrentUser().employees))
   // const [rows, setRows] = React.useState(getRows(AuthService.getCurrentUser().employees))
   let tmp = AuthService.getCurrentUser().employees.slice()
-  tmp.push(AuthService.getCurrentUser().userInfo)
+  // tmp.push(AuthService.getCurrentUser().userInfo)
   const rows = getRows(tmp)
   // console.log("RRR", rows)
   // console.log("EEE", EfficiencyService.getEfficiencyFromSessionStorage(3).current)
@@ -257,7 +223,6 @@ export default function EnhancedTable(props) {
 
 
   const handleCheck = (event, id,  name) =>{
-    console.time("CHECK")
     if (selectedMember === name){
       // setSubjectOfChange(2)
       setEmployeeIdOrAllTeam('all')
@@ -270,7 +235,6 @@ export default function EnhancedTable(props) {
       setWriting(name)
       setSelectedMember(name)
     }
-    console.timeEnd("CHECK")
   }
 
 
@@ -343,7 +307,7 @@ export default function EnhancedTable(props) {
 
                       <TableCell align="right">{row.department}</TableCell>
 
-                      <TableCell align="right">
+                      {/* <TableCell align="right">
                           {row.status ? <div className="badge badge-success h-auto">
                                             ACTIVE
                                         </div>:
@@ -351,7 +315,7 @@ export default function EnhancedTable(props) {
                                                 NOT ACTIVE
                                             </div>
                           }
-                        </TableCell>
+                        </TableCell> */}
 
                       <TableCell align="right">
                           {row.effectiveRate > '50%' ? (

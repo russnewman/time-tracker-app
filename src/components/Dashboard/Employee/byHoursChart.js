@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   dialogTitle: {
     textAlign: 'center',
     fontWeight: '900',
-    backgroundColor: '#060b26',
+    backgroundColor: '#38023b',
     color: 'white',
     fontWeight: '600'
   },

@@ -1,8 +1,8 @@
 import DateService from './date.service'
 import axios from "axios";
 import AuthService from "./auth.service"
-const EFFICIENCY_URL = "http://localhost:8090/efficiency"
-const RESOURCES_URL = "http://localhost:8090/resources"
+const EFFICIENCY_URL = "http://localhost:8080/efficiency"
+const RESOURCES_URL = "http://localhost:8080/resources"
 
 
 
@@ -75,6 +75,7 @@ class EfficiencyService{
         return axios.all([requestOne, requestTwo]).then(axios.spread((...responses) => {
             const responseOne = responses[0]
             const responseTwo = responses[1]
+            console.log(responseOne)
 
             sessionStorage.setItem("efficiency", JSON.stringify(responseOne.data))
             sessionStorage.setItem("resources", JSON.stringify(responseTwo.data))

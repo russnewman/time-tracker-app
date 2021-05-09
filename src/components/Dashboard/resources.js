@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
   dialogTitle: {
     textAlign: 'center',
     fontWeight: '900',
-    backgroundColor: '#060b26',
+    backgroundColor: '#38023b',
     color: 'white',
     fontWeight: '600'
   },
@@ -115,10 +115,10 @@ function createDataMemberDay(resource, duration, startTime, endTime, activity, t
     duration: DateService.secondsToHours(duration), 
     startTime: DateService.getTimeFromTimeStamp(startTime), 
     endTime: DateService.getTimeFromTimeStamp(endTime), 
-    activityRate: computeActivityRate(activity, duration),
-    activity: DateService.secondsToHours(activity),
+    // activityRate: computeActivityRate(activity, duration),
+    // activity: DateService.secondsToHours(activity),
     type: type, 
-    keylog: keylog
+    // keylog: keylog
     };
 }
 
@@ -126,8 +126,8 @@ function createData(resource, duration, activity, type) {
   return { 
       resource: resource, 
       duration: DateService.secondsToHours(duration), 
-      activityRate: computeActivityRate(activity, duration),
-      activity: DateService.secondsToHours(activity),
+      // activityRate: computeActivityRate(activity, duration),
+      // activity: DateService.secondsToHours(activity),
       type: type
     };
 }
@@ -380,7 +380,7 @@ function EnhancedTableHead(props) {
                       </TableCell>}
 
 
-                      <TableCell align="right"
+                      {/* <TableCell align="right"
                                   key='activity'
                                   sortDirection={orderBy === 'end' ? order : false}>
                               <TableSortLabel
@@ -397,7 +397,7 @@ function EnhancedTableHead(props) {
                               </TableSortLabel>
                       </TableCell>
 
-                      {isOnePersonAndDay && <TableCell align="right"><Typography className="font-weight-bold">Keylogger</Typography></TableCell>}
+                      {isOnePersonAndDay && <TableCell align="right"><Typography className="font-weight-bold">Keylogger</Typography></TableCell>} */}
       </TableRow>
     </TableHead>
   );
@@ -409,9 +409,7 @@ export default function AcccessibleTable(props) {
 
   const employeeIdOrAllTeam = props.employeeIdOrAllTeam
   const timePeriod = props.timePeriod
-  // const date = props.date
   const rows = getRows(employeeIdOrAllTeam, ResourcesService.getResourcesFromSS())
-  console.log(rows)
 
 
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -430,7 +428,7 @@ export default function AcccessibleTable(props) {
   
   const [host, setHost] = React.useState("");
   const classes = useStyles();
-  // const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
 
   const handleRequestSort = (event, property) => {
@@ -465,7 +463,6 @@ export default function AcccessibleTable(props) {
     setOpenKeylog(true)
   }
 
-  console.log("RERENDERIG")
 
   return (
     <div>
@@ -519,13 +516,12 @@ export default function AcccessibleTable(props) {
 
                         {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right">{row.startTime}</TableCell>}
                         {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right">{row.endTime}</TableCell>}
-                          <TableCell align="right">
+                          {/* <TableCell align="right">
                             <Typography style={{display: 'inline-block', fontWeight:'500'}} >{row.activityRate}</Typography>
                             <Typography className="text-black-50" style={{fontSize:'11px'}} >{row.activity}</Typography>
-                          {/* {row.activity} */}
-                          </TableCell>
+                          </TableCell> */}
 
-                          {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && 
+                          {/* {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && 
                             <TableCell align="right">
                               {row.keylog && 
                                 <IconButton onClick={()=>{openKeylogDialog(row)}}>
@@ -534,7 +530,7 @@ export default function AcccessibleTable(props) {
                               }
                             </TableCell>
 
-                          }
+                          } */}
                         </TableRow>
 
                     ))}
@@ -542,7 +538,7 @@ export default function AcccessibleTable(props) {
                 </Table>
                 </TableContainer>
                 <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
+                        rowsPerPageOptions={[10, 50, 100]}
                         component="div"
                         count={rows.length}
                         rowsPerPage={rowsPerPage}
@@ -744,7 +740,7 @@ function KeyloggerDialog(props){
       scroll={scroll}
       aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description">
-      <DialogTitle id="scroll-dialog-title" style={{backgroundColor: '#060b26', color: 'white'}}>
+      <DialogTitle id="scroll-dialog-title" style={{backgroundColor: '#38023b', color: 'white'}}>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
         <Typography variant='h6' style={{display: 'inline-block', fontWeight: '900'}}>
           {processUrl(row.resourse)} 

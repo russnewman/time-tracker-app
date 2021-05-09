@@ -1,7 +1,7 @@
 import axios from "axios";
 import DateService from "../services/date.service"
 
-const API_URL = "http://localhost:8090/auth/";
+const API_URL = "http://localhost:8080/auth/";
 
 class AuthService {
 
@@ -44,7 +44,7 @@ class AuthService {
       .then(response => {
         if (response.data.userInfo && response.data.userInfo.token) {
             sessionStorage.setItem("user", JSON.stringify(response.data));
-            return axios.get("http://localhost:8090/efficiency/team", { 
+            return axios.get("http://localhost:8080/efficiency/team", { 
               params:{
                       userId: response.data.userInfo.id,
                       date: DateService.toRightFormat(new Date()),
@@ -64,7 +64,7 @@ class AuthService {
 
 
   logout() {
-    sessionStorage.removeItem("user");
+    sessionStorage.clear();
   }
 
   register(email, password, fullName, department, position, role){
