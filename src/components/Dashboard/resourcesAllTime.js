@@ -250,7 +250,7 @@ export default function AcccessibleTable(props) {
                         <TableHead>
                             <TableRow>
                                 <TableCell style={{paddingLeft:'60px', justifyContent: 'space-between', display: 'flex'}}>
-                                        <Typography className="font-weight-bold">Effective resources</Typography>
+                                        <Typography className="font-weight-bold">Эффективные</Typography>
 
                                 </TableCell>
                             </TableRow>
@@ -299,7 +299,7 @@ export default function AcccessibleTable(props) {
                         <TableHead>
                             <TableRow>
                                 <TableCell style={{paddingLeft:'60px'}}>
-                                        <Typography className="font-weight-bold">Neutral resources</Typography>
+                                        <Typography className="font-weight-bold">Нейтральные</Typography>
                                 </TableCell>
                             </TableRow>
                         </TableHead>
@@ -346,7 +346,7 @@ export default function AcccessibleTable(props) {
                         <TableHead>
                             <TableRow>
                                 <TableCell style={{paddingLeft:'60px'}}>
-                                        <Typography className="font-weight-bold">Ineffective resources</Typography>
+                                        <Typography className="font-weight-bold">Неэффективные</Typography>
                                 </TableCell>
                             </TableRow>
                         </TableHead>
@@ -469,15 +469,15 @@ function ChangeResourseType(props) {
                           />
                         }
                       >
-                    <MenuItem value="team">All team</MenuItem>
-                    <MenuItem value="employee">This employee</MenuItem>
+                    <MenuItem value="team">Команда</MenuItem>
+                    <MenuItem value="employee">Данный сотр.</MenuItem>
                   </Select>
                 </div>
               
                 <RadioGroup  row aria-label="position" value={category} onChange={handleChange}>
-                  <FormControlLabel value="effective" control={<ERadio/>} label="Effective" />
-                  <FormControlLabel value="neutral" control={<NRadio/>} label="Neutral" />
-                  <FormControlLabel value="ineffective" control={<Radio/>} label="Ineffective" />
+                  <FormControlLabel value="effective" control={<ERadio/>} label="Эффективно" />
+                  <FormControlLabel value="neutral" control={<NRadio/>} label="Нейтрально" />
+                  <FormControlLabel value="ineffective" control={<Radio/>} label="Неэффективно" />
                 </RadioGroup>
             </Container>
             <div style={{justifyContent: 'center', display: 'flex'}}>
@@ -487,7 +487,7 @@ function ChangeResourseType(props) {
                         // color="secondary" 
                         style={{width:"96px", marginTop: "24px", marginBottom: '8px'}} 
                         onClick={handleSave}>
-                        Save
+                        Сохранить
                 </Button>
             </div>
       </DialogContent>
@@ -546,21 +546,21 @@ function ChangeResourseType(props) {
     return (
       <div>
       <Dialog onClose={handleClose} fullWidth maxWidth='sm' aria-labelledby="simple-dialog-title" open={open} className={classes.dialog}>
-        <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h5 style={{fontWeight: '600'}}>Add resource</h5></DialogTitle>
+        <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><h5 style={{fontWeight: '600'}}>Добавить ресурс</h5></DialogTitle>
         <DialogContent className={classes.dialogContent}>
   
 
             <Container style={{ display: 'flex', flexDirection:'row', justifyContent: 'center', marginBottom: '24px'}}>
-                <TextField id="outlined-basic" label="Web resourse" style={{width: '330px'}} onChange={handleUrlChange}/>
+                <TextField id="outlined-basic" label="Веб-ресурс" style={{width: '330px'}} onChange={handleUrlChange}/>
             </Container>
 
               <Container style={{ display: 'flex', flexDirection:'row', justifyContent: 'center'}}>
                   
 
                   <RadioGroup  row aria-label="position" value={category} onChange={handleTypeChange}>
-                    <FormControlLabel value="effective" control={<ERadio/>} label="Effective" />
-                    <FormControlLabel value="neutral" control={<NRadio/>} label="Neutral" />
-                    <FormControlLabel value="ineffective" control={<Radio/>} label="Ineffective" />
+                    <FormControlLabel value="effective" control={<ERadio/>} label="Эффективно" />
+                    <FormControlLabel value="neutral" control={<NRadio/>} label="Нейтрально" />
+                    <FormControlLabel value="ineffective" control={<Radio/>} label="Неэффективно" />
                   </RadioGroup>
               </Container>
               <div style={{justifyContent: 'center', display: 'flex'}}>
@@ -568,7 +568,7 @@ function ChangeResourseType(props) {
                           variant="outlined"
                           style={{width:"96px", marginTop: "24px", marginBottom: '8px'}} 
                           onClick={handleSave}>
-                          Save
+                          Сохранить
                   </Button>
               </div>
         </DialogContent>

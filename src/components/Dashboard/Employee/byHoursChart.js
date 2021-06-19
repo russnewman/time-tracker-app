@@ -277,15 +277,15 @@ function ChangeResourseType(props) {
                           />
                         }
                       >
-                    <MenuItem value="team">All team</MenuItem>
-                    <MenuItem value="employee">This employee</MenuItem>
+                    <MenuItem value="team">Команда</MenuItem>
+                    <MenuItem value="employee">Данный сотр.</MenuItem>
                   </Select>
                 </div>
               
                 <RadioGroup  row aria-label="position" value={category} onChange={handleChange}>
-                  <FormControlLabel value="effective" control={<ERadio/>} label="Effective" />
-                  <FormControlLabel value="neutral" control={<NRadio/>} label="Neutral" />
-                  <FormControlLabel value="ineffective" control={<Radio/>} label="Ineffective" />
+                  <FormControlLabel value="effective" control={<ERadio/>} label="Эффективно" />
+                  <FormControlLabel value="neutral" control={<NRadio/>} label="Нейтрально" />
+                  <FormControlLabel value="ineffective" control={<Radio/>} label="Неэффективно" />
                 </RadioGroup>
             </Container>
             <div style={{justifyContent: 'center', display: 'flex'}}>
@@ -295,7 +295,7 @@ function ChangeResourseType(props) {
                         // color="secondary" 
                         style={{width:"96px", marginTop: "24px", marginBottom: '8px'}} 
                         onClick={handleSave}>
-                        Save
+                        Сохранить
                 </Button>
             </div>
       </DialogContent>

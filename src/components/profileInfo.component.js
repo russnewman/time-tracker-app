@@ -95,8 +95,8 @@ export default function ProfileInfo(props) {
     const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
 
     const genderItems = [
-        { id: 'MALE', title: 'male' },
-        { id: 'FEMALE', title: 'female' },
+        { id: 'MALE', title: 'мужской' },
+        { id: 'FEMALE', title: 'женский' },
     ]
     const validateOnChange = true
 
@@ -203,7 +203,7 @@ export default function ProfileInfo(props) {
                                 <Controls.Input
                                     className={classes.inputField}
                                     name="fullName"
-                                    label="Full Name"
+                                    label="Полное имя"
                                     value={userInfo.fullName}
                                     onChange={handleInputChange}
                                     error={errors.fullName}
@@ -228,7 +228,7 @@ export default function ProfileInfo(props) {
                                 <Controls.Input 
                                     className={classes.inputField}
                                     name="department" 
-                                    label="Department" 
+                                    label="Департамент" 
                                     value={userInfo.department}
                                     onChange={handleInputChange}
                                     variant="outlined"
@@ -238,7 +238,7 @@ export default function ProfileInfo(props) {
                             <Grid item xs={12} sm={6} md={6}>
                                 <TextField
                                         className={classes.inputField}
-                                        label="Position"
+                                        label="Позиция"
                                         name="position"
                                         value={userInfo.position}
                                         onChange={handleInputChange}
@@ -250,10 +250,10 @@ export default function ProfileInfo(props) {
                 </div>  
             <Grid container spacing={3} justify="center">
                     <Grid item>
-                        <Button type="submit" variant="contained" color="secondary" style={{width:"192px"}}>Update</Button>
+                        <Button type="submit" variant="contained" color="secondary" style={{width:"192px"}}>Обновить</Button>
                     </Grid>
                     <Grid item>
-                        <Button variant="contained" onClick={handleClickOpen} style={{width:"192px", backgroundColor: 'white'}}>Change Password</Button>
+                        <Button variant="contained" onClick={handleClickOpen} style={{width:"192px", backgroundColor: 'white'}}>Изменить пароль</Button>
                     </Grid>
             </Grid>
             </form>
@@ -293,7 +293,7 @@ export default function ProfileInfo(props) {
                         />
                         
                         <Controls.Input
-                            label="Department"
+                            label="Департамент"
                             name="department"
                             value={userInfo.department}
                             onChange={handleInputChange}
@@ -302,7 +302,7 @@ export default function ProfileInfo(props) {
                         />
 
                         <Controls.Input
-                            label="Position"
+                            label="Роль"
                             name="position"
                             value={userInfo.position}
                             onChange={handleInputChange}
@@ -313,8 +313,8 @@ export default function ProfileInfo(props) {
                     <Grid item xs={6}>
 
                     <Controls.Input
-                            name="fullName"
-                            label="Full Name"
+                            name="Полное имя"
+                            label="Полное имя"
                             value={userInfo.fullName}
                             onChange={handleInputChange}
                             error={errors.fullName}
@@ -328,8 +328,8 @@ export default function ProfileInfo(props) {
                             onChange={handleInputChange}
                         />
                         <Controls.RadioGroup
-                            name="gender"
-                            label="Gender"
+                            name="пол"
+                            label="Пол"
                             value={userInfo.gender}
                             onChange={handleInputChange}
                             items={genderItems}
@@ -339,10 +339,10 @@ export default function ProfileInfo(props) {
                 </div>
                 <Grid container spacing={3} justify="center">
                     <Grid item>
-                        <Button type="submit" variant="contained" color="secondary" style={{width:"192px"}}>Update</Button>
+                        <Button type="submit" variant="contained" color="secondary" style={{width:"192px"}}>Обновить</Button>
                     </Grid>
                     <Grid item>
-                        <Button variant="contained" onClick={handleClickOpen} style={{width:"192px"}}>Change Password</Button>
+                        <Button variant="contained" onClick={handleClickOpen} style={{width:"192px"}}>Изменить пароль</Button>
                     </Grid>
                 </Grid>
                 </Form>
@@ -384,7 +384,7 @@ export default function ProfileInfo(props) {
         const handleInputNewPassword = e => {
             const { name, value } = e.target
             if(value.length < 6 ) 
-                setErrMessageNew("the minimum password length must be 6")
+                setErrMessageNew("Минимальная длина пароля - 6 символов")
             else {
                 setErrMessageNew("")
                 setNewPassword(value)
@@ -392,7 +392,7 @@ export default function ProfileInfo(props) {
         }
         const handleInputConfirmPassword = e => {
             const { name, value } = e.target
-            if(value !== newPassword) setErrMessageConfirm("Passwords do not match")
+            if(value !== newPassword) setErrMessageConfirm("Пароли не совпадают")
             else setErrMessageConfirm("")
         }
     
@@ -445,7 +445,7 @@ export default function ProfileInfo(props) {
                 setNotify={setNotify}
             />
           <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open} className={classes.dialog}>
-            <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><Typography variant="h6">Change password</Typography></DialogTitle>
+            <DialogTitle id="simple-dialog-title" className={classes.dialogTitle}><Typography variant="h6">Изменить пароль</Typography></DialogTitle>
             <DialogContent className={classes.dialogContent}>
     
                 <form onSubmit={handlePasswordSubmit}>
@@ -453,21 +453,21 @@ export default function ProfileInfo(props) {
                     <Grid item xs={12} sm={6} md={8} >
                         <Controls.Input    
                             style={{margin:'8px', width: '100%'}}
-                            label="Password"
+                            label="Пароль"
                             type="password"
                             onChange={(e) => setPassword(e.target.value)}
                             variant="outlined"
                             />
                         <Controls.Input    
                             style={{margin:'8px', width: '100%'}}    
-                            label="New password"
+                            label="Новый пароль"
                             type="password"
                             onChange={handleInputNewPassword}
                             error={errMessageNew}
                             variant="outlined"/>   
                         <Controls.Input   
                             style={{margin:'8px', width: '100%'}}
-                            label="Confirm new password"
+                            label="Подтвердите новый пароль"
                             type="password"
                             onChange={handleInputConfirmPassword}
                             error={errMessageConfirm}
@@ -477,7 +477,7 @@ export default function ProfileInfo(props) {
                             variant="contained"
                             color="secondary" 
                             style={{width:"50%", marginTop: "8px"}} 
-                            onClick={handleClose}>Save</Button>
+                            onClick={handleClose}>Сохранить</Button>
                     </Grid>
                 </Grid>
                 </form>

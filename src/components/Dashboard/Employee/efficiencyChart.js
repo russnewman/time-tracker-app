@@ -125,19 +125,19 @@ const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:
 
     return [ 
       {
-        name: 'Ineffective',
+        name: 'Неэффективно',
         data: ineffective
       },
       {
-        name: 'Neutral',
+        name: 'Нейтрально',
         data: neutral
       },
       {
-        name: 'Effective',
+        name: 'Эффективно',
         data: effective
       },
       {
-        name: 'Without category',
+        name: 'Без категории',
         data: without
       }
     ]
@@ -167,11 +167,11 @@ const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:
    const opt =  {
         series: series,
         xaxis: {
-          categories: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+          categories: ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
         },
         yaxis:{
-          max: 28800,
-          tickAmount: 4,
+          max: 7200,
+          tickAmount: 2,
           labels: {
             formatter: (value) => { return secondsToHours(value)},
           },
@@ -239,7 +239,6 @@ const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:
     
 
     React.useEffect(() => {
-        console.log("HERE")
         const newEfficiency = EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current
         let beginInd, endInd
         if (props.timePeriod == 1 || props.timePeriod == 0) {
@@ -255,7 +254,7 @@ const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:
         const newOptions = getOptions(ser, props.timePeriod)
   
         ReactApexChart.exec("efficiencyEmployee", 'updateOptions', newOptions, true)       
-    }, [props.timePeriod, props.date]);
+    }, [props.timePeriod, props.date, props.employeeId]);
 
     return(
       <div>

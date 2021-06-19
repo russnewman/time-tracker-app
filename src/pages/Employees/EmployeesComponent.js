@@ -84,11 +84,11 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const headCells = [
-    { id: 'fullName', alignRight: false, disablePadding: true, label: 'Employee Name'},
-    { id: 'email', alignRight: false, disablePadding: false, label: 'Email Adress' },
-    { id: 'department', alignRight: false, disablePadding: false, label: 'Department'},
-    { id: 'position', alignRight: false, disablePadding: false, label: 'Position' },
-    { id: 'actions', alignRight: false, disablePadding: false, label: 'Actions' },
+    { id: 'fullName', alignRight: false, disablePadding: true, label: 'Имя'},
+    { id: 'email', alignRight: false, disablePadding: false, label: 'Email' },
+    { id: 'department', alignRight: false, disablePadding: false, label: 'Департамент'},
+    { id: 'position', alignRight: false, disablePadding: false, label: 'Позиция' },
+    { id: 'actions', alignRight: false, disablePadding: false, label: '' },
   ];
 
 
@@ -264,7 +264,7 @@ export default function EmployeesComponent() {
 return(
     <div style={{paddingRight: '32px', paddingLeft:'32px'}}>
         <Paper className={classes.pageContent}>
-            <TextField style={{width: '27%', marginLeft: '48px', marginBottom: '16px', marginTop: '16px'}} label="Search employee" onChange={handleSearch}>
+            <TextField style={{width: '27%', marginLeft: '48px', marginBottom: '16px', marginTop: '16px'}} label="Поиск" onChange={handleSearch}>
             </TextField>
             <div className={classes.root}>
                 <TableContainer>
@@ -325,7 +325,7 @@ return(
                                             onClick={() => {
                                                 setConfirmDialog({
                                                     isOpen: true,
-                                                    title: 'Are you sure to delete this record?',
+                                                    title: 'Уверены что хотите удалить?',
                                                     onConfirm: () => { onDelete(row.id) }
                                                 })
                                             }}>
@@ -356,7 +356,7 @@ return(
             </div>
         </Paper>
         <Popup
-            title="Employee full inforamtion"
+            title="Информация о сотруднике"
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
         >

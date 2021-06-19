@@ -8,8 +8,8 @@ import AuthService from "../../services/auth.service";
 
 
 const genderItems = [
-    { id: 'MALE', title: 'Male' },
-    { id: 'FEMALE', title: 'Female' },
+    { id: 'MALE', title: 'Мужской' },
+    { id: 'FEMALE', title: 'Женский' },
 ]
 
 const initialFValues = {
@@ -75,7 +75,7 @@ export default function EmployeeForm(props) {
                     <Controls.OutlinedInput
                         disabled
                         name="fullName"
-                        label="Full Name"
+                        label="Полное имя"
                         value={values.fullName}
                         onChange={handleInputChange}
                         error={errors.fullName}
@@ -83,20 +83,20 @@ export default function EmployeeForm(props) {
                     <Controls.OutlinedInput
                         disabled
                         label="Email"
-                        name="email"
+                        name="Email"
                         value={values.email}
                         onChange={handleInputChange}
                         error={errors.email}
                     />
                     <Controls.OutlinedInput
-                        label="Department"
+                        label="Департамент"
                         name="department"
                         value={values.department}
                         onChange={handleInputChange}
                         error={errors.mobile}
                     />
                     <Controls.OutlinedInput
-                        label="Position"
+                        label="Позиция"
                         name="position"
                         value={values.position}
                         onChange={handleInputChange}
@@ -106,7 +106,7 @@ export default function EmployeeForm(props) {
                 <Grid item xs={6}>
                     <Controls.RadioGroup
                         name="gender"
-                        label="Gender"
+                        label="Пол"
                         value={values.gender}
                         onChange={handleInputChange}
                         items={genderItems}
@@ -119,16 +119,16 @@ export default function EmployeeForm(props) {
                         // options={employeeService.getDepartmentCollection()}
                         error={errors.mobile}
                     /> */}
-                    <Controls.DatePicker
+                    {/* <Controls.DatePicker
                         name="hireDate"
                         label="Hire Date"
                         value={values.hireDate}
                         onChange={handleInputChange}
-                    />
+                    /> */}
                     <div>
                         <Controls.Button
                             type="submit"
-                            text="Submit" 
+                            text="Обновить" 
                             color="secondary"/>
                         {/* <Controls.Button
                             text="Reset"

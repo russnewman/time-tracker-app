@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     position: 'absolute',
     top: theme.spacing(5),
-    minWidth: '100px'
+    minWidth: '100px',
   },
   dialogTitle: {
     textAlign: 'center',
@@ -166,7 +166,7 @@ const getRows = (employeeIdOrAllTeam, resourcesDto)=>{
     //day
     if (resourcesDto[0].startTime){
       for (let resource of resourcesDto){
-        console.log(resource)
+        // console.log(resource)
         const resourceLink = resource.protocolIdentifier +"://"+ resource.host
         res.push(createDataMemberDay(resourceLink, resource.duration, resource.startTime, resource.endTime, 0, resource.category))
       }
@@ -222,13 +222,18 @@ function descendingComparator(a, b, orderBy) {
 
   if (typeof a === 'string' && (a.indexOf('h') != -1 || a.indexOf('m') != -1 || a.indexOf('s') != -1) && (a.indexOf('.') === -1)){
 
-    const hoursA = parseInt(parseDurationValue(a, 'h'))
-    const minutesA = parseInt(parseDurationValue(a, 'm'))
-    const secondsA = parseInt(parseDurationValue(a, 's'))
+    console.log("A")
+    const hoursA = parseInt(parseDurationValue(a, 'h'))  ? parseInt(parseDurationValue(a, 'h')) : 0
+    const minutesA = parseInt(parseDurationValue(a, 'm')) ? parseInt(parseDurationValue(a, 'm')) : 0
+    const secondsA = parseInt(parseDurationValue(a, 's'))  ? parseInt(parseDurationValue(a, 's')) : 0
 
-    const hoursB = parseInt(parseDurationValue(b, 'h'))
-    const minutesB = parseInt(parseDurationValue(b, 'm'))
-    const secondsB = parseInt(parseDurationValue(b, 's'))
+    const hoursB = parseInt(parseDurationValue(b, 'h'))  ? parseInt(parseDurationValue(b, 'h')) : 0
+    const minutesB = parseInt(parseDurationValue(b, 'm')) ? parseInt(parseDurationValue(b, 'm')) : 0
+    const secondsB = parseInt(parseDurationValue(b, 's'))  ? parseInt(parseDurationValue(b, 's')) : 0
+
+    console.log("HOURS", hoursA, hoursB)
+    console.log("MINUTES", minutesA, minutesB)
+    console.log("SEC", secondsA, secondsB)
 
 
     if (hoursB < hoursA) return -1        
@@ -244,6 +249,8 @@ function descendingComparator(a, b, orderBy) {
     }
   }
   else if (typeof a === 'string' && (a.length === 8) && (a.indexOf('.') === -1)){
+    console.log("B")
+
 
     const aFirstColonInd = a.indexOf(':')
     const aSecondColonInd = a.indexOf(':', aFirstColonInd + 1)
@@ -274,6 +281,8 @@ function descendingComparator(a, b, orderBy) {
     }
   }
   else if (typeof a === 'string'){
+    console.log("C")
+
     if (processUrl(b) < processUrl(a)) return -1;
     if (processUrl(b) > processUrl(a)) return 1;
     return 0;
@@ -294,10 +303,14 @@ function stableSort(array, comparator) {
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) {
+        // console.log("!1",order)
         return order};
+    // console.log("!2",a[1] - b[1])
     return a[1] - b[1];
   });
-  return stabilizedThis.map((el) => el[0]);
+  const res = stabilizedThis.map((el) => el[0]);
+  console.log("!3", res)
+  return res
 }
 
 
@@ -317,7 +330,7 @@ function EnhancedTableHead(props) {
                                 direction={orderBy === 'resource' ? order : 'asc'}
                                 onClick={createSortHandler('resource')}
                               >
-                                <Typography className="font-weight-bold">Web resourse</Typography>
+                                <Typography className="font-weight-bold">Веб-ресурс</Typography>
                                 {orderBy === 'resource' ? (
                                     <span className={classes.visuallyHidden}>
                                       {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -334,7 +347,7 @@ function EnhancedTableHead(props) {
                                 direction={orderBy === 'duration' ? order : 'asc'}
                                 onClick={createSortHandler('duration')}
                               >
-                                <Typography className="font-weight-bold">Duration</Typography>
+                                <Typography className="font-weight-bold">Продолжительность</Typography>
                                 {orderBy === 'duration' ? (
                                     <span className={classes.visuallyHidden}>
                                       {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -352,7 +365,7 @@ function EnhancedTableHead(props) {
                                 direction={orderBy === 'startTime' ? order : 'asc'}
                                 onClick={createSortHandler('startTime')}
                               >
-                                <Typography className="font-weight-bold">Start time</Typography>
+                                <Typography className="font-weight-bold">Начало</Typography>
                                 {orderBy === 'startTime' ? (
                                     <span className={classes.visuallyHidden}>
                                       {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -370,7 +383,7 @@ function EnhancedTableHead(props) {
                                 direction={orderBy === 'endTime' ? order : 'asc'}
                                 onClick={createSortHandler('endTime')}
                               >
-                                <Typography className="font-weight-bold">End time</Typography>
+                                <Typography className="font-weight-bold">Конец</Typography>
                                 {orderBy === 'endTime' ? (
                                     <span className={classes.visuallyHidden}>
                                       {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -378,6 +391,8 @@ function EnhancedTableHead(props) {
                                   ) : null}
                               </TableSortLabel>
                       </TableCell>}
+
+                      <TableCell align="right"></TableCell>
 
 
                       {/* <TableCell align="right"
@@ -410,9 +425,10 @@ export default function AcccessibleTable(props) {
   const employeeIdOrAllTeam = props.employeeIdOrAllTeam
   const timePeriod = props.timePeriod
   const rows = getRows(employeeIdOrAllTeam, ResourcesService.getResourcesFromSS())
+  console.log("ROWS", rows)
 
 
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('startTime');
@@ -432,6 +448,7 @@ export default function AcccessibleTable(props) {
 
 
   const handleRequestSort = (event, property) => {
+    console.log("HERE")
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -485,28 +502,27 @@ export default function AcccessibleTable(props) {
                                   orderBy={orderBy}
                                   onRequestSort={handleRequestSort}
                                   isOnePersonAndDay={timePeriod === 1 && employeeIdOrAllTeam !== 'all'}
-                                  // rowCount={rows.length}
+                                  rowCount={rows.length}
                                 />
 
                     <TableBody>
+
+
                     {stableSort(rows, getComparator(order, orderBy))
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-                        <TableRow key={row.resource}>
+                        <TableRow>
                         <TableCell>
                             <div>
-                            {/* <Typography className="font-weight-bold"/>Hello<Typography/> */}
 
                                 <IconButton className={classes.editIcon} style={{marginRight:'8px'}} onClick={()=>{openDialog(row, index)}}>
                                     <CreateIcon style={{fontSize:'14px'}}/>
                                 </IconButton>
-
                                 {row.type === 'effective' && <a style={{color:'#00cc99'}} href={row.resource}>{processUrl(row.resource)}</a>}
                                 {row.type === 'neutral' && <a style={{color:'#f5cc00'}} href={row.resource}>{processUrl(row.resource)}</a>}
                                 {row.type === 'ineffective' && <a style={{color:'#d90368'}} href={row.resource}>{processUrl(row.resource)}</a>}
                                 {row.type === 'without' && <a style={{color:'#bcb8b1'}} href={row.resource}>{processUrl(row.resource)}</a>}
                                 {row.type === 'mix' && <a style={{color:'#000080'}} href={row.resource}>{processUrl(row.resource)}</a>}
 
-                                {/* #bcb8b1 */}
                             </div>                                                         
                         </TableCell>
                         
@@ -516,12 +532,13 @@ export default function AcccessibleTable(props) {
 
                         {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right">{row.startTime}</TableCell>}
                         {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && <TableCell align="right">{row.endTime}</TableCell>}
+                        <TableCell align="right"></TableCell>
                           {/* <TableCell align="right">
                             <Typography style={{display: 'inline-block', fontWeight:'500'}} >{row.activityRate}</Typography>
                             <Typography className="text-black-50" style={{fontSize:'11px'}} >{row.activity}</Typography>
-                          </TableCell> */}
+                          </TableCell>
 
-                          {/* {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && 
+                          {timePeriod === 1 && employeeIdOrAllTeam !== 'all' && 
                             <TableCell align="right">
                               {row.keylog && 
                                 <IconButton onClick={()=>{openKeylogDialog(row)}}>
@@ -666,15 +683,15 @@ function ChangeResourseType(props) {
                           />
                         }
                       >
-                    <MenuItem value="team">All team</MenuItem>
-                    <MenuItem value="employee">This employee</MenuItem>
+                    <MenuItem value="team">Команда</MenuItem>
+                    <MenuItem value="employee">Данный сотр.</MenuItem>
                   </Select>
                 </div>
               }
                 <RadioGroup  row aria-label="position" value={category} onChange={handleChange}>
-                  <FormControlLabel value="effective" control={<ERadio/>} label="Effective" />
-                  <FormControlLabel value="neutral" control={<NRadio/>} label="Neutral" />
-                  <FormControlLabel value="ineffective" control={<Radio/>} label="Ineffective" />
+                  <FormControlLabel value="effective" control={<ERadio/>} label="Эффективно" />
+                  <FormControlLabel value="neutral" control={<NRadio/>} label="Нейтрально" />
+                  <FormControlLabel value="ineffective" control={<Radio/>} label="Неэффективно" />
                 </RadioGroup>
             </Container>
             <div style={{justifyContent: 'center', display: 'flex'}}>
@@ -684,7 +701,7 @@ function ChangeResourseType(props) {
                         // color="secondary" 
                         style={{width:"96px", marginTop: "24px", marginBottom: '8px'}} 
                         onClick={handleSave}>
-                        Save
+                        Сохранить
                 </Button>
             </div>
       </DialogContent>

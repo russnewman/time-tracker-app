@@ -119,15 +119,15 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'name', alignRight: false, disablePadding: true, label: 'Members' },
+  { id: 'name', alignRight: false, disablePadding: true, label: 'Сотрудники' },
   // { id: 'position', alignRight: false, disablePadding: true, label: 'Position' },
-  { id: 'department', alignRight: true, disablePadding: false, label: 'Department' },
+  { id: 'department', alignRight: true, disablePadding: false, label: 'Департамент' },
   // { id: 'status', alignRight: true, disablePadding: false, label: 'Status' },
-  { id: 'effectiveRate', alignRight: true, disablePadding: false, label: 'Effective' },
-  { id: 'neutralRate', alignRight: true, disablePadding: false, label: 'Neutral' },
-  { id: 'ineffectiveRate', alignRight: true, disablePadding: false, label: 'Ineffective' },
-  { id: 'withoutRate', alignRight: true, disablePadding: false, label: 'Without category' },
-  { id: 'total', alignRight: true, disablePadding: false, label: 'Total' },
+  { id: 'effectiveRate', alignRight: true, disablePadding: false, label: 'Эффективно' },
+  { id: 'neutralRate', alignRight: true, disablePadding: false, label: 'Нейтрально' },
+  { id: 'ineffectiveRate', alignRight: true, disablePadding: false, label: 'Неэффективно' },
+  { id: 'withoutRate', alignRight: true, disablePadding: false, label: 'Без категории' },
+  { id: 'total', alignRight: true, disablePadding: false, label: 'Всего' },
 ];
 
 function EnhancedTableHead(props) {
@@ -226,7 +226,7 @@ export default function EnhancedTable(props) {
     if (selectedMember === name){
       // setSubjectOfChange(2)
       setEmployeeIdOrAllTeam('all')
-      setWriting('All team')
+      setWriting('Команда')
       setSelectedMember(null)
     }
     else{

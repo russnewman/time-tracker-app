@@ -26,8 +26,8 @@ const computeMaxValueAndTickAmount = (data, timePeriod) => {
     }
   }
 
-  const maxValues = [21600, 28800, 36000, 43200, 50400, 57600, 64800, 72000, 79200, 86400]
-  const tickAmounts = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  const maxValues = [14400,18000,21600, 28800, 36000, 43200, 50400, 57600, 64800, 72000, 79200, 86400]
+  const tickAmounts = [4, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
   let maxElem = data[0] ? data[0] : 0
   for (let elem of data){
@@ -56,7 +56,7 @@ const categoriesDay = [['00:00 - 01:00'],['01:00 - 2:00'], ['02:00 - 3:00'],['03
 ['13:00 - 14:00'], ['14:00 - 15:00'],['15.00 - 16:00'],['16.00 - 17:00'],['17.00 - 18:00'],
 ['18.00 - 19:00'],['19.00 - 20:00'],['20.00 - 21:00'], ['21.00 - 22:00'], ['22.00 - 23:00'],['23.00 - 00:00']]
 
-const categoriesWeek = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+const categoriesWeek = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс']
 const optionsInit = {
   chart: {
     id: "lineChart",
@@ -190,15 +190,15 @@ const getSeries = (employeeId, effectiveType, timePeriod) =>{
   let name = ""
   switch (effectiveType){
     case 1:
-      name = "Effective";
+      name = "Эффективно";
       data = EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current.EFFECTIVE
       break;
     case 2:
-      name = "Neutral";
+      name = "Нейтрально";
       data = EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current.NEUTRAL
       break;
     case 3:
-      name = "Ineffective";
+      name = "Неэффективно";
       data = EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current.INEFFECTIVE
       break;
   }
@@ -229,7 +229,6 @@ export default function EffectiveLineChart(props){
 
     const handleLeftClick = event => {
       
-      console.log("BEGIN", beginInd)
       let newOpt
       if (props.timePeriod === 1){
           

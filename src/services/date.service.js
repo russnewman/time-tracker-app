@@ -78,18 +78,18 @@ class DateService{
 
     getStringMounthByNum(mounthNum){
       switch (mounthNum){
-        case 0: return "Jan"
-        case 1: return "Feb"
-        case 2: return "Mar"
-        case 3: return "Apr"
-        case 4: return "May"
-        case 5: return "Jun"
-        case 6: return "Jul"
-        case 7: return "Aug"
-        case 8: return "Sep"
-        case 9: return "Oct"
-        case 10: return "Nov"
-        case 11: return "Dec"
+        case 0: return "Января"
+        case 1: return "Февраля"
+        case 2: return "Март"
+        case 3: return "Апреля"
+        case 4: return "Мая"
+        case 5: return "Июня"
+        case 6: return "Июля"
+        case 7: return "Августа"
+        case 8: return "Сентября"
+        case 9: return "Октября"
+        case 10: return "Ноября"
+        case 11: return "Декабря"
       }
     }
 
@@ -98,8 +98,9 @@ class DateService{
         return date.getDate() + " " + this.getStringMounthByNum(date.getMonth()) + " " + date.getFullYear()
       }
       else if (timePeriod === 2){
-        let beginOfWeekDate = new Date(date.setDate(date.getDate() - date.getDay() + 1))
-        let endOfWeekDate = new Date(date.setDate(date.getDate() + (6 - date.getDay()) + 1))
+        let newDate = new Date()
+        let beginOfWeekDate = new Date(newDate.setDate(date.getDate() - date.getDay() + 1))
+        let endOfWeekDate = new Date(newDate.setDate(date.getDate() + (6 - date.getDay()) + 1))
         return beginOfWeekDate.getDate() + " " + this.getStringMounthByNum(beginOfWeekDate.getMonth()) + " " + beginOfWeekDate.getFullYear()
         + " - " + endOfWeekDate.getDate() + " " + this.getStringMounthByNum(endOfWeekDate.getMonth()) + " " + endOfWeekDate.getFullYear();
       }

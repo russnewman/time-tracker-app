@@ -91,7 +91,15 @@ export default function BigStat(props) {
       {/* <CardContent> */}
 
         <div className={classes.title}>
-            <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '600',}} variant="h6">{category}</Typography>
+            {/* <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '600',}} variant="h6">{category}</Typography> */}
+            {category === "Effective" && <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '100',}} variant="h6">Эффективно</Typography>}
+            {category === "Neutral" && <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '100',}} variant="h6">Нейтрально</Typography>}
+            {category === "Ineffective" && <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '100',}} variant="h6">Неэффективно</Typography>}
+            {category === "Without" && <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '100',}} variant="h6">Без категории</Typography>}
+
+
+
+
         </div>
         <div className={classes.totalValueContainer}>
           <div className={classes.totalValue}>

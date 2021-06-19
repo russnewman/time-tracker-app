@@ -44,8 +44,8 @@ const dataIneffectiveWeek = [20,120,150,154,76,45,13,67,72,50,61,21]
 const dataWithoutWeek = [132,11,13,53,46,97,120,53,62,78,23,109]
 
 //FIX
-const maxYVal = 28800
-const tickAmount = 4
+const maxYVal = 7200
+const tickAmount = 2
 
   function computeNewOptions(beginInd, endInd, dataAndCategories){
     return {
@@ -144,19 +144,19 @@ const tickAmount = 4
 
     const series =  [
       {
-        name: 'Ineffective',
+        name: 'Неэффективно',
         data: dataAndCategories.ineffective.slice(0,6),
       },
       {
-        name: 'Neutral',
+        name: 'Нейтрально',
         data: dataAndCategories.neutral.slice(0,6)
       }, 
       {
-        name: 'Effective',
+        name: 'Эффективно',
         data: dataAndCategories.effective.slice(0,6)
       }, 
       {
-        name: 'Without',
+        name: 'Без категории',
         data: dataAndCategories.without.slice(0,6)
       }
     ]
@@ -188,7 +188,7 @@ const tickAmount = 4
   
       plotOptions: {
         bar: {
-          borderRadius: 6,
+          borderRadius: 0,
           columnWidth: '5%',
         }
       },
@@ -207,7 +207,7 @@ const tickAmount = 4
   
         min: 0,
         max: maxYVal,
-        tickAmount: tickAmount,
+        tickAmount: 2,
   
         labels: {
           show: true,

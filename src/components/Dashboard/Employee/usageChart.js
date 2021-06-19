@@ -394,7 +394,7 @@ const seriesWeek =  [
   const optionsWeek = {
     series: seriesWeek,
     xaxis: {
-      categories: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      categories: ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
     },
     yaxis:{
       min: 0,

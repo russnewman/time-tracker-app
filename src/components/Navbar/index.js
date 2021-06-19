@@ -46,21 +46,23 @@ const Navbar = () => {
           {/* <div> */}
           {user.userRole === 'LEADER' && 
             <NavLink to='/dashboard' activeStyle>
-             <Typography style={{fontWeight: '300'}}>Dashboard</Typography>
+             {/* <Typography style={{fontWeight: '300'}}>Dashboard</Typography> */}
+             <Typography style={{fontWeight: '300'}}>Отчеты</Typography>
+
             </NavLink>}
 
 
             {user.userRole === "LEADER" ?
                 (<NavLink to='/employees' activeStyle>
-                  <Typography style={{fontWeight: '300'}}>Employees</Typography>
+                  <Typography style={{fontWeight: '300'}}>Сотрудники</Typography>
                 </NavLink>)
                 :
                 (<NavLink to='/leaders' activeStyle>
-                  <Typography style={{fontWeight: '300'}}>Managers</Typography>
+                  <Typography style={{fontWeight: '300'}}>Руководитель</Typography>
                 </NavLink>)
             }
             <NavLink to='/profile' activeStyle>
-            <Typography style={{fontWeight: '300'}}>Profile</Typography>
+            <Typography style={{fontWeight: '300'}}>Профиль</Typography>
             </NavLink>
           {/* </div> */}
         </NavMenu>

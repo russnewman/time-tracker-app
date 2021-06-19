@@ -51,16 +51,16 @@ export default function SignIn(props){
         const [valid, setValid] = React.useState(false)
         const [notify, setNotify] = 
         React.useState(props && props.location && props.location.state && props.location.state.notify ? 
-            {isOpen: true, message: 'You are successfully registered', type: "success"}
+            {isOpen: true, message: 'Вы успешно зарегестрированы', type: "success"}
             :{ isOpen: false, message: '', type: '' })
 
         const handleSubmit = (e)=>{
             e.preventDefault()
             AuthService.login(email, password)
                 .then(()=>{
-                    console.log("LOG", JSON.parse(sessionStorage.getItem('efficiency')))
-                    console.log("LOG@", JSON.parse(sessionStorage.getItem('user')))
-                    setRedirect("/dashboard")
+                    const role = AuthService.getCurrentUser().userInfo.userRole.toLowerCase()
+                    if (role === 'employee') setRedirect("/leaders")
+                    else setRedirect("/dashboard")
                 },
                 error => {
                     let resMessage = ""
@@ -111,8 +111,9 @@ export default function SignIn(props){
                         <Avatar className={classes.avatar}>
                             <LockOutlinedIcon />
                         </Avatar>
-                        <Typography component="h1" variant="h5">
-                            Sign in
+                        <Typography component="h1" variant="h5" style={{paddingLeft: '8px'}}>
+                            {/* Sign in */}
+                            Вход
                         </Typography>
                     </Grid>
                 </Grid>
@@ -126,14 +127,14 @@ export default function SignIn(props){
                                 margin="normal" 
                                 onChange={handleChangeEmail}
                                 helperText={emailErrMessage}/>
-                            <TextField required  label="Password" style={{width: '100%'}} type="password"
+                            <TextField required  label="Пароль" style={{width: '100%'}} type="password"
                                 margin="normal" onChange={handleChangePassword}/>
                         </Grid>
                     </Grid>
 
                     <Grid container  justify="center" md={12}>
                         {/* <Link to={"/dashboard"} variant="body2"> */}
-                            <Button className={classes.buuttonSignIn} variant="contained" type="submit">Sign In</Button>    
+                            <Button className={classes.buuttonSignIn} variant="contained" type="submit">Войти</Button>    
                         {/* </Link> */}
                     </Grid>
 
@@ -149,7 +150,8 @@ export default function SignIn(props){
                             <Link to={"/sign-up"} variant="body2" style={{color: '#38023b'}}>
 
                                     <Typography variant="caption" >
-                                        Don't have an account? Sign up.
+                                        {/* Don't have an account? Sign up. */}
+                                        Регистрация
                                     </Typography>
                             </Link>
                         </Grid>

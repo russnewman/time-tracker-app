@@ -12,7 +12,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
-import locale from 'date-fns/locale/en-US'
+import locale from 'date-fns/locale/ru'
 
 import EfficiencyService from '../../services/efficiency.service'
 import DateService from '../../services/date.service'
@@ -111,8 +111,8 @@ const styles = makeStyles((theme) => ({
   },
   typography:{
     paddingTop:'8px',
-    fontFamily: 'Poppins',
-    fontWeight: '900',
+    fontFamily: 'Roboto',
+    fontWeight: '300',
     fontSize: '20px'
   },
   // cont:{
@@ -128,11 +128,11 @@ export default function DashboardEfficiency(props){
     const [timePeriod, setTimePeriod] = React.useState(1);
     // const [subjectOfChange, setSubjectOfChange] = React.useState(2);
     const [employeeIdOrAllTeam, setEmployeeIdOrAllTeam] = React.useState('all')
-    const [writing, setWriting] = React.useState('All team')
+    const [writing, setWriting] = React.useState('Команда')
     const [effectiveType, setEffectiveType] = React.useState(1);
     const [view, setView] = React.useState('analytics')
     const [flag, setFlag] = React.useState(false)
-    const [selectedDate, setSelectedDate] = React.useState(new Date());
+    const [selectedDate, setSelectedDate] = React.useState(new Date('2021-05-15T20:24:00'));
 
 
     const handleTimeChange = (event) => {
@@ -155,7 +155,6 @@ export default function DashboardEfficiency(props){
       })
     };
 
-    //TODO Change this
     const handleViewChange = (event) => {
       if (view === 'analytics'){
         ResourcesService.getResources(employeeIdOrAllTeam, selectedDate, timePeriod).then(
@@ -205,8 +204,8 @@ export default function DashboardEfficiency(props){
                     value={timePeriod}
                     onChange={handleTimeChange}
                   >
-                    <MenuItem value={1}>Day</MenuItem>
-                    <MenuItem value={2}>Week</MenuItem>
+                    <MenuItem value={1}>День</MenuItem>
+                    <MenuItem value={2}>Неделя</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -272,12 +271,11 @@ export default function DashboardEfficiency(props){
                     />
                   }
                 >
-                  <MenuItem value="Efficiency">Efficiency</MenuItem>
-                  <MenuItem value="Usage">Using</MenuItem>
+                  <MenuItem value="Efficiency">Эффективность</MenuItem>
+                  {/* <MenuItem value="Usage">Using</MenuItem> */}
                 </Select>
-                  {timePeriod == 1 ? (<Typography className={classes.typography}>{DateService.getPeriodOfDateString(timePeriod,selectedDate)}
-                    </Typography>): (<Typography className={classes.typography}>{DateService.getPeriodOfDateString(timePeriod,selectedDate)}
-                    </Typography>)}
+                  <Typography className={classes.typography}>{DateService.getPeriodOfDateString(timePeriod,selectedDate)}
+                    </Typography>
 
               </div>
               {flag && employeeIdOrAllTeam === 'all' && (chartSwitcher === 'Efficiency' ? 
@@ -294,8 +292,8 @@ export default function DashboardEfficiency(props){
           <Grid item xs={12} lg={4}>
             <Card className={classes.card}>
               <div className={classes.header}>
-                {timePeriod === 1 && <Typography className={classes.typography} variant="h5">Day result</Typography>}
-                {timePeriod === 2 && <Typography className={classes.typography} variant="h5">Week result</Typography>}
+                {timePeriod === 1 && <Typography className={classes.typography} variant="h5">Результат за день</Typography>}
+                {timePeriod === 2 && <Typography className={classes.typography} variant="h5">Результат за неделю</Typography>}
                 {timePeriod === 3 && <Typography className={classes.typography} variant="h5">Mounth result</Typography>}
               </div>
 
@@ -324,9 +322,9 @@ export default function DashboardEfficiency(props){
                     />
                   }
                 >
-                  <MenuItem value={1}>Effective</MenuItem>
-                  <MenuItem value={2}>Neutral</MenuItem>
-                  <MenuItem value={3}>Ineffective</MenuItem>
+                  <MenuItem value={1}>Эффективно</MenuItem>
+                  <MenuItem value={2}>Нейтрально</MenuItem>
+                  <MenuItem value={3}>Неэффективно</MenuItem>
                   {/* <MenuItem value={4}>Mix</MenuItem> */}
                 </Select>
                 

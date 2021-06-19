@@ -14,13 +14,13 @@ const getOptions = (series, timePeriod) => {
       series:series,
       plotOptions: {
         pie: {
-            donut: {
+            donut: { 
                 labels: {
-                    total: {label: 'Total'}
+                    total: {label: 'Всего'}
                 }
             }
         }
-      }
+      } 
     }
   }
 
@@ -31,7 +31,7 @@ const getOptions = (series, timePeriod) => {
           donut: {
               labels: {
                   total: {
-                      label: 'Average',
+                      label: 'В среднем',
                       formatter: function (w) {
                         return DateService.secondsToHours(w.globals.seriesTotals.reduce((a, b) => {
                           return a + b
@@ -81,7 +81,7 @@ const options = {
     type: 'donut',
     id: 'efficiencySum'
   },
-  labels: ['Effective', 'Neutral', 'Ineffective' , 'Without category'],
+  labels: ['Эффективно', 'Нейтрально', 'Неэффективно', 'Без категории'],
   fill: {
     colors: ['#00cc99', '#ffee32', '#d90368', '#bcb8b1'],
     opacity: 1
@@ -115,7 +115,7 @@ const options = {
                     total: {
                         show: true,
                         showAlways: false,
-                        label: 'Total',
+                        label: 'Loasd',
                         fontSize: '22px',
                         fontFamily: 'Roboto, sans-seri',
                         fontWeight: 700,
@@ -131,28 +131,23 @@ const options = {
         }
     },
 
-    tooltip: {
-      enabled: false
-    },
     dataLabels: {
-        enabled: true,
-        dropShadow: {
-            enabled: false
-        },
-        background: {
-            enabled: false
-        },
-        style: {
-            fontSize: '14px',
-            fontFamily: 'Roboto, sans-seri',
-            fontWeight: 100,
-            colors:['#020202', '#020202', '#020202', '#020202']
-        }
+      enabled: true,
+      dropShadow: {
+          enabled: false
       },
-    
-    legend: {
-      show: false
+      background: {
+          enabled: false
+      },
+      style: {
+          fontSize: '14px',
+          fontFamily: 'Roboto, sans-seri',
+          fontWeight: 100,
+          colors:['#020202', '#020202', '#020202', '#020202']
+      }
     },
+    legend: {show: false},
+    tooltip: {enabled: false},
 }
 
 
