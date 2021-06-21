@@ -21,7 +21,6 @@ class EmployeeService{
     getManagerRest(){
         let user = AuthService.getCurrentUser()
         return axios.get(API_URL + "/getManager",{ 
-                                                        params:{userId:user.userInfo.id},
                                                         headers: {Authorization: "Bearer "+ this.getToken()}
                                                     })
                 .then(response =>{
@@ -37,7 +36,6 @@ class EmployeeService{
          sessionStorage.setItem("user", JSON.stringify(user))
 
          let body = {
-             "userId": user.userInfo.id,
              "managerId": manager.id
          }
 
@@ -51,7 +49,6 @@ class EmployeeService{
         user.userManager = null;
         sessionStorage.setItem("user", JSON.stringify(user))
         let body = {
-            "userId": user.userInfo.id,
         }
 
         return axios.post(API_URL + "/deleteManager", body, this.config())

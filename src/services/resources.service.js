@@ -27,7 +27,7 @@ class ResourcesService{
         else{
             request = axios.get(API_URL + "/team", { 
                 params:{
-                        userId: user.userInfo.id,
+                        
                         date: correctDate,
                         periodOfTime: correctTimePeriod
                     },

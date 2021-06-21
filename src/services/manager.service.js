@@ -11,7 +11,6 @@ class Manager{
     getEmployeesRest(){
         let user = AuthService.getCurrentUser()
         return axios.get(API_URL + "/getEmployees",{ 
-                                                    params:{userId:user.userInfo.id},
                                                     headers: {Authorization: "Bearer "+ this.getToken()}
                                                     })
             .then(response =>{

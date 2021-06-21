@@ -15,18 +15,13 @@ class EfficiencyService{
 
         return axios.get(EFFICIENCY_URL + "/team", { 
                             params:{
-                                    userId: user.userInfo.id,
                                     date: correctDate,
                                     periodOfTime: correctTimePeriod
                                 },
                             headers: {Authorization: "Bearer "+ this.getToken()}
                         })
         .then((response) => {
-            // console.log('sfs', JSON.stringify(response.data))
             sessionStorage.setItem("efficiency", JSON.stringify(response.data))
-            // console.log('sfs', sessionStorage)
-
-
             return response.data
         },
              (error) => {return this.buildErrorNotification(error)}
@@ -43,7 +38,6 @@ class EfficiencyService{
 
         const requestOne = axios.get(EFFICIENCY_URL + "/team", { 
                                         params:{
-                                                userId: user.userInfo.id,
                                                 date: correctDate,
                                                 periodOfTime: correctTimePeriod
                                             },
@@ -63,7 +57,6 @@ class EfficiencyService{
         else{
             requestTwo = axios.get(RESOURCES_URL + "/team", { 
                 params:{
-                        userId: user.userInfo.id,
                         date: correctDate,
                         periodOfTime: correctTimePeriod
                     },
@@ -98,7 +91,6 @@ class EfficiencyService{
 
         return axios.get(EFFICIENCY_URL + "/team", { 
                             params:{
-                                    userId: user.userInfo.id,
                                     date: correctDate,
                                     periodOfTime: correctTimePeriod
                                 },
@@ -120,7 +112,6 @@ class EfficiencyService{
 
         return axios.get(EFFICIENCY_URL + "/employee", { 
             params:{
-                    userId: employeeId,
                     date: correctDate,
                     periodOfTime: correctTimePeriod
                 },
@@ -229,8 +220,6 @@ class EfficiencyService{
                     'total': total
                 }
         }
-
-
 }
 
 

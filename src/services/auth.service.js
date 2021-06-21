@@ -46,7 +46,6 @@ class AuthService {
             sessionStorage.setItem("user", JSON.stringify(response.data));
             return axios.get("http://localhost:8080/efficiency/team", { 
               params:{
-                      userId: response.data.userInfo.id,
                       date: DateService.toRightFormat(new Date()),
                       periodOfTime: "day"
                   },
@@ -81,7 +80,6 @@ class AuthService {
         sessionStorage.setItem("user", JSON.stringify(response.data));
       }
       return response.data
-      // console.log("FFF",response)
     })
   }
 
@@ -89,5 +87,4 @@ class AuthService {
     return JSON.parse(sessionStorage.getItem('user'));
   }
 }
-
 export default new AuthService();

@@ -132,7 +132,7 @@ export default function DashboardEfficiency(props){
     const [effectiveType, setEffectiveType] = React.useState(1);
     const [view, setView] = React.useState('analytics')
     const [flag, setFlag] = React.useState(false)
-    const [selectedDate, setSelectedDate] = React.useState(new Date('2021-05-15T20:24:00'));
+    const [selectedDate, setSelectedDate] = React.useState(new Date());
 
 
     const handleTimeChange = (event) => {

@@ -9,7 +9,6 @@ class User{
 
     getUserInfo(userId){
         return axios.get(API_URL + "/getUserInfo",{ 
-                                                    params:{userId:userId},
                                                     headers: {Authorization: "Bearer "+ this.getToken()}
                                                   })
         .then(response =>{

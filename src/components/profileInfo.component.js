@@ -321,12 +321,12 @@ export default function ProfileInfo(props) {
                             variant="outlined"
                             />
 
-                        <Controls.DatePicker
+                        {/* <Controls.DatePicker
                             name="hireDate"
                             label="Hire Date"
                             value={userInfo.hireDate}
                             onChange={handleInputChange}
-                        />
+                        /> */}
                         <Controls.RadioGroup
                             name="пол"
                             label="Пол"
