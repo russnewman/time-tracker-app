@@ -1,30 +1,20 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import ReactApexChart from 'apexcharts'
+import EfficiencyService from '../../../services/efficiency.service'
+import DateService from '../../../services/date.service'
 
 
 
-function minutesToHours(minutes){
-  const hours = Math.floor(minutes/60)
-  const min = minutes % 60
-  if (hours != 0){
-      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
-      return hours+'h'
-  }
-  return minutes%60+'m'
-}   
-
-
-const series = [54,92,181, 171]
-
+const series = [0,0,0,0]
 const options = {
   chart: {
     type: 'donut',
     id: 'efficiencyOfEmployeesSum'
   },
-  labels: ['Ineffective', 'Neutral', 'Effective', 'Without'],
+  labels: ['Эффективно', 'Нейтрально', 'Неэффективно', 'Без категории'],
   fill: {
-    colors: ['#d90368', '#ffee32', '#00cc99', '#bcb8b1'],  
+    colors: ['#00cc99', '#ffee32', '#d90368', '#bcb8b1'],  
     opacity: 1
     },
   plotOptions: {
@@ -50,19 +40,19 @@ const options = {
                         color: '#373d3f',
                         offsetY: 16,
                         formatter: function (val) {
-                            return minutesToHours(val)
+                            return DateService.secondsToHours(val)
                         }
                     },
                     total: {
                         show: true,
                         showAlways: false,
-                        label: 'Average',
+                        label: 'Среднее',
                         fontSize: '22px',
                         fontFamily: 'Roboto, sans-seri',
                         fontWeight: 700,
                         color: '#373d3f',
                         formatter: function (w) {
-                          return minutesToHours(w.globals.seriesTotals.reduce((a, b) => {
+                          return DateService.secondsToHours(w.globals.seriesTotals.reduce((a, b) => {
                             return a + b
                           }, 0))
                         }
@@ -71,6 +61,7 @@ const options = {
             }
         }
     },
+
 
     dataLabels: {
         enabled: true,
@@ -92,37 +83,56 @@ const options = {
 }
 
 
-const seriesWeek = [21,100,123, 119]
+const getSeries = () => {
+  const efficiencyForAllTeam = EfficiencyService.getEfficiencyFromSSAllTeam();
+  let effectiveCurrentTotal = 0
+  let neutralCurrentTotal = 0
+  let ineffectiveCurrentTotal = 0
+  let withoutCurrentTotal = 0
 
-const optionsWeek = {
-  series: seriesWeek
-}
-
-const optionsDay = {
-  series:series
-}
-
-
-
-  export default function EfficiencySumChart(props){
-      const [timePeriod, setTimePeriod] = React.useState(0);
-      React.useEffect(() => {
-    
-        if (timePeriod != 0 && timePeriod == props.timePeriod){}
-
-        else if(props.timePeriod == 2){
-          ReactApexChart.exec("efficiencyOfEmployeesSum", 'updateOptions', optionsWeek, true) 
-          setTimePeriod(props.timePeriod)
-        }
-
-        else if(props.timePeriod == 1){
-          ReactApexChart.exec("efficiencyOfEmployeesSum", 'updateOptions', optionsDay, true)  
-          setTimePeriod(props.timePeriod)
-        }
-      });
-      return (
-        <Chart options={options} series={series} type="donut" />
-      )
+  let counter = 0
+  let numOfWorkingDays = 1;
+  for (const [key, value] of Object.entries(efficiencyForAllTeam)){
+      if (counter == 0) {
+        if (value.current.EFFECTIVE.length == 24) numOfWorkingDays = 1
+        else if (value.current.EFFECTIVE.length == 7) numOfWorkingDays = 5
+      }
+      effectiveCurrentTotal += value.current.EFFECTIVE.reduce((a,b) => a + b)
+      neutralCurrentTotal += value.current.NEUTRAL.reduce((a,b) => a + b)
+      ineffectiveCurrentTotal += value.current.INEFFECTIVE.reduce((a,b) => a + b)
+      withoutCurrentTotal += value.current.WITHOUT.reduce((a,b) => a + b)
+      counter++
   }
+
+  
+  let effectiveCurrent = 0
+  let neutralCurrent = 0
+  let ineffectiveCurrent = 0
+  let withoutCurrent = 0
+
+
+  if (counter !== 0){
+      effectiveCurrent = Math.floor(effectiveCurrentTotal/(counter * numOfWorkingDays))
+      neutralCurrent = Math.floor(neutralCurrentTotal/(counter * numOfWorkingDays))
+      ineffectiveCurrent = Math.floor(ineffectiveCurrentTotal/(counter * numOfWorkingDays))
+      withoutCurrent =  Math.floor(withoutCurrentTotal/(counter * numOfWorkingDays))
+  }
+  return [effectiveCurrent, neutralCurrent, ineffectiveCurrent, withoutCurrent]
+}
+
+export default function EfficiencySumChart(props){
+    
+    React.useEffect(() => {
+
+      const newSeries = getSeries()
+      const newOptions = {
+        series: newSeries
+      }
+      ReactApexChart.exec("efficiencyOfEmployeesSum", 'updateOptions', newOptions, true)  
+    });
+    return (
+      <Chart options={options} series={series} type="donut" />
+    )
+}
   
   

@@ -4,9 +4,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Card, Button } from '@material-ui/core';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-
+import pure from 'recompose/pure'
 import ReactApexChart from 'apexcharts';
 
+import EfficiencyService from '../../../services/efficiency.service'
 
 
 const styles = makeStyles((theme) => ({
@@ -18,54 +19,33 @@ const styles = makeStyles((theme) => ({
   }
 }))
 
+function secondsToHours(seconds){
+  const hours = Math.floor(seconds/3600)
+  const minutes = Math.floor(seconds % 3600 / 60)
+  const sec = seconds % 3600 % 60
 
-function minutesToHours(minutes){
-  const hours = Math.floor(minutes/60)
-  const min = minutes % 60
   if (hours != 0){
-      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
+      if (minutes != 0){
+        if (sec != 0) return  hours+ 'h' + ' ' + minutes + 'm' + ' ' + sec + 's'
+        return hours+ 'h' + ' ' + minutes + 'm'
+      } 
       return hours+'h'
   }
-  return minutes%60+'m'
+  if (minutes != 0){
+    if (sec != 0) return minutes + 'm' + ' ' + sec + 's'
+    return  minutes + 'm'
+  }
+  return sec + 's'
 }   
-
-const maxYVal = 600
-const tickAmount = 5
-
-
-const dataA = [0,0,0,0,0,0,0,0, 23, 20, 8, 13, 17,11,12,12 ,20,20,10,19,0,0,0,0]
-const dataB = [0,0,0,0,0,0,0,0,14,8,10,10,11,2,11,11,4,12,12,10,15,0,0,0,0]
-const dataC = [0,0,0,0,0,0,0,0,5,10,11,11,9, 9, 13, 12, 8, 13, 17,11,17,0,0,0,0]
-const dataD = [0,0,0,0,0,0,0,0,9,10,11,5,9, 4, 5, 1, 0, 0, 3, 2, 7,0,0,0,0]
 
 const categories = [['00:00','-','01:00'],['01:00','-','2:00'], ['02:00','-','3:00'],['03:00','-','04:00'],['04:00','-','5:00'],['05:00','-','6:00'],['06:00','-','7:00'],
 ['07:00','-','8:00'],['08:00','-','9:00'],['09:00','-','10:00'], ['10:00','-','11.00'], ['11:00','-','12:00'], ['12:00','-','13:00'],
 ['13:00','-','14:00'], ['14:00','-','15:00'],['15.00','-','16:00'],['16.00','-','17:00'],['17.00','-','18:00'],
 ['18.00','-','19:00'],['19.00','-','20:00'],['20.00','-','21:00'], ['21.00','-','22:00'], ['22.00','-','23:00'],['23.00','-','00:00']]
-
-const series =  [ 
-  {
-    name: 'Ineffective',
-    data: dataC.slice(8,20)
-  },
-  {
-    name: 'Neutral',
-    data: dataB.slice(8,20)
-  },
-  {
-    name: 'Effective',
-    data: dataA.slice(8,20)
-  },
-  {
-    name: 'Without category',
-    data: dataD.slice(8,20)
-  }
-]
   
-  
-  const options = {
+  const optionsDefault = {
     chart: {
-      id: 'efficiency',
+      id: 'efficiencyEmployee',
       type: 'bar',
       height: 350,
       stacked: true,
@@ -103,7 +83,7 @@ const series =  [
     },
     yaxis:{
       min: 0,
-      max: 60,
+      max: 3600,
       tickAmount: 6,
       labels: {
         show: true,
@@ -116,7 +96,7 @@ const series =  [
             fontFamily: 'Poppins, sans-serif',
             fontWeight: 900,
         },
-        formatter: (value) => { return value + 'm' },
+        formatter: (value) => { return secondsToHours(value) + 'm' },
       },
     },
     fill: {
@@ -126,65 +106,91 @@ const series =  [
   }
 
 
-const seriesWeek =  [
-  {
-    name: 'Ineffective',
-    data: [30, 17, 79, 87, 41, 0,0]
-  },
-  {
-    name: 'Neutral',
-    data: [23, 21, 200, 223, 214, 0,0]
-  }, 
-  {
-    name: 'Effective',
-    data: [120, 210, 100, 100, 100, 0,0]
-  },
-  {
-    name: 'Without',
-    data: [230, 10, 98, 155, 242, 0, 0]
-  }
-]
-  
-  const optionsWeek = {
-    series: seriesWeek,
-    xaxis: {
-      categories: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-    },
-    yaxis:{
-      min: 0,
-      max: maxYVal,
-      tickAmount: tickAmount,
-      labels: {
-        formatter: (value) => { return minutesToHours(value) },
+
+  const getSeries = (efficiency, timePeriod, beginInd, endInd) =>{
+
+    let effective, neutral, ineffective, without
+    if (timePeriod === 1 || timePeriod == 0){
+      effective = efficiency.EFFECTIVE.slice(beginInd, endInd)
+      neutral = efficiency.NEUTRAL.slice(beginInd,endInd)
+      ineffective = efficiency.INEFFECTIVE.slice(beginInd,endInd)
+      without = efficiency.WITHOUT.slice(beginInd,endInd)
+    }
+    else{
+      effective = efficiency.EFFECTIVE
+      neutral = efficiency.NEUTRAL
+      ineffective = efficiency.INEFFECTIVE
+      without = efficiency.WITHOUT
+    }
+
+    return [ 
+      {
+        name: 'Неэффективно',
+        data: ineffective
       },
-    },
-  }
-
-  const optionsDay = {
-    series: series,
-    xaxis: {
-      categories:  categories.slice(8, 20)
-    },
-    yaxis:{
-      min: 0,
-      max: 60,
-      tickAmount: 6,
-      labels: {
-        formatter: (value) => { return value + 'm'  },
+      {
+        name: 'Нейтрально',
+        data: neutral
       },
-    },
+      {
+        name: 'Эффективно',
+        data: effective
+      },
+      {
+        name: 'Без категории',
+        data: without
+      }
+    ]
   }
 
 
-  export default function EfficiencyByHoursChart(props){
+  const getOptions = (series, timePeriod) => {
+    if (timePeriod === 0 || timePeriod === 1){
+
+      const opt = {
+          series: series,
+          xaxis: {
+            categories:  categories.slice(8, 20)
+          },
+          yaxis:{
+            // min: 0,
+            max: 3600,
+            tickAmount: 6,
+            labels: {
+              formatter: (value) => { return secondsToHours(value)},
+            },
+          },
+        }
+      return opt
+    }
+    
+   const opt =  {
+        series: series,
+        xaxis: {
+          categories: ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
+        },
+        yaxis:{
+          max: 7200,
+          tickAmount: 2,
+          labels: {
+            formatter: (value) => { return secondsToHours(value)},
+          },
+        },
+      }
+      return opt
+    }
+
+
+   function EfficiencyByHoursChart(props){
+
     const classes = styles()
-
     const [timePeriod, setTimePeriod] = React.useState(0)
     const [beginInd, setBeginInd] = React.useState(8)
-    // const [endInd, setEndInd] = React.useState(20)
-
+    const employeeId = props.employeeId
+    const series = getSeries(EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current, timePeriod)
+   
     const handleLeftClick = event => {
-
+      console.log("BEGIN", beginInd)
       if (beginInd == 0) return
 
       let newBeginInd = beginInd
@@ -194,83 +200,65 @@ const seriesWeek =  [
       else if (beginInd == 12){
         newBeginInd = 8
       }
-
+      console.log("NEWBEGIN", newBeginInd)
       const newOpt = {
-      series: [{
-          name: 'Effective',
-          data: dataA.slice(newBeginInd, newBeginInd + 12)
-        }, {
-          name: 'Neutral',
-          data: dataB.slice(newBeginInd, newBeginInd + 12)
-        }, {
-          name: 'Ineffective',
-          data: dataC.slice(newBeginInd, newBeginInd + 12)
-        },
-        {
-          name: 'Without category',
-          data: dataD.slice(newBeginInd, newBeginInd + 12)
-        }],
+      series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current, 1, newBeginInd, newBeginInd + 12),
         xaxis:{
           categories: categories.slice(newBeginInd, newBeginInd + 12)
         }
       }
+
+      console.log("OPT", newOpt)
+
+
       setBeginInd(newBeginInd)
-      ReactApexChart.exec("efficiency", 'updateOptions', newOpt, true)
+      ReactApexChart.exec("efficiencyEmployee", 'updateOptions', newOpt, true)
     }
 
     const handleRightClick = event => {
-
+        console.log("BEGIN", beginInd)
         if (beginInd == 12) return
 
         let newBeginInd = beginInd
         if (beginInd == 0) newBeginInd = 8
         else if (beginInd == 8) newBeginInd = 12
 
+        console.log("NEWBEGIN", newBeginInd)
+
         const newOptions = {
-          series: [{
-            name: 'Effective',
-            data: dataA.slice(newBeginInd, newBeginInd + 12)
-          }, {
-            name: 'Neutral',
-            data: dataB.slice(newBeginInd, newBeginInd + 12)
-          }, {
-            name: 'Ineffective',
-            data: dataC.slice(newBeginInd, newBeginInd +12)
-          },
-          {
-            name: 'Without category',
-            data: dataD.slice(newBeginInd, newBeginInd +12)
-          }
-        ],
+          series: getSeries(EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current, 1, newBeginInd, newBeginInd + 12),
           xaxis:{
             categories: categories.slice(newBeginInd, newBeginInd + 12)
           }
         }
+        console.log("OPT", newOptions)
+
         setBeginInd(newBeginInd)
-        ReactApexChart.exec("efficiency", 'updateOptions', newOptions, true)
+        ReactApexChart.exec("efficiencyEmployee", 'updateOptions', newOptions, true)
     }
     
 
     React.useEffect(() => {
-      if (timePeriod != 0 && timePeriod == props.timePeriod){}
+        const newEfficiency = EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current
+        let beginInd, endInd
+        if (props.timePeriod == 1 || props.timePeriod == 0) {
+          beginInd = 8
+          endInd = 20
+        }
+        else if (props.timePeriod == 2){
+          beginInd = 0 
+          endInd = 6
+        }
 
-      else if(props.timePeriod == 2){
-        ReactApexChart.exec("efficiency", 'updateOptions', optionsWeek, true)  
-        setTimePeriod(props.timePeriod)
-      }
-
-      else if(props.timePeriod == 1){
-        ReactApexChart.exec("efficiency", 'updateOptions', optionsDay, true)
-        setTimePeriod(props.timePeriod)
-      }
-    });
-
-
+        const ser = getSeries(newEfficiency, props.timePeriod, beginInd, endInd)
+        const newOptions = getOptions(ser, props.timePeriod)
+  
+        ReactApexChart.exec("efficiencyEmployee", 'updateOptions', newOptions, true)       
+    }, [props.timePeriod, props.date, props.employeeId]);
 
     return(
       <div>
-
-          <Chart options={options} series={series} type="bar" height={370}  width={'100%'}/>
+          <Chart options={optionsDefault} series={series} type="bar" height={370}  width={'100%'}/>
           {props.timePeriod == 1 ? (<div className={classes.bottomArrows}>
             <Button onClick={handleLeftClick}><KeyboardArrowLeftIcon/></Button>
             <Button onClick={handleRightClick}><KeyboardArrowRightIcon/></Button>
@@ -278,3 +266,6 @@ const seriesWeek =  [
       </div>
     )
   }
+
+
+  export default pure(EfficiencyByHoursChart)

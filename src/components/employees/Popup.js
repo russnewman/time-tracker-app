@@ -21,7 +21,7 @@ export default function Popup(props) {
 
     return (
         <Dialog open={openPopup} maxWidth="md" classes={{ paper: classes.dialogWrapper }}>
-            <DialogTitle className={classes.dialogTitle} style={{color: 'white', backgroundColor: '#060b26'}}>
+            <DialogTitle className={classes.dialogTitle} style={{color: 'white', backgroundColor: '#38023b'}}>
                 <div style={{ display: 'flex'}}>
                     <Typography variant="h6" component="div" style={{ flexGrow: 1, fontWeight: '600', marginTop: '8px' }}>
                         {title}

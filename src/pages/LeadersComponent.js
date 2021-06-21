@@ -54,11 +54,11 @@ const useStyles = makeStyles(theme => ({
 
 
 const headCells = [
-    { id: 'email', alignRight: false, disablePadding: true, label: 'Email Adress' },
-    { id: 'fullName', alignRight: false, disablePadding: false, label: 'Manager Name'},
-    { id: 'department', alignRight: false, disablePadding: false, label: 'Department'},
-    { id: 'position', alignRight: false, disablePadding: false, label: 'Position' },
-    { id: 'action', alignRight: false, disablePadding: false, label: 'Action' },
+    { id: 'email', alignRight: false, disablePadding: true, label: 'Email' },
+    { id: 'fullName', alignRight: false, disablePadding: false, label: 'Имя руководителя'},
+    { id: 'department', alignRight: false, disablePadding: false, label: 'Департамент'},
+    { id: 'position', alignRight: false, disablePadding: false, label: 'Позиция' },
+    { id: 'action', alignRight: false, disablePadding: false, label: '' },
   ];
 
 
@@ -233,7 +233,7 @@ export default function LeadersComponent() {
         return(
             <>
             <Paper className={classes.pageContent}>
-            <Typography style={{paddingLeft: '64px', paddingTop: '24px', paddingBottom: '24px'}} variant="h4">Your manager</Typography>
+            <Typography style={{paddingLeft: '64px', paddingTop: '24px', paddingBottom: '24px'}} variant="h4">Ваш руководитель</Typography>
 
                 <div className={classes.root}>
                     <TableContainer>
@@ -247,10 +247,10 @@ export default function LeadersComponent() {
                             <TableRow>
                                 <TableCell padding="checkbox"></TableCell>
                                 <TableCell><Typography className="font-weight-bold">Email</Typography></TableCell>
-                                <TableCell><Typography className="font-weight-bold">Full name</Typography></TableCell>
-                                <TableCell><Typography className="font-weight-bold">Department</Typography></TableCell>
-                                <TableCell><Typography className="font-weight-bold">Position</Typography></TableCell>
-                                <TableCell><Typography className="font-weight-bold">Action</Typography></TableCell>
+                                <TableCell><Typography className="font-weight-bold">Полное имя</Typography></TableCell>
+                                <TableCell><Typography className="font-weight-bold">Департамент</Typography></TableCell>
+                                <TableCell><Typography className="font-weight-bold">Позиция</Typography></TableCell>
+                                <TableCell><Typography className="font-weight-bold"></Typography></TableCell>
 
 
                             </TableRow>
@@ -270,7 +270,7 @@ export default function LeadersComponent() {
                                                 onClick={() => {
                                                     setConfirmDialog({
                                                         isOpen: true,
-                                                        title: 'Are you sure to delete this record?',
+                                                        title: 'Уверены что хотите удалить?',
                                                         onConfirm: () => {deleteManager() }
                                                     })
                                                 }}>
@@ -328,7 +328,7 @@ export default function LeadersComponent() {
         <>
         <div style={{paddingRight: '32px', paddingLeft:'32px'}}>
             <Paper className={classes.pageContent}>
-                <TextField style={{width: '27%', marginLeft: '48px', marginBottom: '16px', marginTop: '16px'}} label="Search employee" onChange={handleSearch}>
+                <TextField style={{width: '27%', marginLeft: '48px', marginBottom: '16px', marginTop: '16px'}} label="Поиск" onChange={handleSearch}>
                 </TextField>
                 <div className={classes.root}>
                     <TableContainer>

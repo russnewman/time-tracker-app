@@ -4,10 +4,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Card, Button } from '@material-ui/core';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import EfficiencyService from '../../services/efficiency.service'
+import DateService from '../../services/date.service'
 
 import ReactApexChart from 'apexcharts';
-
-
 
 const styles = makeStyles((theme) => ({
   bottomArrows:{
@@ -17,320 +17,286 @@ const styles = makeStyles((theme) => ({
   }
 }))
 
+const computeMaxValueAndTickAmount = (data, timePeriod) => {
 
-function minutesToHours(minutes){
-  const hours = Math.floor(minutes/60)
-  const min = minutes % 60
-  if (hours != 0){
-      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
-      return hours+'h'
+  if (timePeriod === 1){
+    return {
+      maxValue: 3600,
+      tickAmount: 6
+    }
   }
-  return minutes%60+'m'
-}   
+
+  const maxValues = [14400,18000,21600, 28800, 36000, 43200, 50400, 57600, 64800, 72000, 79200, 86400]
+  const tickAmounts = [4, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+  let maxElem = data[0] ? data[0] : 0
+  for (let elem of data){
+    if (elem > maxElem){
+      maxElem = elem
+    }
+  }
+
+  for (let ind = 0; ind < maxValues.length; ind++){
+    if (maxValues[ind] - 3600 > maxElem){
+      return {
+        maxValue: maxValues[ind],
+        tickAmount: tickAmounts[ind]
+      }
+    }
+  }
+  return {
+    maxValue: 86000,
+    tickAmount: 12
+  }
 
 
-const dataA = [43,23,34,25,53,12,34,13, 23, 20, 8, 13, 27,31,37,24,28,20,10,19,16,14,19,54]
-const dataB = [13,23,20,8,13,27,31,37,24,28,20,10,19,27,31,37,24,28,20,10,19,16,14,19,54]
-const dataC = [11,17,15,15,21,14,14,17,22,20,15,31,9, 13, 23, 20, 8, 13, 27,31,37,24,28,20,47]
-const categories = [['00:00 - 01:00'],['01:00 - 2:00'], ['02:00 - 3:00'],['03:00 - 04:00'],['04:00 - 5:00'],['05:00 - 6:00'],['06:00 - 7:00'],
+}
+const categoriesDay = [['00:00 - 01:00'],['01:00 - 2:00'], ['02:00 - 3:00'],['03:00 - 04:00'],['04:00 - 5:00'],['05:00 - 6:00'],['06:00 - 7:00'],
 ['07:00 - 8:00'],['08:00 - 9:00'],['09:00 - 10:00'], ['10:00 - 11.00'], ['11:00 - 12:00'], ['12:00 - 13:00'],
 ['13:00 - 14:00'], ['14:00 - 15:00'],['15.00 - 16:00'],['16.00 - 17:00'],['17.00 - 18:00'],
 ['18.00 - 19:00'],['19.00 - 20:00'],['20.00 - 21:00'], ['21.00 - 22:00'], ['22.00 - 23:00'],['23.00 - 00:00']]
 
-  const seriesEffectiveDay =  [{
-        name: 'Effective',
-        data: dataA.slice(8, 20)
-  }]
-      
-  const seriesIneffectiveDay =  [{
-    name: 'Ineffective',
-    data: dataB.slice(8, 20)
-  }]
-
-  const seriesNeutralDay =  [{
-    name: 'Neutral',
-    data: dataC.slice(8, 20)
-  }]
-
-  const optionsEffective = {
-    chart: {
-      id: 'effective',
-      type: 'line',
-      height: 350,
-      stacked: true,
-      width: 50,
-      // colors :['#80ffdb'],
-      // foreColor: '#373d3f',
-      animations: {
-        enabled: true,
-        easing: 'easeinout',
-        speed: 800,
-        animateGradually: {
-            enabled: true,
-            delay: 150
-        },
-        dynamicAnimation: {
-            enabled: true,
-            speed: 350
-        }
-      
+const categoriesWeek = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс']
+const optionsInit = {
+  chart: {
+    id: "lineChart",
+    type: 'line',
+    height: 350,
+    stacked: true,
+    width: 50,
+    animations: {
+      enabled: true,
+      easing: 'easeinout',
+      speed: 800,
+      animateGradually: {
+          enabled: true,
+          delay: 150
       },
-      toolbar:{show: false}
-    },
-
-    plotOptions: {
-      bar: {
-        borderRadius: 6,
-        columnWidth: '25%',
+      dynamicAnimation: {
+          enabled: true,
+          speed: 350
       }
-    },
-    dataLabels: {enabled: false},
-    legend: {show: false},
-    xaxis: {categories: categories.slice(8,20)},
-
-    yaxis:{
-      min: 0,
-      max: 60,
-      tickAmount: 6,
-      labels: {
-        show: true,
-        align: 'right',
-        minWidth: 0,
-        maxWidth: 160,
-        style: {
-            colors: [],
-            fontSize: '12px',
-            fontFamily: 'Poppins, sans-serif',
-            fontWeight: 900,
-        },
-        formatter: (value) => { return value + 'm' },
-      },
-    },
-
     
-    stroke: {curve: 'smooth'},
-    fill: {
-          type: 'gradient',
-          gradient: {
-              shadeIntensity: 1,
-              inverseColors: false,
-              opacityFrom: 0.45,
-              opacityTo: 0.05,
-              stops: [70, 100, 40, 20]
-            },
-        }
-  }
-  // colors: ['#d90368', '#f5cc00', '#00cc99', '#bcb8b1'],
-
-
-  const optionsIneffectiveDay = {
-      series: seriesIneffectiveDay,
-      colors: ['#d90368'],
-  }
-
-  const optionsNeutralDay = {
-      series: seriesNeutralDay,
-      colors: ['#f5cc00']
-  }
-    
-  const seriesEffectiveWeek =  [{
-    name: 'Effective',
-    data: [2, 6, 7, 5, 3, 2,2]
-  }]
-
-
-  const optionsEffectiveWeek = {
-    series: seriesEffectiveWeek,
-    xaxis: {
-      categories: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
     },
-    yaxis:{
-      min: 0,
-      max: 10,
-      tickAmount: 5,
-      labels: {
-        show: true,
-        align: 'right',
-        minWidth: 0,
-        maxWidth: 160,
-        style: {
-            colors: [],
-            fontSize: '12px',
-            fontFamily: 'Poppins, sans-serif',
-            fontWeight: 900,
+    toolbar:{show: false}
+  },
+
+  plotOptions: {
+    bar: {
+      borderRadius: 6,
+      columnWidth: '25%',
+    }
+  },
+  dataLabels: {enabled: false},
+  legend: {show: false},
+  xaxis: {categories: categoriesDay.slice(8,20)},
+
+  yaxis:{
+    min: 0,
+    max: 3600,
+    tickAmount: 6,
+    labels: {
+      show: true,
+      align: 'right',
+      minWidth: 0,
+      maxWidth: 160,
+      style: {
+          colors: [],
+          fontSize: '12px',
+          fontFamily: 'Poppins, sans-serif',
+          fontWeight: 900,
+      },
+      formatter: (value) => { return DateService.secondsToHours(value)},
+    },
+  },
+
+  colors: ['#00cc99'],
+
+  stroke: {curve: 'smooth'},
+  fill: {
+        type: 'gradient',
+        gradient: {
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0.45,
+            opacityTo: 0.05,
+            stops: [70, 100, 40, 20]
+          },
+      }
+}
+
+
+  const getData = (effectiveType, employeeId) => {
+    switch (effectiveType){
+      case 1:
+        return EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current.EFFECTIVE
+      case 2:
+        return EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current.NEUTRAL
+      case 3:
+        return EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current.INEFFECTIVE
+    }
+  }
+
+  const getOptions = (effectiveType, timePeriod, data) =>{
+
+    let categories
+    let colors = []
+
+    const maxValueAndTickAmount = computeMaxValueAndTickAmount(data, timePeriod)
+    const maxValue = maxValueAndTickAmount.maxValue
+    const tickAmount = maxValueAndTickAmount.tickAmount
+
+
+    if (effectiveType === 1){
+      colors.push('#00cc99')
+    }
+    else if (effectiveType === 2){
+      colors.push('#f5cc00')
+    }
+    else if (effectiveType === 3){
+      colors.push('#d90368')
+    }
+
+    if (timePeriod === 1){
+      categories = categoriesDay.slice(8, 20)
+    }
+    else if (timePeriod === 2){
+      categories = categoriesWeek
+    }
+
+    const options = {
+
+      xaxis: {categories: categories},
+      yaxis:{
+        min: 0,
+        max: maxValue,
+        tickAmount: tickAmount,
+        labels: {
+          formatter: (value) => { return DateService.secondsToHours(value)},
         },
-        formatter: (value) => { return value + 'h' },
       },
-    },
-    colors :['#00cc99'],
+      colors: colors,
+    }
+    return options
   }
 
 
-  const optionsEffectiveDay = {
-    series: seriesEffectiveDay,
-    xaxis: {
-      categories: categories.slice(8,20)
-    },
-    yaxis:{
-      min: 0,
-      max: 60,
-      tickAmount: 6,
-      labels: {
-        show: true,
-        align: 'right',
-        minWidth: 0,
-        maxWidth: 160,
-        style: {
-            colors: [],
-            fontSize: '12px',
-            fontFamily: 'Poppins, sans-serif',
-            fontWeight: 900,
-        },
-        formatter: (value) => { return value + 'm' },
-      },
-    },
-    colors :['#00cc99']
 
+const getSeries = (employeeId, effectiveType, timePeriod) =>{
+  let data
+  let beginInd;
+  let endInd;
+
+  let name = ""
+  switch (effectiveType){
+    case 1:
+      name = "Эффективно";
+      data = EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current.EFFECTIVE
+      break;
+    case 2:
+      name = "Нейтрально";
+      data = EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current.NEUTRAL
+      break;
+    case 3:
+      name = "Неэффективно";
+      data = EfficiencyService.getEfficiencyFromSessionStorage(employeeId).current.INEFFECTIVE
+      break;
   }
 
+  if (timePeriod === 1){
+    beginInd = 8;
+    endInd = 20;
+  }
+  else {
+      beginInd = 0;
+      endInd = data.length < 12 ? data.length : 12
+  }
 
-  const seriesMix = [{
-    name: 'Effective',
-    data: dataA.slice(8, 20)
-  },{
-    name: 'Neutral',
-    data: dataB.slice(8, 20)
-  },{
-    name: 'Ineffective',
-    data: dataC.slice(8, 20)
+  return [{
+    name: name,
+    data: data.slice(beginInd, endInd)
   }]
-
-  const optionsMixDay = {
-    series: seriesMix,
-    chart: {
-      id: 'effective',
-      type: 'line',
-      stacked: false,
-      height: 350,
-      zoom: {
-        enabled: false
-      },
-    },
-    xaxis: {
-      categories: categories.slice(8,20)
-    },
-
-    colors :['springgreen', 'blue', 'red'],
-  }
-
+  
+}
 
 
 export default function EffectiveLineChart(props){
 
     const classes = styles()
 
-    const [timePeriod, setTimePeriod] = React.useState(0);
-    const [effectiveType, setEffectiveType] = React.useState(0)
+    const series = getSeries(props.employeeId, props.effectiveType, props.timePeriod)
     const [beginInd, setBeginInd] = React.useState(8)
 
     const handleLeftClick = event => {
+      
+      let newOpt
+      if (props.timePeriod === 1){
+          
+        if (beginInd == 0) return
 
-      if (beginInd == 0) return
-
-      let newBeginInd = beginInd
-      if (beginInd == 8){
-        newBeginInd = 0
-      }
-      else if (beginInd == 12){
-        newBeginInd = 8
-      }
-
-      const newOpt = {
-      series: [{
-          name: 'Effective',
-          data: dataA.slice(newBeginInd, newBeginInd + 12)
-        }],
-        xaxis:{
-          categories: categories.slice(newBeginInd, newBeginInd + 12)
+        let newBeginInd = beginInd
+        if (beginInd == 8){
+          newBeginInd = 0
         }
+        else if (beginInd == 12){
+          newBeginInd = 8
+        }
+
+ 
+        const categ = categoriesDay.slice(newBeginInd, newBeginInd + 12)
+        const data = getData(props.effectiveType, props.employeeId).slice(newBeginInd, newBeginInd + 12)
+
+        newOpt = {
+          series: [{
+              name: props.effectiveType,
+              data: data
+            }],
+          xaxis:{
+            categories: categ
+          }
+        }
+        ReactApexChart.exec("lineChart", 'updateOptions', newOpt, true)
+        setBeginInd(newBeginInd)
       }
-      setBeginInd(newBeginInd)
-      ReactApexChart.exec("effective", 'updateOptions', newOpt, true)
     }
 
     const handleRightClick = event => {
 
+      console.log("BEGIN", beginInd)
+      let newOpt = {}        
+      let newBeginInd = beginInd
+      if (props.timePeriod === 1){
+
         if (beginInd == 12) return
 
-
-        let newBeginInd = beginInd
         if (beginInd == 0) newBeginInd = 8
         else if (beginInd == 8) newBeginInd = 12
 
-        const newOptions = {
+        newOpt = {
           series: [{
             name: 'Effective',
-            data: dataA.slice(newBeginInd, newBeginInd + 12)
+            data: getData(props.effectiveType, props.employeeId).slice(newBeginInd, newBeginInd + 12)
           }],
           xaxis:{
-            categories: categories.slice(newBeginInd, newBeginInd + 12)
+            categories: categoriesDay.slice(newBeginInd, newBeginInd + 12)
           }
         }
-        setBeginInd(newBeginInd)
-        ReactApexChart.exec("effective", 'updateOptions', newOptions, true)
+      }
+      setBeginInd(newBeginInd)
+      ReactApexChart.exec("lineChart", 'updateOptions', newOpt, true)
     }
 
 
-    React.useEffect(() => {
+    React.useEffect(()=>{
+      const series = getSeries(props.employeeId, props.effectiveType, props.timePeriod)
+      const opt = getOptions(props.effectiveType, props.timePeriod, series[0].data)
+      setBeginInd(8)
+      ReactApexChart.exec("lineChart", 'updateOptions', opt, true)
+    },[props.effectiveType, props.timePeriod])
 
-      let optionsEffective;
-      let optionsNeutral;
-      let optionsIneffective;
-      let optionsMix;
-    
-      if (timePeriod != 0 && timePeriod == props.timePeriod && effectiveType == props.effectiveType){return}
-
-      if(props.timePeriod == 2){
-        optionsEffective = optionsEffectiveWeek
-        ///!!!
-        optionsNeutral = optionsNeutralDay
-        optionsIneffective = optionsIneffectiveDay
-        optionsMix = optionsMixDay
-        setTimePeriod(props.timePeriod)
-      }
-
-      else if(props.timePeriod == 1){
-        optionsEffective = optionsEffectiveDay
-        ///!!!
-        optionsNeutral = optionsNeutralDay
-        optionsIneffective = optionsIneffectiveDay
-        optionsMix = optionsMixDay
-
-        setTimePeriod(props.timePeriod)
-      }
-
-      if(props.effectiveType == 1){
-        ReactApexChart.exec("effective", 'updateOptions', optionsEffective, true)  
-        setEffectiveType(1)
-      }
-      else if(props.effectiveType == 2){
-        ReactApexChart.exec("effective", 'updateOptions', optionsNeutral, true)  
-        setEffectiveType(2)
-      }
-      else if(props.effectiveType == 3){
-        ReactApexChart.exec('effective', 'updateOptions', optionsIneffective, true)
-        setEffectiveType(3)  
-      }
-      // else if(props.effectiveType == 4){
-      //   ReactApexChart.exec('effective', 'updateOptions', optionsMix, true)
-      //   setEffectiveType(4)  
-      // }
-         
-    });
     return(
       <div>
-          {/* {effectiveType === 4 ? <Chart options={opt}></Chart>} */}
-          <Chart options={optionsEffective} series={seriesEffectiveDay} type="area" height={370}  width={1390}/>
+          <Chart options={optionsInit} series={series} type="area" height={370}  width={1390}/>
           {props.timePeriod == 1 ? (<div className={classes.bottomArrows}>
           <Button onClick={handleLeftClick}><KeyboardArrowLeftIcon/></Button>
           <Button onClick={handleRightClick}><KeyboardArrowRightIcon/></Button>

@@ -26,7 +26,6 @@ const styles = makeStyles((theme) => ({
 
 export default function MuiTypography(props){
     const {value, font, weight, className, style, variant} = props
-    console.log("VAR",variant)
     const classes = styles()
     if (className){
         return <Typography className={className} style={style} variant={variant}>{value}</Typography>

@@ -10,6 +10,7 @@ import { SubdirectoryArrowLeftRounded } from "@material-ui/icons";
 import AuthService from "../services/auth.service"
 import Controls from "./employees/controls/Controls";
 import Notification from "./employees/Notification";
+import EfficiencyService from "../services/efficiency.service"
 
 
 
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
     avatar: {
         marginBottom: theme.spacing(1),
-        marginLeft: theme.spacing(2),
+        marginLeft: theme.spacing(6),
         backgroundColor: theme.palette.secondary.main,
     },
     inputField:{
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     },
     signUpButton:{
         width: '100%',
-        backgroundColor: '#060b26', 
+        backgroundColor: '#38023b', 
         color: 'white',
         '&:hover': {
             backgroundColor: "#000361",
@@ -68,7 +69,7 @@ export default function SignUp(props) {
             setValid(true)
         }
         else{
-            err="Email is no valid"
+            err="Некорректный email"
             setValid(false)
         }
         setEmailErrMessage(err)
@@ -81,7 +82,7 @@ export default function SignUp(props) {
             setValid(true) 
         }
         else{
-            err = "Password should consist more than 6 symbols"
+            err = "Пароль должен содержать более 6 символов"
             setValid(false)
         }   
         setPasswordErrMessage(err)
@@ -124,9 +125,15 @@ export default function SignUp(props) {
                 position,
                 role
             )
-            .then((response)=>{
+            .then((response1)=>{
+                console.log(response1)
+                EfficiencyService.getEfficiencyAllTeam(new Date(), 1)
+                .then(response2 => {
+                    console.log(response2)
                     if (role === 'employee') setRedirect("/leaders")
                     else setRedirect("/dashboard")
+                })
+
                     // console.log(response)
 
                 },
@@ -169,8 +176,9 @@ export default function SignUp(props) {
                     <Avatar className={classes.avatar}>
                         <LockOutlinedIcon />
                     </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Sign up
+                    <Typography component="h1" variant="h5" style={{paddingRight: '8px'}}>
+                        {/* Sign up */}
+                        Регистрация
                     </Typography>
                 </Grid>
             </Grid>
@@ -195,6 +203,8 @@ export default function SignUp(props) {
                                     margin="normal"
                                     className={classes.inputField}
                                     label="Password"
+                                    label="Пароль"
+
                                     type="password"
                                     onChange={handlePasswordChange}
                                     error={passwordErrMessage}
@@ -205,7 +215,8 @@ export default function SignUp(props) {
                             <Controls.Input 
                             required 
                             className={classes.inputField} 
-                            label="Full name"  
+                            // label="Full name"  
+                            label="Полное имя"  
                             margin="normal"
                             onChange={handleFullNameChange}/>
                                 {/* <input type="email" className="form-control" placeholder="Enter email" /> */}
@@ -214,7 +225,7 @@ export default function SignUp(props) {
                             <Controls.Input 
  
                             className={classes.inputField} 
-                            label="Department" 
+                            label="Департамент" 
                             margin="normal"
                             onChange={handleDepartmentChange}/>
                         </Grid>
@@ -223,13 +234,13 @@ export default function SignUp(props) {
                             <FormControl 
                                 margin="normal" 
                                 className={classes.formControl}>
-                                    <InputLabel required>Position type</InputLabel>
+                                    <InputLabel required>Роль</InputLabel>
                                     <Select
                                     value={role}
                                     onChange={handleRoleChange}
                                     >
-                                        <MenuItem value={"leader"}>Manager</MenuItem>
-                                        <MenuItem value={"employee"}>Employee</MenuItem>
+                                        <MenuItem value={"leader"}>Менеджер</MenuItem>
+                                        <MenuItem value={"employee"}>Сотрудник</MenuItem>
                                     </Select>
                             </FormControl>
                         </Grid>
@@ -237,7 +248,7 @@ export default function SignUp(props) {
                         <Grid item md={6}>
                             <Controls.Input 
                             className={classes.inputField} 
-                            label="Position" 
+                            label="Позиция" 
                             margin="normal"
                             onChange={handlePositionChange}/>
                         </Grid>
@@ -248,14 +259,15 @@ export default function SignUp(props) {
                     </Grid>
 
                     <Grid container md={12} >
-                            <Button variant="contained" color="primary" className={classes.signUpButton} style={{width: '100%'}} type="submit">Sign Up</Button>    
+                            <Button variant="contained" color="primary" className={classes.signUpButton} style={{width: '100%'}} type="submit">Зарегистрироваться</Button>    
                     </Grid>
 
                     <Grid container justify="flex-end">
                         <Grid item>
                         <Link to={"/sign-in"} variant="body2">
-                            <Typography variant="caption" style={{color: '#060b26'}}>
-                                Already have an account? Sign in
+                            <Typography variant="caption" style={{color: '#38023b'}}>
+                                {/* Already have an account? Sign in */}
+                                Вход
                             </Typography>
                         </Link>
                         </Grid>

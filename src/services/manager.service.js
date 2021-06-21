@@ -11,7 +11,6 @@ class Manager{
     getEmployeesRest(){
         let user = AuthService.getCurrentUser()
         return axios.get(API_URL + "/getEmployees",{ 
-                                                    params:{userId:user.userInfo.id},
                                                     headers: {Authorization: "Bearer "+ this.getToken()}
                                                     })
             .then(response =>{
@@ -89,6 +88,18 @@ class Manager{
     getToken(){
         return  AuthService.getCurrentUser().userInfo.token
     }
+
+
+    getEmployeeInfoFromSessionStorage(employeeId){
+        
+        let user = JSON.parse(sessionStorage.getItem('user'))
+        for (let employee of user.employees){
+            if (employee.id == employeeId) {
+                return employee
+            }
+        }
+    }
+
 }
 
 export default new Manager()

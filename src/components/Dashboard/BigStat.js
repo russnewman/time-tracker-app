@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment  } from "react";
 import { Grid, Select, MenuItem, Input, Typography, Card } from "@material-ui/core";
 import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
@@ -7,6 +7,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import classnames from "classnames";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import EfficiencyService from '../../services/efficiency.service';
+import DateService from '../../services/date.service';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import CardContent from '@material-ui/core/CardContent';
+import CardActionArea from '@material-ui/core/CardActionArea';
 
 
 
@@ -21,6 +26,7 @@ const useStyles =  makeStyles((theme) => ({
     paddingBottom: theme.spacing(3),
     paddingRight: theme.spacing(3),
     paddingLeft: theme.spacing(3),
+    // backgroundColor: "#ffedd8"
   },
   title:{
     paddingTop: theme.spacing(2),
@@ -38,18 +44,22 @@ const useStyles =  makeStyles((theme) => ({
   bottomStatsContainer:{
     display: "flex",
     justifyContent: "space-between",
-  }
+  },
+  cardAction: {
+    borderRadius: "20px",
+    width: '118%',
+    marginLeft: "-25px",
+    marginRight: "-20px",
+    display: 'block',
+    textAlign: 'initial'
+  },
+  actionArea: {
+    "&:hover $focusHighlight": {
+      opacity: 0
+    }
+  },
+  focusHighlight: {}
 }));
-
-function minutesToHours(minutes){
-  const hours = Math.floor(minutes/60)
-  const min = minutes % 60
-  if (hours != 0){
-      if (min != 0) return  hours+ 'h' + ' ' + minutes%60 + 'm'
-      return hours+'h'
-  }
-  return minutes%60+'m'
-}   
 
 
 export default function BigStat(props) {
@@ -58,66 +68,76 @@ export default function BigStat(props) {
   var theme = useTheme();
 
 
+
   return (
 
-    
+//     <ButtonBase
+//     className={classes.cardAction}
+//     onClick={event => {}}
+// > 
+<Fragment>
+
+<div className="icon-demo-box">
+
     <Card className={classes.card}>
+      {/* <CardActionArea
+        classes={{
+          root: classes.actionArea,
+          focusHighlight: classes.focusHighlight
+        }}
+      > */}
+
+     
+      {/* <CardContent> */}
+
         <div className={classes.title}>
-            <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '600',}} variant="h6">{category}</Typography>
+            {/* <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '600',}} variant="h6">{category}</Typography> */}
+            {category === "Effective" && <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '100',}} variant="h6">Эффективно</Typography>}
+            {category === "Neutral" && <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '100',}} variant="h6">Нейтрально</Typography>}
+            {category === "Ineffective" && <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '100',}} variant="h6">Неэффективно</Typography>}
+            {category === "Without" && <Typography style={{fontFamily: 'Poppins, sans-serif', fontWeight: '100',}} variant="h6">Без категории</Typography>}
+
+
+
+
         </div>
         <div className={classes.totalValueContainer}>
           <div className={classes.totalValue}>
-            <Typography variant="h4" style={{fontFamily: 'Poppins, sans-serif', marginRight:'12px', fontWeight: '900'}}>
-              {minutesToHours(total.value)}
+            <Typography variant="h3" style={{fontFamily: 'Poppins, sans-serif', marginRight:'12px', fontWeight: '900'}}>
+              {DateService.secondsToHoursAndMinutes(total.value)}
             </Typography>
           </div>
-          {(category === 'Effective' || category === 'Neutral')&& 
+          {(category === 'Effective' || category === 'Neutral') && 
                 (total.percent.profit
                       ? 
-                <div>
+                (isNaN(total.percent.value) ? <div></div> : <div>
                   <ArrowUpwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
-                  <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
+                  {isFinite(total.percent.value) && <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
                       {total.percent.value}%
-                  </Typography>
-                </div> : 
-                <div>
+                  </Typography>}
+                </div>) : 
+                (isNaN(total.percent.value) ? <div></div> : <div>
                     <ArrowDownwardIcon style={{color: 'crimson'}}/>
-                    <Typography style={{color:"crimson", display: 'inline-block'}}>
+                    {isFinite(total.percent.value) && <Typography style={{color:"crimson", display: 'inline-block'}}>
                         {total.percent.value}%
-                      </Typography>
-                </div>)
+                      </Typography>}
+                </div>))
             }
-            {/* {category === 'Neutral' && 
-                (total.percent.profit
-                      ? 
-                <div style={{marginRight: '90px'}}>
-                  <ArrowUpwardIcon style={{marginTop: '-8px'}}/>
-                  <Typography style={{ display: 'inline-block', fontSize: '14px'}}>
-                      {total.percent.value}%
-                  </Typography>
-                </div> : 
-                <div>
-                    <ArrowDownwardIcon/>
-                    <Typography style={{display: 'inline-block'}}>
-                        {total.percent.value}%
-                      </Typography>
-                </div>)
-            } */}
             {(category === 'Ineffective' || category === 'Without') && 
                 (total.percent.profit
                       ? 
-                <div >
+                (isNaN(total.percent.value) ? <div></div> : <div >
                   <ArrowUpwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
-                  <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
+                  {isFinite(total.percent.value) && <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
                       {total.percent.value}%
-                  </Typography>
-                </div> : 
-                <div>
+                  </Typography>}
+                </div>) : 
+                (isNaN(total.percent.value) ? <div></div> :<div>
                     <ArrowDownwardIcon style={{color: '#00cc65'}}/>
-                    <Typography style={{color:"#00cc65", display: 'inline-block'}}>
+                    {isFinite(total.percent.value) && <Typography style={{color:"#00cc65", display: 'inline-block'}}>
                         {total.percent.value}%
-                      </Typography>
-                </div>)
+                      </Typography>}
+                </div>))
             }
         </div>
 
@@ -125,53 +145,43 @@ export default function BigStat(props) {
           <Typography className="text-black-50" style={{fontSize:'20 px', marginRight:'12px'}}>{percentage.value}%</Typography>
           <div style={{marginRight: '90px'}}>
             {(category === 'Effective' || category === 'Neutral') && (percentage.percent.profit ? 
-                    (<div>
+                    ( isNaN(total.percent.value) ? <div></div> : <div>
                       <ArrowUpwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
-                      <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
+                      {isFinite(total.percent.value) &&<Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
                           {percentage.percent.value}%
-                      </Typography>
+                      </Typography>}
                     </div>)
                      : 
-                    (<div>
+                    (isNaN(total.percent.value) ? <div></div> : <div>
                       <ArrowDownwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
-                      <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
+                      {isFinite(total.percent.value) &&<Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
                         {percentage.percent.value}%
-                      </Typography>
+                      </Typography>}
                     </div>))
             }
-            {/* {category === 'Neutral' && (percentage.percent.profit ? 
-                    (<div>
-                      <ArrowUpwardIcon style={{marginTop: '-8px'}}/>
-                      <Typography style={{display: 'inline-block', fontSize: '14px'}}>
-                        {percentage.percent.value}%
-                      </Typography>
-                    </div>)
-                     : 
-                    (<div>
-                      <ArrowDownwardIcon style={{ marginTop: '-8px'}}/>
-                      <Typography style={{display: 'inline-block', fontSize: '14px'}}>
-                        {percentage.percent.value}%
-                      </Typography>
-                    </div>))
-            } */}
             {(category === 'Ineffective' || category === 'Without') && (percentage.percent.profit ? 
-                    (<div>
+                    (isNaN(total.percent.value) ? <div></div> : <div>
                       <ArrowUpwardIcon style={{color:'crimson', marginTop: '-8px'}}/>
-                      <Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
+                      {isFinite(total.percent.value) &&<Typography style={{color:"crimson", display: 'inline-block', fontSize: '14px'}}>
                         {percentage.percent.value}%
-                      </Typography>
+                      </Typography>}
                     </div>)
                      : 
-                    (<div>
+                    (isNaN(total.percent.value)? <div></div> : <div>
                       <ArrowDownwardIcon style={{color:'#00cc65', marginTop: '-8px'}}/>
-                      <Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
+                      {isFinite(total.percent.value) &&<Typography style={{color:"#00cc65", display: 'inline-block', fontSize: '14px'}}>
                         {percentage.percent.value}%
-                      </Typography>
+                      </Typography>}
                     </div>))
             }
             
           </div>
         </div>
+
       </Card>
+      </div>
+          </Fragment>
+
+
   );
 }

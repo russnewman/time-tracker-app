@@ -10,6 +10,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import Dialog from '@material-ui/core/Dialog';
+import StarRoundedIcon from '@material-ui/icons/StarRounded';
 
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
@@ -20,7 +21,7 @@ import Popup from "../../components/employees/Popup";
 import Controls from "../../components/employees/controls/Controls";
 import AuthService from "../../services/auth.service"
 import ManagerService from "../../services/manager.service";
-import SitesAllTime from "../../components/Dashboard/SitesAllTime"
+import SitesAllTime from "../../components/Dashboard/resourcesAllTime"
 
 import WebAssetIcon from '@material-ui/icons/WebAsset';
 
@@ -83,11 +84,11 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const headCells = [
-    { id: 'fullName', alignRight: false, disablePadding: true, label: 'Employee Name'},
-    { id: 'email', alignRight: false, disablePadding: false, label: 'Email Adress' },
-    { id: 'department', alignRight: false, disablePadding: false, label: 'Department'},
-    { id: 'position', alignRight: false, disablePadding: false, label: 'Position' },
-    { id: 'actions', alignRight: false, disablePadding: false, label: 'Actions' },
+    { id: 'fullName', alignRight: false, disablePadding: true, label: 'Имя'},
+    { id: 'email', alignRight: false, disablePadding: false, label: 'Email' },
+    { id: 'department', alignRight: false, disablePadding: false, label: 'Департамент'},
+    { id: 'position', alignRight: false, disablePadding: false, label: 'Позиция' },
+    { id: 'actions', alignRight: false, disablePadding: false, label: '' },
   ];
 
 
@@ -199,7 +200,6 @@ export default function EmployeesComponent() {
     useEffect(()=>{
         ManagerService.getEmployeesRest()
         .then((response) =>{        
-            console.log("ASd",response.status)
             setRows(response)
         },
         error =>{
@@ -219,6 +219,7 @@ export default function EmployeesComponent() {
     },[])
 
     const handleSearch = e => {
+        // console.log("R", rows)
         let target = e.target;
         setFilterFn({
             fn: items => {
@@ -263,7 +264,7 @@ export default function EmployeesComponent() {
 return(
     <div style={{paddingRight: '32px', paddingLeft:'32px'}}>
         <Paper className={classes.pageContent}>
-            <TextField style={{width: '27%', marginLeft: '48px', marginBottom: '16px', marginTop: '16px'}} label="Search employee" onChange={handleSearch}>
+            <TextField style={{width: '27%', marginLeft: '48px', marginBottom: '16px', marginTop: '16px'}} label="Поиск" onChange={handleSearch}>
             </TextField>
             <div className={classes.root}>
                 <TableContainer>
@@ -297,18 +298,20 @@ return(
                             <TableCell padding="checkbox">
                             </TableCell>
                             <TableCell component="th" id={labelId} scope="row" padding="none">
-                                {row.fullName}
+                                <Typography style={{display: 'inline-block'}}>{row.fullName}</Typography>
+                                {AuthService.getCurrentUser().userInfo.id === row.id && <StarRoundedIcon style={{marginTop:"-4px", marginLeft:"8px"}}/>}
+
                             </TableCell>
                             <TableCell>{row.email}</TableCell>
                             <TableCell>{row.department}</TableCell>
                             <TableCell>{row.position}</TableCell>
                             <TableCell>
 
-                                                <Controls.ActionButton
+                                                {AuthService.getCurrentUser().userInfo.id !== row.id && <Controls.ActionButton
                                                     color="primary"
                                                     onClick={() => { openInPopup(row)}}>
                                                     <InfoOutlinedIcon fontSize="small" />
-                                                </Controls.ActionButton>
+                                                </Controls.ActionButton>}
 
                                                 <Controls.ActionButton
                                                     color="primary"
@@ -317,17 +320,18 @@ return(
                                                     <WebAssetIcon fontSize="small" />
                                                 </Controls.ActionButton>
 
-                                                <Controls.ActionButton
+                                                {AuthService.getCurrentUser().userInfo.id !== row.id && <Controls.ActionButton
                                             color="secondary"
                                             onClick={() => {
                                                 setConfirmDialog({
                                                     isOpen: true,
-                                                    title: 'Are you sure to delete this record?',
+                                                    title: 'Уверены что хотите удалить?',
                                                     onConfirm: () => { onDelete(row.id) }
                                                 })
                                             }}>
                                             <CloseIcon fontSize="small" />
-                                        </Controls.ActionButton>
+                                        </Controls.ActionButton>}
+                                          
                                 </TableCell>
                             </TableRow>
                         );
@@ -352,7 +356,7 @@ return(
             </div>
         </Paper>
         <Popup
-            title="Employee full inforamtion"
+            title="Информация о сотруднике"
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
         >
